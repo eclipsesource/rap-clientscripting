@@ -1,5 +1,6 @@
 package org.eclipse.rap.clientscripting;
 
+import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,6 +18,7 @@ public class Demo implements IEntryPoint {
     
     Text text = new Text( shell, SWT.SINGLE | SWT.READ_ONLY );
     text.setText( "__.__.____" );
+    addMaskBehavior( text );
     
     shell.pack();
     shell.open();
@@ -26,6 +28,13 @@ public class Demo implements IEntryPoint {
     }
     display.dispose();
     return 0;
+  }
+
+  @SuppressWarnings("restriction")
+  private void addMaskBehavior( Text text ) {
+    String code =   "listener = new org.eclipse.rap.clientscripting.ClientEventListener( " 
+                  + "\"function(){}\" );";
+    JSExecutor.executeJS( code );
   }
   
 }

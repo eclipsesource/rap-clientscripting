@@ -4,3 +4,6 @@ Bundle-Name: Test
 Bundle-SymbolicName: org.eclipse.rap.clientscripting.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.rap.rwt.jstest;bundle-version="1.5.0",
+ org.eclipse.rap.clientscripting;bundle-version="1.0.0"
+Service-Component: OSGI-INF/testContribution.xml, OSGI-INF/resourceContribution.xml
