@@ -9,12 +9,17 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
  
-qx.Class.define( "org.eclipse.rap.clientscripting.ProxyEvent_Test", {
+qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
+ 
+ 
+org.eclipse.rap.clientscripting.Function = function( code ) {
+  this._function = org.eclipse.rap.clientscripting.ClientScriptingUtil.createFunction( code );
+};
 
-  extend : qx.core.Object,
-  
-  members : {
-    
+org.eclipse.rap.clientscripting.Function.prototype = {
+
+  call : function() {
+    this._function.apply( window, arguments );
   }
-  
-} );
+
+};

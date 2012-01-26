@@ -6,6 +6,12 @@
       <resource
             class="org.eclipse.rap.clientscripting.internal.ClientEventListenerResource">
       </resource>
+      <resource
+            class="org.eclipse.rap.clientscripting.internal.ClientScriptingUtilResource">
+      </resource>
+      <resource
+            class="org.eclipse.rap.clientscripting.internal.EventProxyResource">
+      </resource>
    </extension>
 
 </plugin>

@@ -22,7 +22,8 @@ public class ClientScriptingTestContribution implements TestContribution {
   private static final String PATH_PREFIX = "/org/eclipse/rap/clientscripting/";
 
   private static final String[] RESOURCES = new String[] {
-    "ClientEventListener_Test.js"
+    "Function_Test.js",
+    "EventProxy_Test.js"
   };
 
   public String getName() {
