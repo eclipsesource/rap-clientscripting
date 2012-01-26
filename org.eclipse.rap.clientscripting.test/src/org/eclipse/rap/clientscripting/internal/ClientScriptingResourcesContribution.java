@@ -24,7 +24,9 @@ public class ClientScriptingResourcesContribution implements TestContribution {
   private static final String[] RESOURCES = new String[] {
     "ClientScriptingUtil.js",
     "Function.js",
-    "EventProxy.js"
+    "EventBinding.js",
+    "EventProxy.js",
+    "WidgetProxy.js"
   };
 
   public String getName() {
