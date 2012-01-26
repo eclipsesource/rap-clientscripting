@@ -11,5 +11,30 @@
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
-org.eclipse.rap.clientscripting.EventBinding = function( source, type, targetFunction ) {
+org.eclipse.rap.clientscripting.EventBinding = function( source, eventType, targetFunction ) {
+  var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
+  var sourceType;
+  this._nativeType = ClientScriptingUtil.getNativeEventType( sourceType, eventType );
+  this._targetFunction = targetFunction;
+  this._source = source;
+  this._bind();
 };
+
+org.eclipse.rap.clientscripting.EventBinding.prototype = {
+  
+  _bind : function() {
+    this._source.addEventListener( this._nativeType, this._targetFunction.call );
+  },
+  
+  _unbind : function() {
+    this._source.removeEventListener( this._nativeType, this._targetFunction.call );
+  },
+
+  dispose : function() {
+    this._unbind();
+    this._source = null;
+    this._targetFunction = null;
+  }
+
+};
+  

@@ -16,7 +16,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   _eventTypeMapping : {
     "KeyDown" : "keypress"
   },
-
+  
   createFunction : function( code ) {
     var wrappedFunction = "var result = " + code + ";result;";
     var result = eval( wrappedFunction );
@@ -26,14 +26,8 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     return result;
   },
   
-  addListener : function( widget, eventType, listener ) {
-    var nativeType = this._eventTypeMapping[ eventType ];
-    widget.addEventListener( nativeType, listener.handleEvent, listener );
-  },
-
-  removeListener : function( widget, eventType, listener ) {
-    var nativeType = this._eventTypeMapping[ eventType ];
-    widget.removeEventListener( nativeType, listener.handleEvent, listener );
+  getNativeEventType : function( sourceType, eventType ) {
+    return this._eventTypeMapping[ eventType ];
   }
 
 };

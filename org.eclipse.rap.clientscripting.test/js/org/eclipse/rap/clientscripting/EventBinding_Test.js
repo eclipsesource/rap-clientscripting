@@ -22,54 +22,52 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       var binding = new org.eclipse.rap.clientscripting.EventBinding( text, "KeyDown", listener );
       
       assertTrue( binding instanceof org.eclipse.rap.clientscripting.EventBinding );
-    }
-    
+    },
 
-//    testAddKeyListener : function() {
-//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//      var text = new org.eclipse.rwt.widgets.Text();
-//      text.addToDocument();
-//      TestUtil.flush();
-//      globalVar = 1;
-//      var code = "function(){ globalVar++; }";
-//      var listener = new org.eclipse.rap.clientscripting.Function( code );
-//
-//      this._addListener( text, "KeyDown", listener );
-//      TestUtil.press( text, "A" );
-//
-//      assertEquals( 2, globalVar );
-//      delete globalVar;
-//      text.destroy();
-//    },
-//    
-//    testRemoveKeyListener : function() {
-//      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-//      var text = new org.eclipse.rwt.widgets.Text();
-//      text.addToDocument();
-//      TestUtil.flush();
-//      globalVar = 1;
-//      var code = "function(){ globalVar++; }";
-//      var listener = new org.eclipse.rap.clientscripting.Function( code );
-//
-//      this._addListener( text, "KeyDown", listener );
-//      this._removeListener( text, "KeyDown", listener );
-//      TestUtil.press( text, "A" );
-//
-//      assertEquals( 1, globalVar );
-//      delete globalVar;
-//      text.destroy();
-//    },
-//    
-//    /////////
-//    // Helper
-//    
-//    _addListener : function( widget, type, listener ) {
-//      org.eclipse.rap.clientscripting.ClientScriptingUtil.addListener( widget, type, listener );
-//    },
-//
-//    _removeListener : function( widget, type, listener ) {
-//      org.eclipse.rap.clientscripting.ClientScriptingUtil.removeListener( widget, type, listener );
-//    }
+    testBindKeyEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new org.eclipse.rwt.widgets.Text();
+      text.addToDocument();
+      TestUtil.flush();
+      var logger = this._createLogger(); 
+
+      var binding = new org.eclipse.rap.clientscripting.EventBinding( text, "KeyDown", logger );
+      TestUtil.press( text, "A" );
+
+      assertEquals( 1, logger.log.length );
+      text.destroy();
+    },
+    
+    testDisposeBindKeyEvent : function() {
+      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new org.eclipse.rwt.widgets.Text();
+      text.addToDocument();
+      TestUtil.flush();
+      var logger = this._createLogger(); 
+
+      var binding = new org.eclipse.rap.clientscripting.EventBinding( text, "KeyDown", logger );
+      binding.dispose();
+      TestUtil.press( text, "A" );
+
+      assertEquals( 0, logger.log.length );
+      assertNull( binding._source );
+      assertNull( binding._targetFunction );
+      text.destroy();
+    },
+
+    /////////
+    // helper
+    
+    _createLogger : function() {
+      var log = [];
+      var result = {
+        "log" : log,
+        "call" : function( arg ) {
+          log.push( arg );
+        }
+      };
+      return result;
+    }
 
   }
   
