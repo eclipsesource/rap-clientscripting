@@ -8,9 +8,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+@SuppressWarnings("restriction")
 public class Demo implements IEntryPoint {
     
-  @Override
   public int createUI() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -23,14 +23,14 @@ public class Demo implements IEntryPoint {
     shell.pack();
     shell.open();
     while( !shell.isDisposed() ) {
-      if( !display.readAndDispatch() )
+      if( !display.readAndDispatch() ) {
         display.sleep();
+      }
     }
     display.dispose();
     return 0;
   }
 
-  @SuppressWarnings("restriction")
   private void addMaskBehavior( Text text ) {
     String code =   "listener = new org.eclipse.rap.clientscripting.ClientEventListener( " 
                   + "\"function(){}\" );";
