@@ -22,6 +22,7 @@ public class ClientScriptingResourcesContribution implements TestContribution {
   private static final String PATH_PREFIX = "/org/eclipse/rap/clientscripting/";
 
   private static final String[] RESOURCES = new String[] {
+    "ClientScriptingUtil.js",
     "ClientEventListener.js"
   };
 
@@ -33,7 +34,6 @@ public class ClientScriptingResourcesContribution implements TestContribution {
     String[] result = new String[ RESOURCES.length ];
     for( int i = 0; i < result.length; i++ ) {
       result[ i ] = PATH_PREFIX + RESOURCES[ i ];
-      System.out.println( result[ i ] );
     }
     return result;
   }
