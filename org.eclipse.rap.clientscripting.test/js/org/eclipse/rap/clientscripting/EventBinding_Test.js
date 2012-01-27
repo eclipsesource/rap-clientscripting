@@ -17,6 +17,7 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = org.eclipse.rwt.protocol.Processor;
 var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
 var Function = org.eclipse.rap.clientscripting.Function;
+var SWT = org.eclipse.rap.clientscripting.SWT;
 var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
 
 var text;
@@ -30,7 +31,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
     testCreateBinding : function() {
       var listener = new Function( "function(){}" );
       
-      var binding = new EventBinding( text, "KeyDown", listener );
+      var binding = new EventBinding( text, SWT.KeyDown, listener );
       
       assertTrue( binding instanceof EventBinding );
     },
@@ -39,7 +40,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       TestUtil.flush();
       var logger = this._createLogger(); 
 
-      var binding = new EventBinding( text, "KeyDown", logger );
+      var binding = new EventBinding( text, SWT.KeyDown, logger );
       TestUtil.press( text, "A" );
 
       assertEquals( 1, logger.log.length );
@@ -48,7 +49,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
     testDisposeBindKeyEvent : function() {
       var logger = this._createLogger(); 
 
-      var binding = new EventBinding( text, "KeyDown", logger );
+      var binding = new EventBinding( text, SWT.KeyDown, logger );
       binding.dispose();
       TestUtil.press( text, "A" );
 
@@ -60,7 +61,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
     testBindCreatesProxyEvent : function() {
       var logger = this._createLogger(); 
 
-      var binding = new EventBinding( text, "KeyDown", logger );
+      var binding = new EventBinding( text, SWT.KeyDown, logger );
       TestUtil.press( text, "A" );
 
       var event = logger.log[ 0 ];
@@ -70,7 +71,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
     testBindDisposesProxyEvent : function() {
       var logger = this._createLogger(); 
 
-      var binding = new EventBinding( text, "KeyDown", logger );
+      var binding = new EventBinding( text, SWT.KeyDown, logger );
       TestUtil.press( text, "A" );
 
       var event = logger.log[ 0 ];
@@ -84,7 +85,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         }
       };
 
-      var binding = new EventBinding( text, "KeyDown", listener );
+      var binding = new EventBinding( text, SWT.KeyDown, listener );
       var domEvent = TestUtil.createFakeDomKeyEvent( text.getElement(), "keypress", "a" );
       TestUtil.fireFakeDomEvent( domEvent );
       

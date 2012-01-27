@@ -13,14 +13,17 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   
-  _eventTypeMapping : {
-    "KeyDown" : "keypress"
-  },
-  
   _wrapperHelper : function(){},
   
   getNativeEventType : function( protocolAdapter, eventType ) {
-    return this._eventTypeMapping[ eventType ];
+    var SWT = org.eclipse.rap.clientscripting.SWT;
+    var result;
+    switch( eventType ) {
+      case SWT.KeyDown:
+        result = "keypress";
+      break;
+    }
+    return result;
   },
   
   getProtocolAdapter : function( object ) {
@@ -85,7 +88,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     }
     this._setStateMask( event, originalEvent );
   },
-  
+
   _setStateMask : function( event, originalEvent ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
     event.stateMask |= originalEvent.isShiftPressed() ? SWT.SHIFT : 0;
