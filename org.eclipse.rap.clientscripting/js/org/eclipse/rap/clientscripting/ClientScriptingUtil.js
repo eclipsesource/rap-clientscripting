@@ -40,7 +40,9 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   
   wrapAsProto : function( object ) {
     this._wrapperHelper.prototype = object;
-    return new this._wrapperHelper();
+    var result = new this._wrapperHelper();
+    this._wrapperHelper.prototype = null;
+    return result;
   }
 
 };
