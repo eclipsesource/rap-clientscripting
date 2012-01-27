@@ -12,9 +12,14 @@
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 // TODO [tb] : consider a name thats not a native Constructor ( "Function" )
-org.eclipse.rap.clientscripting.Function = function( code ) {
-  this._function = org.eclipse.rap.clientscripting.ClientScriptingUtil.createFunction( code );
-  delete code;
+org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
+  // NOTE: the eval'd code will have the same scope as this function, therefore no local
+  // variables except the "imports" are used.
+  var SWT = org.eclipse.rap.clientscripting.SWT;
+  this._function = eval( "var result = " + arguments[ 0 ] + ";result;" );
+  if( typeof this._function !== "function" ) {
+    throw new Error( "JavaScript code returns " + typeof result + ", must be function" );
+  }
 };
 
 org.eclipse.rap.clientscripting.Function.prototype = {

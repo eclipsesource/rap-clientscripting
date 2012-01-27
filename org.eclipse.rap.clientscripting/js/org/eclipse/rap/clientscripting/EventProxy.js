@@ -43,12 +43,16 @@ org.eclipse.rap.clientscripting.EventProxy.prototype = {
   character : '\u0000',
   
   /**
-   * Currently not supported.
+   * depending on the event, the key code of the key that was typed, as defined
+   * by the key code constants in class <code>SWT</code>. When the character
+   * field of the event is ambiguous, this field contains the unaffected value
+   * of the original character. For example, typing Shift+M or M result in different
+   * characters ( 'M' and 'm' ), but the same keyCode (109, character code for 'm').
    */
   keyCode : 0,
   
   /**
-   * the type of event, as defined by the event type constants in class SWT.
+   * the type of event, as defined by the event type constants in class <code>SWT</code>.
    * Currently supports SWT.KeyDown
    */
    type : 0,

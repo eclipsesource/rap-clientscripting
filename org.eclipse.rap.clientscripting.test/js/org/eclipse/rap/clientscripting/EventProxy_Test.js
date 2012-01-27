@@ -52,6 +52,17 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertTrue( eventProxy.widget instanceof WidgetProxy );
     },
 
+    testType : function() {
+      var eventProxy;
+      text.addEventListener( "keypress", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
+      } );
+
+      TestUtil.press( text, "a" );
+      
+      assertEquals( SWT.KeyDown, eventProxy.type );
+    },
+
     testCharacter : function() {
       var eventProxy;
       text.addEventListener( "keypress", function( event ) {
@@ -63,7 +74,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( "a", eventProxy.character );
     },
 
-    testType : function() {
+    testKeyCodeCharacterLowerCase : function() {
       var eventProxy;
       text.addEventListener( "keypress", function( event ) {
         eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
@@ -71,7 +82,31 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
 
       TestUtil.press( text, "a" );
       
-      assertEquals( SWT.KeyDown, eventProxy.type );
+      assertEquals( 97, eventProxy.keyCode );
+    },
+
+    testKeyCodeCharacterUpperCase : function() {
+      var eventProxy;
+      text.addEventListener( "keypress", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
+      } );
+
+      TestUtil.press( text, "A" );
+      
+      assertEquals( 97, eventProxy.keyCode );
+    },
+
+    testKeyCodeCharacterNonPrintable : function() {
+      var eventProxy;
+      text.addEventListener( "keypress", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
+      } );
+
+      TestUtil.press( text, "Up" );
+      
+      assertEquals( '\u0000', eventProxy.character );
+      console.log( eventProxy.keyCode );
+      assertEquals( SWT.ARROW_UP, eventProxy.keyCode );
     },
 
     ///////// 

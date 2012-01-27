@@ -12,6 +12,7 @@
 (function() {
 
 var Function = org.eclipse.rap.clientscripting.Function;
+var SWT = org.eclipse.rap.clientscripting.SWT;
 
 qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 
@@ -60,13 +61,23 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
     },
 
     testNoContext : function() {
-      var code = "function( ){ this.x++; }";
+      var code = "function(){ this.x++; }";
       var listener = new Function( code );
       listener.x = 1;
 
       listener.call();
 
       assertEquals( 1, listener.x );
+    },
+
+    testImportedClasses : function() {
+      var obj = {};
+      var code = "function( obj ){ obj.SWT = SWT; }";
+      var fun = new Function( code );
+
+      fun.call( obj );
+
+      assertIdentical( SWT, obj.SWT );
     }
 
   }

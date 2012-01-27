@@ -19,15 +19,6 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   
   _wrapperHelper : function(){},
   
-  createFunction : function( code ) {
-    var wrappedFunction = "var result = " + code + ";result;";
-    var result = eval( wrappedFunction );
-    if( typeof result !== "function" ) {
-      throw new Error( "JavaScript code returns " + typeof result + ", must be function" );
-    }
-    return result;
-  },
-  
   getNativeEventType : function( protocolAdapter, eventType ) {
     return this._eventTypeMapping[ eventType ];
   },
@@ -64,7 +55,15 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   },
   
   _initKeyEvent : function( event, originalEvent ) {
-    event.character = String.fromCharCode( originalEvent.getCharCode() );
+    var charCode = originalEvent.getCharCode();
+    if( charCode !== 0 ) {
+      event.character = String.fromCharCode( charCode );
+      event.keyCode = event.character.toLowerCase().charCodeAt( 0 );
+    } else {
+      // NOTE : While this is a private field, this mechanism must be integrated with 
+      // KeyEventSupport anyway to support the doit flag better.
+      event.keyCode = org.eclipse.rwt.KeyEventSupport.getInstance()._currentKeyCode;
+    }
   }
 
 };
