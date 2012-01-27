@@ -73,7 +73,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       TestUtil.press( text, "A" );
 
       var event = logger.log[ 0 ];
-      assertTrue( TestUtil.hasNoObject( event ) );
+      assertTrue( TestUtil.hasNoObjects( event ) );
     },
 
     /////////
