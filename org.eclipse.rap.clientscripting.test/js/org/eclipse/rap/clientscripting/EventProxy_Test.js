@@ -8,6 +8,14 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
+(function() {
+
+var EventProxy = org.eclipse.rap.clientscripting.EventProxy;
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Processor = org.eclipse.rwt.protocol.Processor;
+var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+
+var text;
  
 qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
 
@@ -16,22 +24,49 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
   members : {
     
     testCreateKeyEventProxy : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var text = new org.eclipse.rwt.widgets.Text();
-      text.addToDocument();
-      TestUtil.flush();
       var eventProxy;
-
       text.addEventListener( "keypress", function( event ) {
         eventProxy = new org.eclipse.rap.clientscripting.EventProxy( "KeyDown", event );
       } );
+
       TestUtil.press( text, "a" );
 
-      assertTrue( eventProxy instanceof org.eclipse.rap.clientscripting.EventProxy );
-      text.destroy();
+      assertTrue( eventProxy instanceof EventProxy );
     },
     
+    ///////// 
+    // Helper
+
+    _setUp : function() {
+      TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE", "RIGHT" ],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.flush();
+      text = ObjectManager.getObject( "w3" );
+      text.focus();
+    },
+    
+    _tearDown : function() {
+      Processor.processOperation( {
+        "target" : "w2",
+        "action" : "destroy",
+      } );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy",
+      } );
+      text = null
+    }
 
   }
     
 } );
+
+} )();

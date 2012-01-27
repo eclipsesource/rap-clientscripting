@@ -9,6 +9,17 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
+(function() {
+
+var EventBinding = org.eclipse.rap.clientscripting.EventBinding;
+var EventProxy = org.eclipse.rap.clientscripting.EventProxy;
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Processor = org.eclipse.rwt.protocol.Processor;
+var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var Function = org.eclipse.rap.clientscripting.Function;
+
+var text;
+
 qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
 
   extend : qx.core.Object,
@@ -16,55 +27,43 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
   members : {
     
     testCreateBinding : function() {
-      this._setUp();
-      var listener = new org.eclipse.rap.clientscripting.Function( "function(){}" );
+      var listener = new Function( "function(){}" );
       
-      var binding 
-        = new org.eclipse.rap.clientscripting.EventBinding( this._text, "KeyDown", listener );
+      var binding = new EventBinding( text, "KeyDown", listener );
       
-      assertTrue( binding instanceof org.eclipse.rap.clientscripting.EventBinding );
-      this._tearDown();
+      assertTrue( binding instanceof EventBinding );
     },
 
     testBindKeyEvent : function() {
-      this._setUp();
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       TestUtil.flush();
       var logger = this._createLogger(); 
 
-      var binding = new org.eclipse.rap.clientscripting.EventBinding( this._text, "KeyDown", logger );
-      TestUtil.press( this._text, "A" );
+      var binding = new EventBinding( text, "KeyDown", logger );
+      TestUtil.press( text, "A" );
 
       assertEquals( 1, logger.log.length );
-      this._tearDown();
     },
 
     testDisposeBindKeyEvent : function() {
-      this._setUp();
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var logger = this._createLogger(); 
 
-      var binding = new org.eclipse.rap.clientscripting.EventBinding( this._text, "KeyDown", logger );
+      var binding = new EventBinding( text, "KeyDown", logger );
       binding.dispose();
-      TestUtil.press( this._text, "A" );
+      TestUtil.press( text, "A" );
 
       assertEquals( 0, logger.log.length );
       assertNull( binding._source );
       assertNull( binding._targetFunction );
-      this._tearDown();
     },
 
     testBindCreatesProxyEvent : function() {
-      this._setUp();
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var logger = this._createLogger(); 
 
-      var binding = new org.eclipse.rap.clientscripting.EventBinding( this._text, "KeyDown", logger );
-      TestUtil.press( this._text, "A" );
+      var binding = new EventBinding( text, "KeyDown", logger );
+      TestUtil.press( text, "A" );
 
       var event = logger.log[ 0 ];
-      assertTrue( event instanceof org.eclipse.rap.clientscripting.EventProxy );
-      this._tearDown();
+      assertTrue( event instanceof EventProxy );
     },
 
     /////////
@@ -80,11 +79,10 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       };
       return result;
     },
-    
+
     _setUp : function() {
       TestUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Text",
@@ -94,23 +92,24 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         }
       } );
       TestUtil.flush();
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      this._text = ObjectManager.getObject( "w3" );
-      this._text.focus();
+      text = ObjectManager.getObject( "w3" );
+      text.focus();
     },
     
     _tearDown : function() {
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w2",
         "action" : "destroy",
       } );
-      org.eclipse.rwt.protocol.Processor.processOperation( {
+      Processor.processOperation( {
         "target" : "w3",
         "action" : "destroy",
       } );
-      this._text = null
+      text = null
     }
 
   }
   
 } );
+
+})();

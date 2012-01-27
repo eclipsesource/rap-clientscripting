@@ -11,7 +11,7 @@
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
- 
+// TODO [tb] : consider a name thats not a native Constructor ( "Function" )
 org.eclipse.rap.clientscripting.Function = function( code ) {
   this._function = org.eclipse.rap.clientscripting.ClientScriptingUtil.createFunction( code );
 };

@@ -8,7 +8,11 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
- 
+
+(function() {
+
+var Function = org.eclipse.rap.clientscripting.Function;
+
 qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 
   extend : qx.core.Object,
@@ -18,15 +22,15 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
     testCreateFunction : function() {
       var code = "function(){}";
       
-      var listener = new org.eclipse.rap.clientscripting.Function( code );
+      var listener = new Function( code );
       
-      assertTrue( listener instanceof org.eclipse.rap.clientscripting.Function );
+      assertTrue( listener instanceof Function );
     },
     
     testCreateFunctionSyntaxError : function() {
       var code = "null.no!;";
       try {
-        new org.eclipse.rap.clientscripting.Function( code );
+        new Function( code );
         fail();
       } catch( ex ) {
         // expected
@@ -36,7 +40,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
     testCreateFunctionNoFunction : function() {
       var code = "1";
       try {
-        new org.eclipse.rap.clientscripting.Function( code );
+        new Function( code );
         fail();
       } catch( ex ) {
         // expected
@@ -45,7 +49,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 
     testCallWithArgument : function() {
       var code = "function( e ){ e.x++; }";
-      var listener = new org.eclipse.rap.clientscripting.Function( code );
+      var listener = new Function( code );
       var event = {
         x : 1
       };
@@ -57,7 +61,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 
     testNoContext : function() {
       var code = "function( ){ this.x++; }";
-      var listener = new org.eclipse.rap.clientscripting.Function( code );
+      var listener = new Function( code );
       listener.x = 1;
 
       listener.call();
@@ -68,3 +72,5 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
   }
   
 } );
+
+} )();

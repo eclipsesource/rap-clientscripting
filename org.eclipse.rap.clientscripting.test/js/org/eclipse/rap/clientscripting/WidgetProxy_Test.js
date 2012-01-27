@@ -9,6 +9,17 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
  
+(function() {
+
+var EventBinding = org.eclipse.rap.clientscripting.EventBinding;
+var EventProxy = org.eclipse.rap.clientscripting.EventProxy;
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var Processor = org.eclipse.rwt.protocol.Processor;
+var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var Function = org.eclipse.rap.clientscripting.Function;
+
+var text;
+
 qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
 
   extend : qx.core.Object,
@@ -16,17 +27,44 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
   members : {
     
     testCreateTextWidgetProxy : function() {
-      var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var text = new org.eclipse.rwt.widgets.Text(); // TODO [tb] : create by protocol !!!
-      text.addToDocument();
-      TestUtil.flush();
-
       var widgetProxy = new org.eclipse.rap.clientscripting.WidgetProxy( text );
 
       assertTrue( widgetProxy instanceof org.eclipse.rap.clientscripting.WidgetProxy );
-      text.destroy();
+    },
+    
+    /////////
+    // Helper
+
+    _setUp : function() {
+      TestUtil.createShellByProtocol( "w2" );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE", "RIGHT" ],
+          "parent" : "w2"
+        }
+      } );
+      TestUtil.flush();
+      text = ObjectManager.getObject( "w3" );
+      text.focus();
+    },
+    
+    _tearDown : function() {
+      Processor.processOperation( {
+        "target" : "w2",
+        "action" : "destroy",
+      } );
+      Processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy",
+      } );
+      text = null
     }
 
   }
     
 } );
+
+} )();
