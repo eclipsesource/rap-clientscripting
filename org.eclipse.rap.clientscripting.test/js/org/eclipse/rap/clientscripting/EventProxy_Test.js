@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
   extend : qx.core.Object,
   
   members : {
-    
+
     testCreateEventProxy : function() {
       var eventProxy;
       text.addEventListener( "keypress", function( event ) {

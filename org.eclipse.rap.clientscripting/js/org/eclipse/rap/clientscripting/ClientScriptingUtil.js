@@ -12,10 +12,10 @@
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.ClientScriptingUtil = {
-  
+
   _wrapperHelper : function(){},
-  
-  getNativeEventType : function( protocolAdapter, eventType ) {
+
+  getNativeEventType : function( source, eventType ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
     var result;
     switch( eventType ) {
@@ -25,26 +25,31 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     }
     return result;
   },
-  
-  getProtocolAdapter : function( object ) {
-    var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-    var id = ObjectManager.getId( object );
-    return ObjectManager.getEntry( id ).adapter;
-  },
-  
+
   wrapAsProto : function( object ) {
     this._wrapperHelper.prototype = object;
     var result = new this._wrapperHelper();
     this._wrapperHelper.prototype = null;
     return result;
   },
-  
-  postProcessEvent : function( eventProxy, event ) {
-    if( eventProxy.doit === false ) {
-      event.preventDefault();
+
+  postProcessEvent : function( event, originalEvent ) {
+    if( event.doit === false ) {
+      originalEvent.preventDefault();
     }
   },
   
+  attachSetter : function( proxy, source ) {
+    var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+    var id = ObjectManager.getId( source );
+    var properties = ObjectManager.getEntry( id ).adapter.properties;
+    for( var i = 0; i < properties.length; i++ ) {
+      var property = properties[ i ];
+      proxy[ "set" + qx.lang.String.toFirstUp( property ) ] = 
+        this._createSetter( id, property );
+    }
+  },
+
   initEvent : function( event, type, originalEvent ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
     var control = org.eclipse.swt.WidgetUtil.getControl( originalEvent.getTarget() );
@@ -57,6 +62,24 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     }
   },
   
+  _createSetter : function( id, property ) {
+    var setProperty = this._setProperty;
+    var result = function( value ) {
+      setProperty( id, property, value );
+    };
+    return result;
+  },
+  
+  _setProperty : function( id, property, value ) {
+    var props = {};
+    props[ property ] = value;
+    org.eclipse.rwt.protocol.Processor.processOperation( {
+      "target" : id,
+      "action" : "set",
+      "properties" : props
+    } );
+  },
+
   _initKeyEvent : function( event, originalEvent ) {
     var charCode = originalEvent.getCharCode();
     var SWT = org.eclipse.rap.clientscripting.SWT;

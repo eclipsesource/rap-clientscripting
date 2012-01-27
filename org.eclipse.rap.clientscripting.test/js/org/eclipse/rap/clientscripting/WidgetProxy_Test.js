@@ -42,7 +42,25 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
       }
     },
     
-    /////////
+    testSetter : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+      
+      widgetProxy.setText( "foo" );
+
+      assertEquals( "foo", text.getValue() );
+    },
+    
+    testSetTextSync : function() {
+      TestUtil.initRequestLog();
+      var widgetProxy = WidgetProxy.getInstance( text );
+      
+      widgetProxy.setText( "foo" );
+      var req = org.eclipse.swt.Request.getInstance().send();
+      var msg = TestUtil.getMessage();
+      assertTrue( msg.indexOf( "w3.text=foo" ) != -1 );
+    },
+
+    ////////
     // Helper
 
     _setUp : function() {

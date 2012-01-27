@@ -13,8 +13,7 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.EventBinding = function( source, eventType, targetFunction ) {
   var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
-  this._protocolAdapter = ClientScriptingUtil.getProtocolAdapter( source );
-  this._nativeType = ClientScriptingUtil.getNativeEventType( this._protocolAdapter, eventType );
+  this._nativeType = ClientScriptingUtil.getNativeEventType( source, eventType );
   this._eventType = eventType;
   this._targetFunction = targetFunction;
   this._source = source;
