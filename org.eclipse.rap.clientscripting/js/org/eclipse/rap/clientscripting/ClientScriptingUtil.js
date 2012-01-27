@@ -45,6 +45,12 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     return result;
   },
   
+  postProcessEvent : function( eventProxy, event ) {
+    if( eventProxy.doit === false ) {
+      event.preventDefault();
+    }
+  },
+  
   initEvent : function( event, type, originalEvent ) {
     var control = org.eclipse.swt.WidgetUtil.getControl( originalEvent.getTarget() );
     event.widget = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( control );

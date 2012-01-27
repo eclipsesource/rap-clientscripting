@@ -17,6 +17,7 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = org.eclipse.rwt.protocol.Processor;
 var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
 var Function = org.eclipse.rap.clientscripting.Function;
+var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
 
 var text;
 
@@ -74,6 +75,20 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
 
       var event = logger.log[ 0 ];
       assertTrue( TestUtil.hasNoObjects( event ) );
+    },
+
+    testDoItFalse : function() {
+      var listener = {
+        "call" : function( event ) {
+          event.doit = false;
+        }
+      };
+
+      var binding = new EventBinding( text, "KeyDown", listener );
+      var domEvent = TestUtil.createFakeDomKeyEvent( text.getElement(), "keypress", "a" );
+      TestUtil.fireFakeDomEvent( domEvent );
+      
+      assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
     },
 
     /////////

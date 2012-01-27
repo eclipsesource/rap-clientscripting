@@ -60,8 +60,6 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       
       assertEquals( "a", eventProxy.character );
     },
-    
-    // TODO testDoIt
 
     ///////// 
     // Helper

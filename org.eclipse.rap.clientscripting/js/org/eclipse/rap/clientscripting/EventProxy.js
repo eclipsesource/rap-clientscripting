@@ -17,12 +17,34 @@ org.eclipse.rap.clientscripting.EventProxy = function( eventType, originalEvent 
 
 org.eclipse.rap.clientscripting.EventProxy.prototype = {
   
+  /**
+   * An object representing the widget that issued the event. 
+   * It has setter and getter named after the properties used in the RAP protocol. 
+   * Only a subset of getter is currently supported.
+   * (See org.eclipse.rap.clientscripting.ClientScriptingUtil#attachGetter.)
+   * Setting properties might result in server and client getting out-of-sync in RAP 1.5,
+   * unless it is a property that can be changed by user-input (e.g. selection).
+   */
   widget : null,
 
+  /**
+   * depending on the event, a flag indicating whether the operation should be
+   * allowed. Setting this field to false will cancel the operation.
+   * Currently only supports preventing input into a Text or Text-like widget.
+   */
   doit : true,
   
+  /**
+   * depending on the event, the character represented by the key that was
+   * typed. This is the final character that results after all modifiers have
+   * been applied. For non-printable keys (like arrow-keys) this field is not set.
+   * Changing its value has no effect.  
+   */
   character : '\u0000',
   
+  /**
+   * Currently not supported.
+   */
   keyCode : 0,
     
 };
