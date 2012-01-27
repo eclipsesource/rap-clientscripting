@@ -43,6 +43,20 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     var result = new this._wrapperHelper();
     this._wrapperHelper.prototype = null;
     return result;
+  },
+  
+  initEvent : function( event, type, originalEvent ) {
+    var control = org.eclipse.swt.WidgetUtil.getControl( originalEvent.getTarget() );
+    event.widget = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( control );
+    switch( type ) {
+      case "KeyDown":
+        this._initKeyEvent( event, originalEvent );
+      break;
+    }
+  },
+  
+  _initKeyEvent : function( event, originalEvent ) {
+    event.character = String.fromCharCode( originalEvent.getCharCode() );
   }
 
 };

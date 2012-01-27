@@ -11,9 +11,8 @@
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
-org.eclipse.rap.clientscripting.EventProxy = function( protocolAdapter, originalEvent ) {
-  var control = org.eclipse.swt.WidgetUtil.getControl( originalEvent.getTarget() );
-  this.widget = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( control );
+org.eclipse.rap.clientscripting.EventProxy = function( eventType, originalEvent ) {
+  org.eclipse.rap.clientscripting.ClientScriptingUtil.initEvent( this, eventType, originalEvent );
 };
 
 org.eclipse.rap.clientscripting.EventProxy.prototype = {

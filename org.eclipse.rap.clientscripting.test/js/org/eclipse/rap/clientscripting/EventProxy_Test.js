@@ -50,6 +50,19 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertTrue( eventProxy.widget instanceof WidgetProxy );
     },
 
+    testCharacter : function() {
+      var eventProxy;
+      text.addEventListener( "keypress", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( "KeyDown", event );
+      } );
+
+      TestUtil.press( text, "a" );
+      
+      assertEquals( "a", eventProxy.character );
+    },
+    
+    // TODO testDoIt
+
     ///////// 
     // Helper
 
