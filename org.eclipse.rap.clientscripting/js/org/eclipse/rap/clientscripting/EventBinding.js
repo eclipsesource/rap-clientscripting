@@ -33,7 +33,7 @@ org.eclipse.rap.clientscripting.EventBinding.prototype = {
 
   _processEvent : function( event ) {
     var EventProxy = org.eclipse.rap.clientscripting.EventProxy;
-    var eventProxy = new EventProxy( this._protocolAdapter, event );
+    var eventProxy = new EventProxy( this._eventType, event );
     this._targetFunction.call( eventProxy );
     org.eclipse.rap.clientscripting.ClientScriptingUtil.postProcessEvent( eventProxy, event );
     EventProxy.disposeEventProxy( eventProxy );

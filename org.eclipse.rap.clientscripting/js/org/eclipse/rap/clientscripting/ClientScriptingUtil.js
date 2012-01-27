@@ -52,10 +52,12 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   },
   
   initEvent : function( event, type, originalEvent ) {
+    var SWT = org.eclipse.rap.clientscripting.SWT;
     var control = org.eclipse.swt.WidgetUtil.getControl( originalEvent.getTarget() );
     event.widget = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( control );
+    event.type = type;
     switch( type ) {
-      case "KeyDown":
+      case SWT.KeyDown:
         this._initKeyEvent( event, originalEvent );
       break;
     }

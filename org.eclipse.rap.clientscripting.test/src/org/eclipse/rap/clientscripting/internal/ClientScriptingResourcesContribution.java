@@ -23,6 +23,7 @@ public class ClientScriptingResourcesContribution implements TestContribution {
 
   private static final String[] RESOURCES = new String[] {
     "ClientScriptingUtil.js",
+    "SWT.js",
     "Function.js",
     "EventBinding.js",
     "EventProxy.js",

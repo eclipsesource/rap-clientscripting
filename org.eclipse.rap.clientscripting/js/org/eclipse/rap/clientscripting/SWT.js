@@ -11,16 +11,11 @@
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
-// TODO [tb] : consider a name thats not a native Constructor ( "Function" )
-org.eclipse.rap.clientscripting.Function = function( code ) {
-  this._function = org.eclipse.rap.clientscripting.ClientScriptingUtil.createFunction( code );
-  delete code;
-};
-
-org.eclipse.rap.clientscripting.Function.prototype = {
-
-  call : function() {
-    this._function.apply( window, arguments );
-  }
+org.eclipse.rap.clientscripting.SWT = {
+  
+  /**
+   * The key down event type
+   */
+  KeyDown : 1
 
 };

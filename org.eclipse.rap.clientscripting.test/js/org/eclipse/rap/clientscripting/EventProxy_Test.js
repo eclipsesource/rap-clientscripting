@@ -15,6 +15,7 @@ var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = org.eclipse.rwt.protocol.Processor;
 var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
 var WidgetProxy = org.eclipse.rap.clientscripting.WidgetProxy;
+var SWT = org.eclipse.rap.clientscripting.SWT;
 
 var text;
  
@@ -27,7 +28,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     testCreateEventProxy : function() {
       var eventProxy;
       text.addEventListener( "keypress", function( event ) {
-        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( "KeyDown", event );
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
       } );
 
       TestUtil.press( text, "a" );
@@ -38,13 +39,14 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     testEventProxyFields : function() {
       var eventProxy;
       text.addEventListener( "keypress", function( event ) {
-        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( "KeyDown", event );
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
       } );
 
       TestUtil.press( text, "a" );
       
       // Test type (or initial value) of all currently supported fields
       assertTrue( eventProxy.doit );
+      assertEquals( "number", typeof eventProxy.type );
       assertEquals( "string", typeof eventProxy.character );
       assertEquals( "number", typeof eventProxy.keyCode );
       assertTrue( eventProxy.widget instanceof WidgetProxy );
@@ -53,12 +55,23 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     testCharacter : function() {
       var eventProxy;
       text.addEventListener( "keypress", function( event ) {
-        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( "KeyDown", event );
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
       } );
 
       TestUtil.press( text, "a" );
       
       assertEquals( "a", eventProxy.character );
+    },
+
+    testType : function() {
+      var eventProxy;
+      text.addEventListener( "keypress", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
+      } );
+
+      TestUtil.press( text, "a" );
+      
+      assertEquals( SWT.KeyDown, eventProxy.type );
     },
 
     ///////// 

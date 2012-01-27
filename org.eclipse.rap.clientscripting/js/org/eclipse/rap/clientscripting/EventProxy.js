@@ -46,6 +46,12 @@ org.eclipse.rap.clientscripting.EventProxy.prototype = {
    * Currently not supported.
    */
   keyCode : 0,
+  
+  /**
+   * the type of event, as defined by the event type constants in class SWT.
+   * Currently supports SWT.KeyDown
+   */
+   type : 0,
     
 };
 
