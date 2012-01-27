@@ -66,6 +66,16 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertTrue( event instanceof EventProxy );
     },
 
+    testBindDisposesProxyEvent : function() {
+      var logger = this._createLogger(); 
+
+      var binding = new EventBinding( text, "KeyDown", logger );
+      TestUtil.press( text, "A" );
+
+      var event = logger.log[ 0 ];
+      assertTrue( TestUtil.hasNoObject( event ) );
+    },
+
     /////////
     // helper
     
