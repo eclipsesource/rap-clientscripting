@@ -17,6 +17,8 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     "KeyDown" : "keypress"
   },
   
+  _wrapperHelper : function(){},
+  
   createFunction : function( code ) {
     var wrappedFunction = "var result = " + code + ";result;";
     var result = eval( wrappedFunction );
@@ -34,6 +36,11 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
     var id = ObjectManager.getId( object );
     return ObjectManager.getEntry( id ).adapter;
+  },
+  
+  wrapAsProto : function( object ) {
+    this._wrapperHelper.prototype = object;
+    return new this._wrapperHelper();
   }
 
 };

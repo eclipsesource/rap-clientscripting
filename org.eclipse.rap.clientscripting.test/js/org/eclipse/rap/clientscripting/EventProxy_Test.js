@@ -33,7 +33,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
 
       assertTrue( eventProxy instanceof EventProxy );
     },
-    
+
     ///////// 
     // Helper
 

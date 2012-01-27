@@ -11,12 +11,11 @@
  
 (function() {
 
-var EventBinding = org.eclipse.rap.clientscripting.EventBinding;
 var EventProxy = org.eclipse.rap.clientscripting.EventProxy;
 var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
 var Processor = org.eclipse.rwt.protocol.Processor;
 var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-var Function = org.eclipse.rap.clientscripting.Function;
+var WidgetProxy = org.eclipse.rap.clientscripting.WidgetProxy;
 
 var text;
 
@@ -25,11 +24,22 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
   extend : qx.core.Object,
   
   members : {
-    
-    testCreateTextWidgetProxy : function() {
-      var widgetProxy = new org.eclipse.rap.clientscripting.WidgetProxy( text );
 
-      assertTrue( widgetProxy instanceof org.eclipse.rap.clientscripting.WidgetProxy );
+    testCreateTextWidgetProxy : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+
+      assertTrue( widgetProxy instanceof WidgetProxy );
+    },
+    
+    testCreateTextWidgetProxyTwice : function() {
+      var widgetProxy1 = WidgetProxy.getInstance( text );
+      var widgetProxy2 = WidgetProxy.getInstance( text );
+
+      assertTrue( widgetProxy1 !== widgetProxy2 ); // protect against abuse
+      if( widgetProxy1.__proto__ ) { // __proto__ is not an ECMA standard
+        assertTrue( widgetProxy1.__proto__ instanceof WidgetProxy );
+        assertTrue( widgetProxy1.__proto__ === widgetProxy1.__proto__ );
+      }
     },
     
     /////////

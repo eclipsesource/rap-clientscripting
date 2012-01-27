@@ -13,3 +13,15 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.WidgetProxy = function( originalWidget ) {
 };
+
+org.eclipse.rap.clientscripting.WidgetProxy._USERDATA_KEY = 
+  "org.eclipse.rap.clientscripting.WidgetProxy";
+
+org.eclipse.rap.clientscripting.WidgetProxy.getInstance = function( widget ) {
+  var protoInstance = widget.getUserData( this._USERDATA_KEY );
+  if( protoInstance == null ) {
+    protoInstance = new org.eclipse.rap.clientscripting.WidgetProxy( widget );
+    widget.setUserData( this._USERDATA_KEY, protoInstance );
+  }
+  return org.eclipse.rap.clientscripting.ClientScriptingUtil.wrapAsProto( protoInstance );
+}
