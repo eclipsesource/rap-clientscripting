@@ -45,7 +45,7 @@ function( ev ) {
     ev.doit = false;
   }
 
-  // TODO: Setting text sets selection to last position - compare SWT
+  // TODO: Setting text also sets selection to last position - compare to SWT
   ev.widget.setText( text );
-  ev.widget.setSelection( [ sel, sel ] ); 
+  ev.widget.setSelection( [ sel, sel ] );
 };
