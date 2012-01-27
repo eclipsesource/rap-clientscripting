@@ -255,9 +255,6 @@ org.eclipse.rap.clientscripting.SWT = {
    */
   PRINT_SCREEN : 44,
 
-  // TODO [tb] : In SWT these modifier constants are used for the events "keyCode" and 
-  // "stateMask" fields. Here they are currently only working for "stateMask".
-
   /**
    * keyboard and/or mouse event mask indicating that the ALT key
    * was pushed on the keyboard when the event was generated
