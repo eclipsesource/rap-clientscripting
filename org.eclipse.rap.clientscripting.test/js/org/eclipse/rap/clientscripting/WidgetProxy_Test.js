@@ -60,6 +60,28 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
       assertTrue( msg.indexOf( "w3.text=foo" ) != -1 );
     },
 
+    testTextGetText : function() {
+      TestUtil.initRequestLog();
+      var widgetProxy = WidgetProxy.getInstance( text );
+      text.setValue( "foo" );
+      
+      var value = widgetProxy.getText();
+      
+      assertEquals( "foo", value );
+    },
+
+    testTextGetSelection : function() {
+      TestUtil.initRequestLog();
+      var widgetProxy = WidgetProxy.getInstance( text );
+      text.setValue( "foo" );
+      text.setSelectionStart( 1 );
+      text.setSelectionLength( 1 );
+
+      var value = widgetProxy.getSelection();
+
+      assertEquals( [ 1, 2 ], value );
+    },
+
     ////////
     // Helper
 

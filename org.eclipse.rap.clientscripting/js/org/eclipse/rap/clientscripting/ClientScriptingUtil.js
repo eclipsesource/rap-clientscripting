@@ -14,6 +14,19 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
 org.eclipse.rap.clientscripting.ClientScriptingUtil = {
 
   _wrapperHelper : function(){},
+  
+  _getterMapping : {
+    "org.eclipse.rwt.widgets.Text" : {
+      "getText" : function( widget ) { return function() { return widget.getValue(); } },
+      "getSelection" : function( widget ) { 
+        return function() { 
+          var start = widget.getSelectionStart();
+          var length = widget.getSelectionLength();
+          return result = [ start, start + length ]; 
+        }
+      }
+    }
+  },
 
   getNativeEventType : function( source, eventType ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
@@ -38,7 +51,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       originalEvent.preventDefault();
     }
   },
-  
+
   attachSetter : function( proxy, source ) {
     var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
     var id = ObjectManager.getId( source );
@@ -47,6 +60,13 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       var property = properties[ i ];
       proxy[ "set" + qx.lang.String.toFirstUp( property ) ] = 
         this._createSetter( id, property );
+    }
+  },
+
+  attachGetter : function( proxy, source ) {
+    var getterMap = this._getterMapping[ source.classname ];
+    for( var key in getterMap ) {
+      proxy[ key ] = getterMap[ key ]( source );
     }
   },
 
@@ -61,7 +81,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       break;
     }
   },
-  
+
   _createSetter : function( id, property ) {
     var setProperty = this._setProperty;
     var result = function( value ) {
@@ -69,7 +89,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     };
     return result;
   },
-  
+
   _setProperty : function( id, property, value ) {
     var props = {};
     props[ property ] = value;

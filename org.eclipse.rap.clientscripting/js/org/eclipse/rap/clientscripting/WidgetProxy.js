@@ -14,6 +14,7 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
 org.eclipse.rap.clientscripting.WidgetProxy = function( originalWidget ) {
   var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
   ClientScriptingUtil.attachSetter( this, originalWidget );
+  ClientScriptingUtil.attachGetter( this, originalWidget );
 };
 
 org.eclipse.rap.clientscripting.WidgetProxy._USERDATA_KEY = 
