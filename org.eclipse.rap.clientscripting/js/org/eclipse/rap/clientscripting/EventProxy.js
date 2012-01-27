@@ -56,7 +56,13 @@ org.eclipse.rap.clientscripting.EventProxy.prototype = {
    * Currently supports SWT.KeyDown
    */
    type : 0,
-    
+
+  /**
+   * depending on the event, the state of the keyboard modifier keys and mouse
+   * masks at the time the event was generated.
+   */
+   stateMask : 0
+
 };
 
 org.eclipse.rap.clientscripting.EventProxy.disposeEventProxy = function( eventProxy ) {

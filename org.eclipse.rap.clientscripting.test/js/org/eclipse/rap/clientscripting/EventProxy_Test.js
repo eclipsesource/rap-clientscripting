@@ -49,6 +49,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( "number", typeof eventProxy.type );
       assertEquals( "string", typeof eventProxy.character );
       assertEquals( "number", typeof eventProxy.keyCode );
+      assertEquals( "number", typeof eventProxy.stateMask );
       assertTrue( eventProxy.widget instanceof WidgetProxy );
     },
 
@@ -105,8 +106,33 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       TestUtil.press( text, "Up" );
       
       assertEquals( '\u0000', eventProxy.character );
-      console.log( eventProxy.keyCode );
       assertEquals( SWT.ARROW_UP, eventProxy.keyCode );
+    },
+
+    testKeyCodeModifierKey : function() {
+      var eventProxy;
+      text.addEventListener( "keypress", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
+      } );
+
+      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      TestUtil.keyDown( text.getElement(), "Shift", shift );
+      
+      assertEquals( '\u0000', eventProxy.character );
+      assertEquals( SWT.SHIFT, eventProxy.keyCode );
+    },
+
+    testModifierStateMask : function() {
+      var eventProxy;
+      text.addEventListener( "keypress", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.KeyDown, event );
+      } );
+
+      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      var ctrl = qx.event.type.DomEvent.CTRL_MASK;
+      TestUtil.keyDown( text.getElement(), "A", shift | ctrl );
+      
+      assertEquals( SWT.SHIFT | SWT.CTRL, eventProxy.stateMask );
     },
 
     ///////// 

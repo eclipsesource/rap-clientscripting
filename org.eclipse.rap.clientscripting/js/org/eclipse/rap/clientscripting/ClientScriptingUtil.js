@@ -56,14 +56,42 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   
   _initKeyEvent : function( event, originalEvent ) {
     var charCode = originalEvent.getCharCode();
+    var SWT = org.eclipse.rap.clientscripting.SWT;
     if( charCode !== 0 ) {
       event.character = String.fromCharCode( charCode );
+      // TODO [tb] : keyCode will be off when character is not a-z
       event.keyCode = event.character.toLowerCase().charCodeAt( 0 );
     } else {
       // NOTE : While this is a private field, this mechanism must be integrated with 
       // KeyEventSupport anyway to support the doit flag better.
-      event.keyCode = org.eclipse.rwt.KeyEventSupport.getInstance()._currentKeyCode;
+      var keyCode = org.eclipse.rwt.KeyEventSupport.getInstance()._currentKeyCode;
+      switch( keyCode ) {
+        case 16: 
+          event.keyCode = SWT.SHIFT;
+        break;
+        case 17: 
+          event.keyCode = SWT.CTRL;
+        break;
+        case 18: 
+          event.keyCode = SWT.ALT;
+        break;
+        case 224: 
+          event.keyCode = SWT.COMMAND;
+        break;
+        default:
+          event.keyCode = keyCode;
+        break;
+      }
     }
+    this._setStateMask( event, originalEvent );
+  },
+  
+  _setStateMask : function( event, originalEvent ) {
+    var SWT = org.eclipse.rap.clientscripting.SWT;
+    event.stateMask |= originalEvent.isShiftPressed() ? SWT.SHIFT : 0;
+    event.stateMask |= originalEvent.isCtrlPressed() ? SWT.CTRL : 0;
+    event.stateMask |= originalEvent.isAltPressed() ? SWT.ALT : 0;
+    event.stateMask |= originalEvent.isMetaPressed() ? SWT.COMMAND : 0;
   }
 
 };
