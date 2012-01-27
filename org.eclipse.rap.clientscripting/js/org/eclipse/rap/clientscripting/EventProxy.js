@@ -11,5 +11,5 @@
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
-org.eclipse.rap.clientscripting.EventProxy = function( originalEvent ) {
+org.eclipse.rap.clientscripting.EventProxy = function( protocolAdapter, originalEvent ) {
 };

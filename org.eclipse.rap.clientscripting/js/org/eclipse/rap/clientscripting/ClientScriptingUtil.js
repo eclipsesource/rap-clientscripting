@@ -26,8 +26,14 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     return result;
   },
   
-  getNativeEventType : function( sourceType, eventType ) {
+  getNativeEventType : function( protocolAdapter, eventType ) {
     return this._eventTypeMapping[ eventType ];
+  },
+  
+  getProtocolAdapter : function( object ) {
+    var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+    var id = ObjectManager.getId( object );
+    return ObjectManager.getEntry( id ).adapter;
   }
 
 };
