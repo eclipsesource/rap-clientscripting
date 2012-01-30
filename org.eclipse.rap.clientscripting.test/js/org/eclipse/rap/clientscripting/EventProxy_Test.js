@@ -18,6 +18,7 @@ var WidgetProxy = org.eclipse.rap.clientscripting.WidgetProxy;
 var SWT = org.eclipse.rap.clientscripting.SWT;
 
 var text;
+var shell;
  
 qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
 
@@ -50,6 +51,9 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( "string", typeof eventProxy.character );
       assertEquals( "number", typeof eventProxy.keyCode );
       assertEquals( "number", typeof eventProxy.stateMask );
+      assertEquals( "number", typeof eventProxy.button );
+      assertEquals( "number", typeof eventProxy.x );
+      assertEquals( "number", typeof eventProxy.y );
       assertTrue( eventProxy.widget instanceof WidgetProxy );
     },
 
@@ -135,18 +139,85 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( SWT.SHIFT | SWT.CTRL, eventProxy.stateMask );
     },
 
+    testMouseEventStateMask : function() {
+      var eventProxy;
+      text.addEventListener( "mousedown", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.MouseDown, event );
+      } );
+
+      TestUtil.shiftClick( text );
+      
+      assertEquals( SWT.SHIFT, eventProxy.stateMask );
+    },
+
+    testMouseEventButtonLeft : function() {
+      var eventProxy;
+      text.addEventListener( "mousedown", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.MouseDown, event );
+      } );
+
+      TestUtil.click( text );
+      
+      assertEquals( 1, eventProxy.button );
+    },
+
+    testMouseEventButtonRight : function() {
+      var eventProxy;
+      text.addEventListener( "mousedown", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.MouseDown, event );
+      } );
+
+      TestUtil.rightClick( text );
+      
+      assertEquals( 3, eventProxy.button );
+    },
+
+    testMouseEventLocation : function() {
+      text.setLocation( 10, 20 );
+      text.setBorder( null );
+      TestUtil.flush();
+      var eventProxy;
+      text.addEventListener( "mousedown", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.MouseDown, event );
+      } );
+
+      TestUtil.click( text, 23, 34 );
+      
+      assertEquals( 3, eventProxy.x );
+      assertEquals( 4, eventProxy.y );
+    },
+
+    testMouseEventLocationWithBorder : function() {
+      text.setLocation( 10, 20 );
+      text.setBorder( new org.eclipse.rwt.Border( 2, "solid", "black" ) );
+      TestUtil.flush();
+      var eventProxy;
+      text.addEventListener( "mousedown", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.MouseDown, event );
+      } );
+
+      TestUtil.click( text, 23, 34 );
+      
+      assertEquals( 1, eventProxy.x );
+      assertEquals( 2, eventProxy.y );
+    },
+
     ///////// 
     // Helper
 
     _setUp : function() {
-      TestUtil.createShellByProtocol( "w2" );
+      shell = TestUtil.createShellByProtocol( "w2" );
+      shell.setBorder( null );
+      shell.setLocation( 10, 10 );
+      shell.setDimension( 300, 300 );
       Processor.processOperation( {
         "target" : "w3",
         "action" : "create",
         "type" : "rwt.widgets.Text",
         "properties" : {
           "style" : [ "SINGLE", "RIGHT" ],
-          "parent" : "w2"
+          "parent" : "w2",
+          "bounds" : [ 0, 0, 10, 10 ]
         }
       } );
       TestUtil.flush();

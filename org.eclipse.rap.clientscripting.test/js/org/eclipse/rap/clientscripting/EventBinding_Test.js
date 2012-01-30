@@ -112,6 +112,15 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 1, logger.log.length );
     },
 
+    testBindMouseDown : function() {
+      var logger = this._createLogger(); 
+
+      var binding = new EventBinding( text, SWT.MouseDown, logger );
+      TestUtil.click( text );
+
+      assertEquals( 1, logger.log.length );
+    },
+
 
     /////////
     // helper

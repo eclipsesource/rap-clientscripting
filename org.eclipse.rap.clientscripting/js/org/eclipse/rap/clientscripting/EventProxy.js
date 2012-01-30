@@ -55,13 +55,29 @@ org.eclipse.rap.clientscripting.EventProxy.prototype = {
    * the type of event, as defined by the event type constants in class <code>SWT</code>.
    * Currently supports SWT.KeyDown
    */
-   type : 0,
+  type : 0,
 
   /**
    * depending on the event, the state of the keyboard modifier keys and mouse
    * masks at the time the event was generated.
    */
-   stateMask : 0
+  stateMask : 0,
+   
+  /**
+   * the button that was pressed or released; 1 for the first button, 2 for the
+   * second button, and 3 for the third button, etc.
+   */
+  button : 0,
+  
+  /**
+   * x coordinate of the pointer at the time of the event
+   */
+  x : 0,
+  
+  /**
+   * y coordinate of the pointer at the time of the event
+   */
+  y : 0
 
 };
 

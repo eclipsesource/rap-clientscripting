@@ -17,7 +17,12 @@ org.eclipse.rap.clientscripting.SWT = {
    * The key down event type
    */
   KeyDown : 1,
-  
+
+  /**
+   * The mouse down event type
+   */
+  MouseDown : 3,
+
   /**
    * The focus in event type 
    */

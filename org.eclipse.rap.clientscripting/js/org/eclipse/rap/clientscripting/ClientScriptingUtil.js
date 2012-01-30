@@ -41,6 +41,9 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       case SWT.FocusOut:
         result = "blur";
       break;
+      case SWT.MouseDown:
+        result = "mousedown";
+      break;
     }
     return result;
   },
@@ -84,6 +87,9 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     switch( type ) {
       case SWT.KeyDown:
         this._initKeyEvent( event, originalEvent );
+      break;
+      case SWT.MouseDown:
+        this._initMouseEvent( event, originalEvent );
       break;
     }
   },
@@ -134,6 +140,21 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
           event.keyCode = keyCode;
         break;
       }
+    }
+    this._setStateMask( event, originalEvent );
+  },
+
+  _initMouseEvent : function( event, originalEvent ) {
+    var target = originalEvent.getTarget()._getTargetNode();
+    var offset = qx.bom.element.Location.get( target, "scroll" );
+    event.x = originalEvent.getPageX() - offset.left;
+    event.y = originalEvent.getPageY() - offset.top;
+    if( originalEvent.isLeftButtonPressed() ) {
+      event.button = 1;
+    } else if( originalEvent.isRightButtonPressed() ) {
+      event.button = 3;
+    } if( originalEvent.isMiddleButtonPressed() ) {
+      event.button = 2;
     }
     this._setStateMask( event, originalEvent );
   },
