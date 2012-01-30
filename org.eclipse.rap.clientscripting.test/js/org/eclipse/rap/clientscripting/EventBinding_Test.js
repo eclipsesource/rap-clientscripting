@@ -92,6 +92,27 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
     },
 
+    testBindFocusInEvent : function() {
+      text.blur();
+      var logger = this._createLogger(); 
+
+      var binding = new EventBinding( text, SWT.FocusIn, logger );
+      text.focus();
+
+      assertEquals( 1, logger.log.length );
+    },
+
+    testBindFocusOutEvent : function() {
+      text.focus();
+      var logger = this._createLogger(); 
+
+      var binding = new EventBinding( text, SWT.FocusOut, logger );
+      text.blur();
+
+      assertEquals( 1, logger.log.length );
+    },
+
+
     /////////
     // helper
     

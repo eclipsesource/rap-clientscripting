@@ -17,6 +17,16 @@ org.eclipse.rap.clientscripting.SWT = {
    * The key down event type
    */
   KeyDown : 1,
+  
+  /**
+   * The focus in event type 
+   */
+  FocusIn : 15,
+
+  /**
+   * The focus out event type
+   */
+  FocusOut : 16,
 
   /**
    * Keyboard event constant representing the UP ARROW key
@@ -150,7 +160,8 @@ org.eclipse.rap.clientscripting.SWT = {
 
   /**
    * Keyboard event constant representing the numeric key
-   * pad zero key    */
+   * pad zero key    
+   */
   KEYPAD_0 : 96,
 
   /**

@@ -35,6 +35,12 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       case SWT.KeyDown:
         result = "keypress";
       break;
+      case SWT.FocusIn:
+        result = "focus";
+      break;
+      case SWT.FocusOut:
+        result = "blur";
+      break;
     }
     return result;
   },
