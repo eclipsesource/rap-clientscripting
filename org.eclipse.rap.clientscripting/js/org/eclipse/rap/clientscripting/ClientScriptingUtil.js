@@ -31,7 +31,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   getNativeEventType : function( source, eventType ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
     var result;
-    switch( eventType ) {
+    switch( eventType ) { // TODO [tb] : Implementing keydown as traverse event?
       case SWT.KeyDown:
         result = "keypress";
       break;
