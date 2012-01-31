@@ -24,6 +24,36 @@ org.eclipse.rap.clientscripting.SWT = {
   MouseDown : 3,
 
   /**
+   * The mouse up event type 
+   */
+  MouseUp : 4,
+  
+  /**
+   * The mouse move event type 
+   */
+  MouseMove : 5,
+  
+  /**
+   * The mouse enter event type
+   */
+  MouseEnter : 6,   
+  
+  /**
+   * The mouse exit event type 
+   */
+  MouseExit : 7,
+  
+  /**
+   * The mouse double click event type 
+   */
+  MouseDoubleClick : 8, 
+
+  /**
+   * The key up event type 
+   */
+  KeyUp : 2,
+
+  /**
    * The focus in event type 
    */
   FocusIn : 15,
@@ -301,7 +331,7 @@ org.eclipse.rap.clientscripting.SWT = {
    * was pushed on the keyboard when the event was generated
    */
   COMMAND : 1 << 22,
-  
+
   // NOTE : The following constants are characters in SWT and can be compared with both the 
   // keyCode and the character field of an event. Here these keys are currently only representend 
   // by the events keyCode, therefore these are numbers instead and can only be compared with 

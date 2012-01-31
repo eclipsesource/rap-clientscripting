@@ -21,6 +21,7 @@ var SWT = org.eclipse.rap.clientscripting.SWT;
 var EventHandlerUtil = org.eclipse.rwt.EventHandlerUtil;
 
 var text;
+var textEl;
 
 qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
 
@@ -92,6 +93,19 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
     },
 
+    testBindKeyUp : function() {
+      TestUtil.flush();
+      var logger = this._createLogger();
+
+      var binding = new EventBinding( text, SWT.KeyUp, logger );
+      TestUtil.keyDown( textEl, "A" );
+      assertEquals( 0, logger.log.length );
+      TestUtil.keyUp( textEl, "A" );
+
+      assertEquals( 1, logger.log.length );
+    },
+
+
     testBindFocusInEvent : function() {
       text.blur();
       var logger = this._createLogger(); 
@@ -116,7 +130,46 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       var logger = this._createLogger(); 
 
       var binding = new EventBinding( text, SWT.MouseDown, logger );
-      TestUtil.click( text );
+      TestUtil.fakeMouseEventDOM( textEl, "mousedown" );
+
+      assertEquals( 1, logger.log.length );
+    },
+
+    testBindMouseUp : function() {
+      var logger = this._createLogger(); 
+
+      TestUtil.fakeMouseEventDOM( textEl, "mousedown" );
+      var binding = new EventBinding( text, SWT.MouseUp, logger );
+      TestUtil.fakeMouseEventDOM( textEl, "mouseup" );
+
+      assertEquals( 1, logger.log.length );
+    },
+
+    testBindMouseMove : function() {
+      var logger = this._createLogger(); 
+
+      TestUtil.fakeMouseEventDOM( textEl, "mouseover" );
+      var binding = new EventBinding( text, SWT.MouseMove, logger );
+      TestUtil.fakeMouseEventDOM( textEl, "mousemove" );
+
+      assertEquals( 1, logger.log.length );
+    },
+
+    testBindMouseEnter : function() {
+      var logger = this._createLogger(); 
+
+      var binding = new EventBinding( text, SWT.MouseEnter, logger );
+      TestUtil.fakeMouseEventDOM( textEl, "mouseover" );
+
+      assertEquals( 1, logger.log.length );
+    },
+
+    testBindMouseExit : function() {
+      var logger = this._createLogger(); 
+
+      TestUtil.fakeMouseEventDOM( textEl, "mouseover" );
+      var binding = new EventBinding( text, SWT.MouseExit, logger );
+      TestUtil.fakeMouseEventDOM( textEl, "mouseout" );
 
       assertEquals( 1, logger.log.length );
     },
@@ -150,6 +203,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       TestUtil.flush();
       text = ObjectManager.getObject( "w3" );
       text.focus();
+      textEl = text.getElement();
     },
     
     _tearDown : function() {

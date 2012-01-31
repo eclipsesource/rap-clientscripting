@@ -35,14 +35,29 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       case SWT.KeyDown:
         result = "keypress";
       break;
+      case SWT.KeyUp:
+        result = "keyup";
+      break;
+      case SWT.MouseDown:
+        result = "mousedown";
+      break;
+      case SWT.MouseUp:
+        result = "mouseup";
+      break;
+      case SWT.MouseMove:
+        result = "mousemove";
+      break;
+      case SWT.MouseEnter:
+        result = "mouseover";
+      break;
+      case SWT.MouseExit:
+        result = "mouseout";
+      break;
       case SWT.FocusIn:
         result = "focus";
       break;
       case SWT.FocusOut:
         result = "blur";
-      break;
-      case SWT.MouseDown:
-        result = "mousedown";
       break;
     }
     return result;
