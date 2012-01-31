@@ -53,6 +53,9 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       case SWT.MouseExit:
         result = "mouseout";
       break;
+      case SWT.MouseDoubleClick:
+        result = "dblclick";
+      break;
       case SWT.FocusIn:
         result = "focus";
       break;
