@@ -45,6 +45,9 @@ public class Demo implements IEntryPoint {
     code += "new org.eclipse.rap.clientscripting.EventBinding( ";
     code += getWidgetRef( text );
     code += ", org.eclipse.rap.clientscripting.SWT.KeyDown, f );";
+    code += "new org.eclipse.rap.clientscripting.EventBinding( ";
+    code += getWidgetRef( text );
+    code += ", org.eclipse.rap.clientscripting.SWT.MouseDown, f );";
     JSExecutor.executeJS( code );
   }
 
