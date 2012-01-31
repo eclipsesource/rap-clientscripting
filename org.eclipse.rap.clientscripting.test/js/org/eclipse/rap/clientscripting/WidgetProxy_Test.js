@@ -49,7 +49,57 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
 
       assertEquals( "foo", text.getValue() );
     },
+
+    testSetGetData : function() {
+      var widgetProxy1 = WidgetProxy.getInstance( text );
+      var widgetProxy2 = WidgetProxy.getInstance( text );
+      
+      widgetProxy1.setData( "myKey", 24 );
+
+      assertNull( widgetProxy2.getData( "myWrongKey" ) ); 
+      assertEquals( 24, widgetProxy2.getData( "myKey" ) ); 
+    },
     
+    testSetDataTooManyArguments : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+      try {
+        widgetProxy.setData( "myKey", 24, "foo" );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+    
+    testSetDataTooFewArguments : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+      try {
+        widgetProxy.setData( 24 );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+    
+    testGetDataTooManyArguments : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+      try {
+        widgetProxy.getData( "myKey", 24 );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+    
+    testGetDataTooFewArguments : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+      try {
+        widgetProxy.getData();
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+
     testSetTextSync : function() {
       TestUtil.initRequestLog();
       var widgetProxy = WidgetProxy.getInstance( text );
@@ -61,7 +111,6 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
     },
 
     testTextGetText : function() {
-      TestUtil.initRequestLog();
       var widgetProxy = WidgetProxy.getInstance( text );
       text.setValue( "foo" );
       
@@ -71,7 +120,6 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
     },
 
     testTextGetSelection : function() {
-      TestUtil.initRequestLog();
       var widgetProxy = WidgetProxy.getInstance( text );
       text.setValue( "foo" );
       text.setSelectionStart( 1 );

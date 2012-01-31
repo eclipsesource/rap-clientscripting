@@ -93,6 +93,17 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       proxy[ key ] = getterMap[ key ]( source );
     }
   },
+  
+  attachUserData : function( proxy, source ) {
+    var setter = this._setUserData;
+    var getter = this._getUserData;
+    proxy.setData = function( property, value ) {
+      setter( source, arguments );
+    };
+    proxy.getData = function( property ) {
+      return getter( source, arguments );
+    };
+  },
 
   initEvent : function( event, type, originalEvent ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
@@ -125,6 +136,37 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       "action" : "set",
       "properties" : props
     } );
+  },
+  
+  _setUserData : function( source, args) {
+    if( args.length !== 2 ) {
+      var msg =  "Wrong number of arguments in SetData: Expected 2, found " + args.length;
+      throw new Error( msg );
+    }
+    var property = args[ 0 ];
+    var value = args[ 1 ];
+    var USERDATA_KEY = org.eclipse.rap.clientscripting.WidgetProxy._USERDATA_KEY;
+    var data = source.getUserData( USERDATA_KEY );
+    if( data == null ) {
+      data = {};
+      source.setUserData( USERDATA_KEY, data );
+    }
+    data[ property ] = value;
+  },
+  
+  _getUserData : function( source, args ) {
+    if( args.length !== 1 ) {
+      var msg =  "Wrong number of arguments in SetData: Expected 1, found " + args.length;
+      throw new Error( msg );
+    }
+    var property = args[ 0 ];
+    var result = null;
+    var USERDATA_KEY = org.eclipse.rap.clientscripting.WidgetProxy._USERDATA_KEY;
+    var data = source.getUserData( USERDATA_KEY );
+    if( data !== null && typeof data[ property ] !== "undefined" ) {
+      result = data[ property ];
+    }
+    return result;
   },
 
   _initKeyEvent : function( event, originalEvent ) {

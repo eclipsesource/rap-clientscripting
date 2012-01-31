@@ -15,16 +15,20 @@ org.eclipse.rap.clientscripting.WidgetProxy = function( originalWidget ) {
   var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
   ClientScriptingUtil.attachSetter( this, originalWidget );
   ClientScriptingUtil.attachGetter( this, originalWidget );
+  ClientScriptingUtil.attachUserData( this, originalWidget );
 };
 
+org.eclipse.rap.clientscripting.WidgetProxy._PROXY_KEY = 
+  "org.eclipse.rap.clientscripting.WidgetProxy.PROXY";
+
 org.eclipse.rap.clientscripting.WidgetProxy._USERDATA_KEY = 
-  "org.eclipse.rap.clientscripting.WidgetProxy";
+  "org.eclipse.rap.clientscripting.WidgetProxy.USERDATA";
 
 org.eclipse.rap.clientscripting.WidgetProxy.getInstance = function( widget ) {
-  var protoInstance = widget.getUserData( this._USERDATA_KEY );
+  var protoInstance = widget.getUserData( this._PROXY_KEY );
   if( protoInstance == null ) {
     protoInstance = new org.eclipse.rap.clientscripting.WidgetProxy( widget );
-    widget.setUserData( this._USERDATA_KEY, protoInstance );
+    widget.setUserData( this._PROXY_KEY, protoInstance );
   }
   return org.eclipse.rap.clientscripting.ClientScriptingUtil.wrapAsProto( protoInstance );
 }
