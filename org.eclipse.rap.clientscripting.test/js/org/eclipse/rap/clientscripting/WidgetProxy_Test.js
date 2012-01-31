@@ -42,6 +42,32 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
       }
     },
     
+    testDisposeWidgetProxy : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+
+      text.destroy();
+      TestUtil.flush();
+      
+      assertTrue( TestUtil.hasNoObjects( widgetProxy ) );
+      if( widgetProxy.__proto__ ) { // __proto__ is not an ECMA standard
+        var proto = widgetProxy.__proto__;
+        assertTrue( TestUtil.hasNoObjects( proto ) );
+      }
+    },
+    
+    testDisposeUserData : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+      widgetProxy.setData( "key", {} );
+      // hacky: get data object
+      var data = text.getUserData( org.eclipse.rap.clientscripting.WidgetProxy._USERDATA_KEY );
+      assertFalse( TestUtil.hasNoObjects( data ) );
+      
+      text.destroy();
+      TestUtil.flush();
+      
+      assertTrue( TestUtil.hasNoObjects( data ) );
+    },
+
     testSetter : function() {
       var widgetProxy = WidgetProxy.getInstance( text );
       

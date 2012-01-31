@@ -69,6 +69,14 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     this._wrapperHelper.prototype = null;
     return result;
   },
+  
+  disposeObject : function( object ) {
+    for( var key in object ) {
+      if( object.hasOwnProperty( key ) ) {
+        object[ key ] = null;
+      }
+    }
+  },
 
   postProcessEvent : function( event, originalEvent ) {
     if( event.doit === false ) {
@@ -103,6 +111,14 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     proxy.getData = function( property ) {
       return getter( source, arguments );
     };
+  },
+  
+  addDisposeListener : function( widget, listener ) {
+    var orgDestroy = widget.destroy;
+    widget.destroy = function() {
+      listener( this );
+      orgDestroy.call( widget );
+    }
   },
 
   initEvent : function( event, type, originalEvent ) {
