@@ -30,8 +30,10 @@ org.eclipse.rap.clientscripting.EventProxy.prototype = {
   /**
    * depending on the event, a flag indicating whether the operation should be
    * allowed. Setting this field to false will cancel the operation.
-   * Currently only supports preventing input into a Text or Text-like widget.
+   * Currently only key and mouse events for Text or Text-like widgets.
    */
+   // TODO [tb] : There are no traverse events setting this flag to false on a key event 
+   // has the same effect as setting it to false an the corrosponding traverse event in SWT.  
   doit : true,
   
   /**

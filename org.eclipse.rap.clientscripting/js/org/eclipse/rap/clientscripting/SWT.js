@@ -10,7 +10,11 @@
  ******************************************************************************/
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
- 
+
+
+/**
+ * Note: Thise class is available within ClientScriptingFunction simpl as "SWT" (no namespace)
+ */ 
 org.eclipse.rap.clientscripting.SWT = {
   
   /**
