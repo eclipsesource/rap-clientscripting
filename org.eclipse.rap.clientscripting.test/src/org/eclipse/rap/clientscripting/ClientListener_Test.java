@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
+import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
+import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
 import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -90,6 +92,41 @@ public class ClientListener_Test extends TestCase {
     } catch( IllegalStateException exception ) {
       // expected
     }
+  }
+
+  public void testGetAdapter() {
+    ClientListener listener = new ClientListener( "code" );
+
+    ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
+
+    assertNotNull( adapter );
+  }
+
+  public void testGetAdapterSameInstance() {
+    ClientListener listener = new ClientListener( "code" );
+
+    ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
+
+    assertSame( adapter, listener.getAdapter( ClientListenerAdapter.class ) );
+  }
+
+  public void testBindTo() {
+    ClientListener listener = new ClientListener( "code" );
+
+    listener.bindTo( shell, SWT.KeyDown );
+
+    ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
+    assertTrue( adapter.getBindings().contains( new ClientListenerBinding( shell, SWT.KeyDown, listener ) ) );
+  }
+
+  public void testBindToTwice() {
+    ClientListener listener = new ClientListener( "code" );
+
+    listener.bindTo( shell, SWT.KeyDown );
+    listener.bindTo( shell, SWT.KeyDown );
+
+    ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
+    assertEquals( 1, adapter.getBindings().size() );
   }
 
 }
