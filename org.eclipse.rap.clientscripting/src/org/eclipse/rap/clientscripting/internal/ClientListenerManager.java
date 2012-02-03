@@ -13,32 +13,34 @@ package org.eclipse.rap.clientscripting.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
+import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.SessionSingletonBase;
 
 
-public class BindingManager {
+public class ClientListenerManager {
 
-  private final ArrayList<ClientListenerBinding> bindings;
+  private final ArrayList<ClientListener> listeners;
 
-  private BindingManager() {
-    bindings = new ArrayList<ClientListenerBinding>();
+  private ClientListenerManager() {
+    listeners = new ArrayList<ClientListener>();
   }
 
-  public static BindingManager getInstance() {
-    return ( BindingManager )SessionSingletonBase.getInstance( BindingManager.class );
+  public static ClientListenerManager getInstance() {
+    return ( ClientListenerManager )SessionSingletonBase.getInstance( ClientListenerManager.class );
   }
 
-  public void addBinding( ClientListenerBinding binding ) {
-    if( !bindings.contains( binding ) ) {
-      bindings.add( binding );
+  public void addListener( ClientListener listener ) {
+    if( !listeners.contains( listener ) ) {
+      listeners.add( listener );
     }
   }
 
-  public void removeBinding( ClientListenerBinding binding ) {
-    bindings.remove( binding );
+  public void removeListener( ClientListener listener ) {
+    listeners.remove( listener );
   }
 
-  public Collection<ClientListenerBinding> getBindings() {
-    return Collections.unmodifiableCollection( bindings );
+  public Collection<ClientListener> getListeners() {
+    return Collections.unmodifiableCollection( listeners );
   }
 }
