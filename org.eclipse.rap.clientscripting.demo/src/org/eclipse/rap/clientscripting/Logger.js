@@ -1,5 +1,5 @@
-function( event ) { 
-  if( console && console.log ) {
+function( event ) {
+  if( window.console && console.log ) {
     console.log( event );
-  } 
+  }
 };
