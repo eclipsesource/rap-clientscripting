@@ -28,12 +28,14 @@ public class ClientListener implements Adaptable {
 
   public static final int MouseDown = SWT.MouseDown;
   public static final int MouseUp = SWT.MouseUp;
+  private final String scriptCode;
   private boolean disposed;
   private ClientObjectAdapter clientObjectAdapter;
   private ClientListenerAdapter clientListenerAdapter;
   protected Collection<ClientListenerBinding> bindings;
 
   public ClientListener( String scriptCode ) {
+    this.scriptCode = scriptCode;
     disposed = false;
     bindings = new ArrayList<ClientListenerBinding>();
     if( scriptCode == null ) {
@@ -99,6 +101,10 @@ public class ClientListener implements Adaptable {
 
       public Collection<ClientListenerBinding> getBindings() {
         return Collections.unmodifiableCollection( bindings );
+      }
+
+      public String getScriptCode() {
+        return scriptCode;
       }
 
     };

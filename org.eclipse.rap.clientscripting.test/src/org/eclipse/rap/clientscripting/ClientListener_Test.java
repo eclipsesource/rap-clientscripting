@@ -111,6 +111,14 @@ public class ClientListener_Test extends TestCase {
     assertSame( adapter, listener.getAdapter( ClientListenerAdapter.class ) );
   }
 
+  public void testGetClientListenerAdapter_scriptCode() {
+    ClientListener listener = new ClientListener( "code" );
+
+    ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
+
+    assertEquals( "code", adapter.getScriptCode() );
+  }
+
   public void testGetClientObjectAdapter() {
     ClientListener listener = new ClientListener( "code" );
 
