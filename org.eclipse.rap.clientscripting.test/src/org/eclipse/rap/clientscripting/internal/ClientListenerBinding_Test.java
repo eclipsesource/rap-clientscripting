@@ -62,6 +62,32 @@ public class ClientListenerBinding_Test extends TestCase {
     assertFalse( originalBinding.hashCode() == bindingWithDifferentListener.hashCode() );
   }
 
+  public void testGetClientObjectAdapter() {
+    ClientObjectAdapter adapter = originalBinding.getAdapter( ClientObjectAdapter.class );
+
+    assertNotNull( adapter );
+  }
+
+  public void testGetClientObjectAdapter_sameInstance() {
+    ClientObjectAdapter adapter = originalBinding.getAdapter( ClientObjectAdapter.class );
+
+    assertSame( adapter, originalBinding.getAdapter( ClientObjectAdapter.class ) );
+  }
+
+  public void testGetClientObjectAdapter_differentInstances() {
+    ClientObjectAdapter adapter1 = originalBinding.getAdapter( ClientObjectAdapter.class );
+    ClientObjectAdapter adapter2 = bindingWithDifferentEvent.getAdapter( ClientObjectAdapter.class );
+
+    assertNotSame( adapter1, adapter2 );
+  }
+
+  public void testGetClientObjectAdapter_getId() {
+    ClientObjectAdapter adapter = originalBinding.getAdapter( ClientObjectAdapter.class );
+
+    assertNotNull( adapter.getId() );
+    assertTrue( adapter.getId().length() > 0 );
+  }
+
   private void createWidgets() {
     display = new Display();
     shell = new Shell( display );

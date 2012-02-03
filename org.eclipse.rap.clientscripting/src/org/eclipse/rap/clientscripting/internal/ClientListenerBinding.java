@@ -1,14 +1,16 @@
 package org.eclipse.rap.clientscripting.internal;
 
 import org.eclipse.rap.clientscripting.ClientListener;
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ClientListenerBinding {
+public class ClientListenerBinding implements Adaptable {
 
   private final Widget widget;
   private final int eventType;
   private final ClientListener listener;
+  private ClientObjectAdapter clientObjectAdapter;
 
   public ClientListenerBinding( Widget widget, int eventType, ClientListener listener ) {
     this.widget = widget;
@@ -38,6 +40,28 @@ public class ClientListenerBinding {
     result = prime * result + widget.hashCode();
     result = prime * result + listener.hashCode();
     return result;
+  }
+
+  @SuppressWarnings( "unchecked" )
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result = null;
+    if( adapter == ClientObjectAdapter.class ) {
+      if( clientObjectAdapter == null ) {
+        clientObjectAdapter = createClientObjectAdapter();
+      }
+      result = ( T )clientObjectAdapter;
+    }
+    return result;
+  }
+
+  private ClientObjectAdapter createClientObjectAdapter() {
+    return new ClientObjectAdapter() {
+      private final String id = ObjectIdGenerator.getNextId();
+
+      public String getId() {
+        return id;
+      }
+    };
   }
 
 }
