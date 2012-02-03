@@ -1,10 +1,10 @@
-function( ev ) { 
-  var widget = ev.widget;
-  var lastNumber = widget.getData( "number" );
-  if( lastNumber === null ) {
-    lastNumber = 0;
+function( event ) { 
+  var widget = event.widget;
+  var count = widget.getData( "count" );
+  if( count === null ) {
+    count = 0;
   }
-  lastNumber++;
-  widget.setData( "number", lastNumber );
-  widget.setText( "Click " + lastNumber );
+  count++;
+  widget.setData( "count", count );
+  widget.setText( "Click " + count );
 };

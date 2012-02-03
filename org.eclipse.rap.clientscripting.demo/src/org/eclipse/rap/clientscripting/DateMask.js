@@ -1,10 +1,10 @@
-function( ev ) { 
+function( event ) { 
 
-  if( ev.type === SWT.KeyDown ) {
-    var newCh = ev.character;
-    var keyCode = ev.keyCode;
-    var sel = ev.widget.getSelection()[ 0 ];
-    var text = ev.widget.getText();
+  if( event.type === SWT.KeyDown ) {
+    var newCh = event.character;
+    var keyCode = event.keyCode;
+    var sel = event.widget.getSelection()[ 0 ];
+    var text = event.widget.getText();
   
     var replaceNextChar = function( value ) {
       var leftPart = text.slice( 0, sel );
@@ -39,12 +39,12 @@ function( ev ) {
       } else {
         sel--;
       }
-      ev.doit = false;
+      event.doit = false;
     }
   
     // TODO: Setting text also sets selection to last position - compare to SWT
-    ev.widget.setText( text );
-    ev.widget.setSelection( [ sel, sel ] );
+    event.widget.setText( text );
+    event.widget.setSelection( [ sel, sel ] );
   } 
-  ev.doit = false; // prevent key input and mousedown for selection change
+  event.doit = false; // prevent key input and mousedown for selection change
 };
