@@ -7,15 +7,27 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ClientListenerBinding implements Adaptable {
 
+  private final ClientListener listener;
   private final Widget widget;
   private final int eventType;
-  private final ClientListener listener;
   private ClientObjectAdapter clientObjectAdapter;
 
   public ClientListenerBinding( Widget widget, int eventType, ClientListener listener ) {
     this.widget = widget;
     this.eventType = eventType;
     this.listener = listener;
+  }
+
+  public ClientListener getListener() {
+    return listener;
+  }
+
+  public Widget getWidget() {
+    return widget;
+  }
+
+  public int getEventType() {
+    return eventType;
   }
 
   @Override

@@ -28,7 +28,7 @@ public class ClientListenerBinding_Test extends TestCase {
   private Label label2;
   private ClientListener listener1;
   private ClientListener listener2;
-  private ClientListenerBinding originalBinding;
+  private ClientListenerBinding binding;
   private ClientListenerBinding equalBinding;
   private ClientListenerBinding bindingWithDifferentWidget;
   private ClientListenerBinding bindingWithDifferentEvent;
@@ -48,34 +48,40 @@ public class ClientListenerBinding_Test extends TestCase {
   }
 
   public void testEquals() {
-    assertTrue( originalBinding.equals( equalBinding ) );
-    assertFalse( originalBinding.equals( bindingWithDifferentWidget ) );
-    assertFalse( originalBinding.equals( bindingWithDifferentEvent ) );
-    assertFalse( originalBinding.equals( bindingWithDifferentListener ) );
+    assertTrue( binding.equals( equalBinding ) );
+    assertFalse( binding.equals( bindingWithDifferentWidget ) );
+    assertFalse( binding.equals( bindingWithDifferentEvent ) );
+    assertFalse( binding.equals( bindingWithDifferentListener ) );
   }
 
   public void testHashCode() {
-    assertTrue( originalBinding.hashCode() != 0 );
-    assertTrue( originalBinding.hashCode() == equalBinding.hashCode() );
-    assertFalse( originalBinding.hashCode() == bindingWithDifferentWidget.hashCode() );
-    assertFalse( originalBinding.hashCode() == bindingWithDifferentEvent.hashCode() );
-    assertFalse( originalBinding.hashCode() == bindingWithDifferentListener.hashCode() );
+    assertTrue( binding.hashCode() != 0 );
+    assertTrue( binding.hashCode() == equalBinding.hashCode() );
+    assertFalse( binding.hashCode() == bindingWithDifferentWidget.hashCode() );
+    assertFalse( binding.hashCode() == bindingWithDifferentEvent.hashCode() );
+    assertFalse( binding.hashCode() == bindingWithDifferentListener.hashCode() );
+  }
+
+  public void testCreate() {
+    assertSame( listener1, binding.getListener() );
+    assertSame( label1, binding.getWidget() );
+    assertEquals( SWT.MouseDown, binding.getEventType() );
   }
 
   public void testGetClientObjectAdapter() {
-    ClientObjectAdapter adapter = originalBinding.getAdapter( ClientObjectAdapter.class );
+    ClientObjectAdapter adapter = binding.getAdapter( ClientObjectAdapter.class );
 
     assertNotNull( adapter );
   }
 
   public void testGetClientObjectAdapter_sameInstance() {
-    ClientObjectAdapter adapter = originalBinding.getAdapter( ClientObjectAdapter.class );
+    ClientObjectAdapter adapter = binding.getAdapter( ClientObjectAdapter.class );
 
-    assertSame( adapter, originalBinding.getAdapter( ClientObjectAdapter.class ) );
+    assertSame( adapter, binding.getAdapter( ClientObjectAdapter.class ) );
   }
 
   public void testGetClientObjectAdapter_differentInstances() {
-    ClientObjectAdapter adapter1 = originalBinding.getAdapter( ClientObjectAdapter.class );
+    ClientObjectAdapter adapter1 = binding.getAdapter( ClientObjectAdapter.class );
     ClientObjectAdapter adapter2 = bindingWithDifferentEvent.getAdapter( ClientObjectAdapter.class );
 
     assertNotSame( adapter1, adapter2 );
@@ -94,7 +100,7 @@ public class ClientListenerBinding_Test extends TestCase {
   }
 
   private void createBindingss() {
-    originalBinding = new ClientListenerBinding( label1, SWT.MouseDown, listener1 );
+    binding = new ClientListenerBinding( label1, SWT.MouseDown, listener1 );
     equalBinding = new ClientListenerBinding( label1, SWT.MouseDown, listener1 );
     bindingWithDifferentWidget = new ClientListenerBinding( label2, SWT.MouseDown, listener1 );
     bindingWithDifferentEvent = new ClientListenerBinding( label1, SWT.MouseUp, listener1 );
