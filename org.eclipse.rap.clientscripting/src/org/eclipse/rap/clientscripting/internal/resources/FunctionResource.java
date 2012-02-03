@@ -8,13 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.clientscripting.internal;
+package org.eclipse.rap.clientscripting.internal.resources;
 
 
-public class WidgetProxyResource extends ClientScriptingResource {
+public class FunctionResource extends ClientScriptingResource {
 
-  public WidgetProxyResource() {
-    super( "WidgetProxy.js" );
+  public FunctionResource() {
+    super( "Function.js" );
   }
 
 }

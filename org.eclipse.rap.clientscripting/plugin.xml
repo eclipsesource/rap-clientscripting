@@ -4,22 +4,22 @@
    <extension
          point="org.eclipse.rap.ui.resources">
       <resource
-            class="org.eclipse.rap.clientscripting.internal.ClientScriptingUtilResource">
+            class="org.eclipse.rap.clientscripting.internal.resources.ClientScriptingUtilResource">
       </resource>
       <resource
-            class="org.eclipse.rap.clientscripting.internal.EventBindingResource">
+            class="org.eclipse.rap.clientscripting.internal.resources.EventBindingResource">
       </resource>
       <resource
-            class="org.eclipse.rap.clientscripting.internal.EventProxyResource">
+            class="org.eclipse.rap.clientscripting.internal.resources.EventProxyResource">
       </resource>
       <resource
-            class="org.eclipse.rap.clientscripting.internal.FunctionResource">
+            class="org.eclipse.rap.clientscripting.internal.resources.FunctionResource">
       </resource>
       <resource
-            class="org.eclipse.rap.clientscripting.internal.SWTResource">
+            class="org.eclipse.rap.clientscripting.internal.resources.SWTResource">
       </resource>
       <resource
-            class="org.eclipse.rap.clientscripting.internal.WidgetProxyResource">
+            class="org.eclipse.rap.clientscripting.internal.resources.WidgetProxyResource">
       </resource>
    </extension>
 

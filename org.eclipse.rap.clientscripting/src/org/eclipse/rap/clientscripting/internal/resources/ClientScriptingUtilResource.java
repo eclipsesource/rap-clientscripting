@@ -8,13 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.clientscripting.internal;
+package org.eclipse.rap.clientscripting.internal.resources;
 
 
-public class EventBindingResource extends ClientScriptingResource {
+public class ClientScriptingUtilResource extends ClientScriptingResource {
 
-  public EventBindingResource() {
-    super( "EventBinding.js" );
+  public ClientScriptingUtilResource() {
+    super( "ClientScriptingUtil.js" );
   }
 
 }

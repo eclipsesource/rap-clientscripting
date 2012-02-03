@@ -8,13 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.clientscripting.internal;
+package org.eclipse.rap.clientscripting.internal.resources;
 
 
-public class ClientScriptingUtilResource extends ClientScriptingResource {
+public class SWTResource extends ClientScriptingResource {
 
-  public ClientScriptingUtilResource() {
-    super( "ClientScriptingUtil.js" );
+  public SWTResource() {
+    super( "SWT.js" );
   }
 
 }

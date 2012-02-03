@@ -8,13 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.clientscripting.internal;
+package org.eclipse.rap.clientscripting.internal.resources;
 
 
-public class SWTResource extends ClientScriptingResource {
+public class EventBindingResource extends ClientScriptingResource {
 
-  public SWTResource() {
-    super( "SWT.js" );
+  public EventBindingResource() {
+    super( "EventBinding.js" );
   }
 
 }

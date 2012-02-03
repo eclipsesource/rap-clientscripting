@@ -13,6 +13,7 @@ package org.eclipse.rap.clientscripting.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.rap.clientscripting.internal.resources.ClientScriptingResource;
 import org.eclipse.rap.rwt.jstest.TestContribution;
 
 
