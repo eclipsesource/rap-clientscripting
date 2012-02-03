@@ -14,7 +14,6 @@ import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import junit.framework.TestCase;
@@ -52,12 +51,45 @@ public class ClientListener_Test extends TestCase {
   }
 
   public void testBindToRegistersListener() {
-    Label label = new Label( shell, SWT.NONE );
-
     ClientListener listener = new ClientListener( "code" );
-    listener.bindTo( label, ClientListener.MouseDown );
+    listener.bindTo( shell, ClientListener.MouseDown );
 
     assertTrue( ClientListenerManager.getInstance().getListeners().contains( listener ) );
+  }
+
+  public void testIsDisposed() {
+    ClientListener listener = new ClientListener( "code" );
+
+    assertFalse( listener.isDisposed() );
+  }
+
+  public void testDispose() {
+    ClientListener listener = new ClientListener( "code" );
+
+    listener.dispose();
+
+    assertTrue( listener.isDisposed() );
+  }
+
+  public void testDisposeTwice() {
+    ClientListener listener = new ClientListener( "code" );
+
+    listener.dispose();
+    listener.dispose();
+
+    assertTrue( listener.isDisposed() );
+  }
+
+  public void testBindToFailsAfterDispose() {
+    ClientListener listener = new ClientListener( "code" );
+    listener.dispose();
+
+    try {
+      listener.bindTo( shell, SWT.MouseDown );
+      fail();
+    } catch( IllegalStateException exception ) {
+      // expected
+    }
   }
 
 }
