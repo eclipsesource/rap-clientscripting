@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.clientscripting;
+package org.eclipse.rap.clientscripting.demo;
 
 import java.io.IOException;
 

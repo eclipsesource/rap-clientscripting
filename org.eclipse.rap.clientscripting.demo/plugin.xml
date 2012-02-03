@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
-            class="org.eclipse.rap.clientscripting.Demo"
+            class="org.eclipse.rap.clientscripting.demo.Demo"
             id="org.eclipse.rap.clientscripting.demo"
             parameter="clientscripting">
       </entrypoint>
