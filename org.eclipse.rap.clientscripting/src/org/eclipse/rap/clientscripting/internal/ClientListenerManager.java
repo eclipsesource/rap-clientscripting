@@ -24,6 +24,8 @@ public class ClientListenerManager {
 
   private ClientListenerManager() {
     listeners = new ArrayList<ClientListener>();
+    // TODO [rst] This is provisional, think about proper initialization hook for renderer
+    ClientScriptingRenderer.registerPhaseListener();
   }
 
   public static ClientListenerManager getInstance() {
