@@ -17,6 +17,8 @@ import java.util.Collections;
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
 import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
+import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
+import org.eclipse.rap.clientscripting.internal.ObjectIdGenerator;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Widget;
@@ -27,6 +29,7 @@ public class ClientListener implements Adaptable {
   public static final int MouseDown = SWT.MouseDown;
   public static final int MouseUp = SWT.MouseUp;
   private boolean disposed;
+  private ClientObjectAdapter clientObjectAdapter;
   private ClientListenerAdapter clientListenerAdapter;
   protected Collection<ClientListenerBinding> bindings;
 
@@ -66,13 +69,29 @@ public class ClientListener implements Adaptable {
    */
   @SuppressWarnings( "unchecked" )
   public <T> T getAdapter( Class<T> adapter ) {
-    if( adapter == ClientListenerAdapter.class ) {
+    T result = null;
+    if( adapter == ClientObjectAdapter.class ) {
+      if( clientObjectAdapter == null ) {
+        clientObjectAdapter = createClientObjectAdapter();
+      }
+      result = ( T )clientObjectAdapter;
+    } else if( adapter == ClientListenerAdapter.class ) {
       if( clientListenerAdapter == null ) {
         clientListenerAdapter = createClientListenerAdapter();
       }
-      return ( T )clientListenerAdapter;
+      result = ( T )clientListenerAdapter;
     }
-    return null;
+    return result;
+  }
+
+  private ClientObjectAdapter createClientObjectAdapter() {
+    return new ClientObjectAdapter() {
+      private final String id = ObjectIdGenerator.getNextId();
+
+      public String getId() {
+        return id;
+      }
+    };
   }
 
   private ClientListenerAdapter createClientListenerAdapter() {
