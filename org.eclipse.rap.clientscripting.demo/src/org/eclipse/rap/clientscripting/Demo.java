@@ -1,9 +1,7 @@
 package org.eclipse.rap.clientscripting;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rwt.internal.widgets.JSExecutor;
@@ -83,7 +81,7 @@ public class Demo implements IEntryPoint {
 
   private void addDateMaskBehavior( Text text ) {
     String code = "var f = new org.eclipse.rap.clientscripting.Function( \"";
-    code += getJSHandler( "DateMask.js" );
+    code += getScriptCode( "DateMask.js" );
     code += "\" );";
     code += "new org.eclipse.rap.clientscripting.EventBinding( ";
     code += getWidgetRef( text );
@@ -118,7 +116,7 @@ public class Demo implements IEntryPoint {
 
   private void addCounterBehavior( Label count ) {
     String code = "var f = new org.eclipse.rap.clientscripting.Function( \"";
-    code += getJSHandler( "Counter.js" );
+    code += getScriptCode( "Counter.js" );
     code += "\" );";
     code += "new org.eclipse.rap.clientscripting.EventBinding( ";
     code += getWidgetRef( count );
@@ -128,7 +126,7 @@ public class Demo implements IEntryPoint {
 
   private void addLoggerBehavior( Widget widget ) {
     String code = "var f = new org.eclipse.rap.clientscripting.Function( \"";
-    code += getJSHandler( "Logger.js" );
+    code += getScriptCode( "Logger.js" );
     code += "\" );";
     String[] events = {
       "SWT.KeyDown",
@@ -157,36 +155,16 @@ public class Demo implements IEntryPoint {
     return result;
   }
 
-  private String getJSHandler( String fileName ) {
-    String code = getFileContent( "org/eclipse/rap/clientscripting/" + fileName ).toString();
-    code = code.replace( "\"", "\\\"" );
-    code = code.replace( "\n", "\\n" );
-    return code;
-  }
-
-  private static StringBuffer getFileContent( final String file ) {
-    StringBuffer buffer = new StringBuffer();
-    InputStream stream = Demo.class.getClassLoader().getResourceAsStream( file );
-    if( stream != null ) {
-      InputStreamReader inputStreamReader = new InputStreamReader( stream );
-      BufferedReader bufferedReader = new BufferedReader( inputStreamReader );
-      try {
-        String line = null;
-        try {
-          while( ( line = bufferedReader.readLine() ) != null ) {
-            buffer.append( line );
-            buffer.append( '\n' );
-          }
-        } finally {
-          bufferedReader.close();
-        }
-      } catch( IOException e ) {
-        buffer = null;
-      }
-    } else {
-      buffer = null;
+  private String getScriptCode( String resource ) {
+    String code;
+    try {
+      code = ResourceLoaderUtil.readContent( "org/eclipse/rap/clientscripting/" + resource, "UTF-8" );
+      code = code.replace( "\"", "\\\"" );
+      code = code.replace( "\n", "\\n" );
+    } catch( IOException e ) {
+      throw new IllegalArgumentException( "Resource not found: " + resource );
     }
-    return buffer;
+    return code;
   }
 
 }
