@@ -47,21 +47,11 @@ public class ClientListenerBinding implements Adaptable {
     T result = null;
     if( adapter == ClientObjectAdapter.class ) {
       if( clientObjectAdapter == null ) {
-        clientObjectAdapter = createClientObjectAdapter();
+        clientObjectAdapter = new ClientObjectAdapterImpl();
       }
       result = ( T )clientObjectAdapter;
     }
     return result;
-  }
-
-  private ClientObjectAdapter createClientObjectAdapter() {
-    return new ClientObjectAdapter() {
-      private final String id = ObjectIdGenerator.getNextId();
-
-      public String getId() {
-        return id;
-      }
-    };
   }
 
 }

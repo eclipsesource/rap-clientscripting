@@ -11,12 +11,20 @@
 package org.eclipse.rap.clientscripting.internal;
 
 
-public interface ClientObjectAdapter {
+public class ClientObjectAdapterImpl implements ClientObjectAdapter {
 
-  String getId();
+  private final String id = ObjectIdGenerator.getNextId();
+  private boolean created = false;
 
-  boolean isCreated();
+  public String getId() {
+    return id;
+  }
 
-  void setCreated();
+  public boolean isCreated() {
+    return created;
+  }
 
+  public void setCreated() {
+    created = true;
+  }
 }

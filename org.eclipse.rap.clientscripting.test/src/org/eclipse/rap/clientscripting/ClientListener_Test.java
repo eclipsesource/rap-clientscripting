@@ -145,15 +145,6 @@ public class ClientListener_Test extends TestCase {
     assertNotSame( adapter1, adapter2 );
   }
 
-  public void testGetClientObjectAdapter_getId() {
-    ClientListener listener = new ClientListener( "code" );
-
-    ClientObjectAdapter adapter = listener.getAdapter( ClientObjectAdapter.class );
-
-    assertNotNull( adapter.getId() );
-    assertTrue( adapter.getId().length() > 0 );
-  }
-
   public void testBindTo() {
     ClientListener listener = new ClientListener( "code" );
 

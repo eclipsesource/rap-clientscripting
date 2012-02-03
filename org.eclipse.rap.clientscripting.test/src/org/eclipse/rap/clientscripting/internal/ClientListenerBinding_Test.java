@@ -81,13 +81,6 @@ public class ClientListenerBinding_Test extends TestCase {
     assertNotSame( adapter1, adapter2 );
   }
 
-  public void testGetClientObjectAdapter_getId() {
-    ClientObjectAdapter adapter = originalBinding.getAdapter( ClientObjectAdapter.class );
-
-    assertNotNull( adapter.getId() );
-    assertTrue( adapter.getId().length() > 0 );
-  }
-
   private void createWidgets() {
     display = new Display();
     shell = new Shell( display );
