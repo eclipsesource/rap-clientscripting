@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
+import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -44,10 +45,19 @@ public class ClientListener_Test extends TestCase {
     }
   }
 
-  public void testBindToWidget() {
+  public void testCreateDoesNotRegister() {
+    new ClientListener( "code" );
+
+    assertTrue( ClientListenerManager.getInstance().getListeners().isEmpty() );
+  }
+
+  public void testBindToRegistersListener() {
     Label label = new Label( shell, SWT.NONE );
 
-    ClientListener clientListener = new ClientListener( "code" );
-    clientListener.bindTo( label, ClientListener.MouseDown );
+    ClientListener listener = new ClientListener( "code" );
+    listener.bindTo( label, ClientListener.MouseDown );
+
+    assertTrue( ClientListenerManager.getInstance().getListeners().contains( listener ) );
   }
+
 }

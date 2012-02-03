@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
+import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 
@@ -26,6 +27,7 @@ public class ClientListener {
   }
 
   public void bindTo( Label label, int eventType ) {
+    ClientListenerManager.getInstance().addListener( this );
   }
 
 }
