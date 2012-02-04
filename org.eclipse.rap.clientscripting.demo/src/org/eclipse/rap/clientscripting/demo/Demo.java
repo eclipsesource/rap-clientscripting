@@ -13,9 +13,8 @@ package org.eclipse.rap.clientscripting.demo;
 import java.io.IOException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rwt.internal.widgets.JSExecutor;
+import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,8 +29,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( { "restriction", "serial" } )
+@SuppressWarnings( "serial" )
 public class Demo implements IEntryPoint {
+
+  private static final String DEMO_RESOURCES_PREFIX = "org/eclipse/rap/clientscripting/demo/";
 
   public int createUI() {
     Display display = new Display();
@@ -90,16 +91,10 @@ public class Demo implements IEntryPoint {
   }
 
   private void addDateMaskBehavior( Text text ) {
-    String code = "var f = new org.eclipse.rap.clientscripting.Function( \"";
-    code += getScriptCode( "DateMask.js" );
-    code += "\" );";
-    code += "new org.eclipse.rap.clientscripting.EventBinding( ";
-    code += getWidgetRef( text );
-    code += ", org.eclipse.rap.clientscripting.SWT.KeyDown, f );";
-    code += "new org.eclipse.rap.clientscripting.EventBinding( ";
-    code += getWidgetRef( text );
-    code += ", org.eclipse.rap.clientscripting.SWT.MouseDown, f );";
-    JSExecutor.executeJS( code );
+    String scriptCode = getScriptCode( "DateMask.js" );
+    ClientListener clientListener = new ClientListener( scriptCode );
+    clientListener.bindTo( text, SWT.KeyDown );
+    clientListener.bindTo( text, SWT.MouseDown );
   }
 
   private void verifyDate( Text dateField ) {
@@ -125,56 +120,29 @@ public class Demo implements IEntryPoint {
   }
 
   private void addCounterBehavior( Label count ) {
-    String code = "var f = new org.eclipse.rap.clientscripting.Function( \"";
-    code += getScriptCode( "Counter.js" );
-    code += "\" );";
-    code += "new org.eclipse.rap.clientscripting.EventBinding( ";
-    code += getWidgetRef( count );
-    code += ", org.eclipse.rap.clientscripting.SWT.MouseDown, f );";
-    JSExecutor.executeJS( code );
+    String scriptCode = getScriptCode( "Counter.js" );
+    ClientListener listener = new ClientListener( scriptCode );
+    listener.bindTo( count, SWT.MouseDown );
   }
 
   private void addLoggerBehavior( Widget widget ) {
-    String code = "var f = new org.eclipse.rap.clientscripting.Function( \"";
-    code += getScriptCode( "Logger.js" );
-    code += "\" );";
-    String[] events = {
-      "SWT.KeyDown",
-      "SWT.KeyUp",
-      "SWT.FocusIn",
-      "SWT.FocusOut",
-      "SWT.MouseDown",
-      "SWT.MouseUp",
-      "SWT.MouseEnter",
-      "SWT.MouseExit",
-      "SWT.MouseMove",
-      "SWT.MouseDoubleClick",
-    };
-    for( int i = 0; i < events.length; i++ ) {
-      code += "new org.eclipse.rap.clientscripting.EventBinding( ";
-      code += getWidgetRef( widget );
-      code += ", org.eclipse.rap.clientscripting." + events[ i ] + ", f );";
-    }
-    JSExecutor.executeJS( code );
-  }
-
-  private String getWidgetRef( Widget widget ) {
-    String result = "org.eclipse.rwt.protocol.ObjectManager.getObject( \"";
-    result += WidgetUtil.getId( widget );
-    result += "\" )";
-    return result;
+    String scriptCode = getScriptCode( "Logger.js" );
+    ClientListener listener = new ClientListener( scriptCode );
+    listener.bindTo( widget, SWT.KeyDown );
+    listener.bindTo( widget, SWT.KeyUp );
+    listener.bindTo( widget, SWT.FocusIn );
+    listener.bindTo( widget, SWT.FocusOut );
+    listener.bindTo( widget, SWT.MouseDown );
+    listener.bindTo( widget, SWT.MouseUp );
+    listener.bindTo( widget, SWT.MouseDoubleClick );
   }
 
   private String getScriptCode( String resource ) {
-    String code;
     try {
-      code = ResourceLoaderUtil.readContent( "org/eclipse/rap/clientscripting/demo/" + resource, "UTF-8" );
-      code = code.replace( "\"", "\\\"" );
-      code = code.replace( "\n", "\\n" );
+      return ResourceLoaderUtil.readContent( DEMO_RESOURCES_PREFIX + resource, "UTF-8" );
     } catch( IOException e ) {
       throw new IllegalArgumentException( "Resource not found: " + resource );
     }
-    return code;
   }
 
 }
