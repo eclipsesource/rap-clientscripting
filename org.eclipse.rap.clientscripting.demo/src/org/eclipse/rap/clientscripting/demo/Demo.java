@@ -168,7 +168,7 @@ public class Demo implements IEntryPoint {
   private String getScriptCode( String resource ) {
     String code;
     try {
-      code = ResourceLoaderUtil.readContent( "org/eclipse/rap/clientscripting/" + resource, "UTF-8" );
+      code = ResourceLoaderUtil.readContent( "org/eclipse/rap/clientscripting/demo/" + resource, "UTF-8" );
       code = code.replace( "\"", "\\\"" );
       code = code.replace( "\n", "\\n" );
     } catch( IOException e ) {
