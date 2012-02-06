@@ -16,20 +16,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.clientscripting.EventBinding"
   	var eventType = properties.eventType;
   	var targetFunction = org.eclipse.rwt.protocol.ObjectManager.getObject( properties.listener );
     return new org.eclipse.rap.clientscripting.EventBinding( source, eventType, targetFunction );
-  },
-
-  destructor : qx.lang.Function.returnTrue,
-
-  properties : [],
-
-  propertyHandler : {},
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : [],
-
-  methodHandler : {}
+  }
 
 } );

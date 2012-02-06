@@ -14,20 +14,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.clientscripting.Listener", {
   factory : function( properties ) {
   	var code = properties.code;
     return new org.eclipse.rap.clientscripting.Function( code );
-  },
-
-  destructor : qx.lang.Function.returnTrue,
-
-  properties : [],
-
-  propertyHandler : {},
-
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : [],
-
-  methodHandler : {}
+  }
 
 } );
