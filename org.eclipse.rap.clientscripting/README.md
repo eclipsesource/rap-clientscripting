@@ -9,7 +9,6 @@ This will later be replaced by the official RAP Protocol property reference:
 http://wiki.eclipse.org/RAP/Protocol#Object_Type_Reference
 
 ## Available Setter:
-<code>
 * <b>org.eclipse.swt.widgets.Control</b>: setTabIndex, setToolTip, setVisibility, setEnabled, setForeground, setBackground, setBackgroundImage, setCursor
 * <b>org.eclipse.swt.widgets.CoolBar</b>: setLocked, setToolTip, setVisibility, setEnabled, setForeground, setBackground
 * <b>org.eclipse.swt.widgets.Label</b>: setText, setImage, setAlignment, setEnabled
@@ -52,9 +51,6 @@ http://wiki.eclipse.org/RAP/Protocol#Object_Type_Reference
 * <b>org.eclipse.swt.widgets.Separator</b>: setTabIndex, setToolTip, setVisibility, setEnabled, setForeground, setBackground, setBackgroundImage
 * <b>org.eclipse.swt.widgets.ControlDecorator</b>: setBounds, setText, setImage, setVisible, setShowHover
 * <b>org.eclipse.swt.widgets.ToolTip</b>: setRoundedBorder, setBackgroundGradient, setAutoHide, setText, setMessage, setLocation, setVisible
-</code>
 
 ## Available Getter:
-<code>
 * <b>org.eclipse.swt.widget.Text</b>: getText,getSelection
-</code>
