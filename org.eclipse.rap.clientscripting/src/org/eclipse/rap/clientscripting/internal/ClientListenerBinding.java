@@ -11,6 +11,7 @@ public class ClientListenerBinding implements Adaptable {
   private final Widget widget;
   private final int eventType;
   private ClientObjectAdapter clientObjectAdapter;
+  private boolean disposed;
 
   public ClientListenerBinding( Widget widget, int eventType, ClientListener listener ) {
     this.widget = widget;
@@ -28,6 +29,14 @@ public class ClientListenerBinding implements Adaptable {
 
   public int getEventType() {
     return eventType;
+  }
+
+  public boolean isDisposed() {
+    return disposed;
+  }
+
+  public void markDisposed() {
+    disposed = true;
   }
 
   @Override

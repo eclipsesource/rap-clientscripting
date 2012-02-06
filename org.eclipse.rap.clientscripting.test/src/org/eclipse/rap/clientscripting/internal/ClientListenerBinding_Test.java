@@ -68,6 +68,16 @@ public class ClientListenerBinding_Test extends TestCase {
     assertEquals( SWT.MouseDown, binding.getEventType() );
   }
 
+  public void testIsDisposed() {
+    assertFalse( binding.isDisposed() );
+  }
+
+  public void testMarkDisposed() {
+    binding.markDisposed();
+
+    assertTrue( binding.isDisposed() );
+  }
+
   public void testGetClientObjectAdapter() {
     ClientObjectAdapter adapter = binding.getAdapter( ClientObjectAdapter.class );
 

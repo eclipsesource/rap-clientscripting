@@ -10,17 +10,21 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
+import java.util.Collection;
+
+import junit.framework.TestCase;
+
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
 import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
 import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import junit.framework.TestCase;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ClientListener_Test extends TestCase {
@@ -110,6 +114,31 @@ public class ClientListener_Test extends TestCase {
     }
   }
 
+  public void testBindToAddsBindingToList() {
+    Label label = new Label( shell, SWT.NONE );
+    listener.bindTo( label, SWT.MouseDown );
+
+    assertNotNull( findBinding( listener, label, SWT.MouseDown ) );
+  }
+
+  public void testBindingNotDisposedByDefault() {
+    Label label = new Label( shell, SWT.NONE );
+    listener.bindTo( label, SWT.MouseDown );
+    
+    ClientListenerBinding binding = findBinding( listener, label, SWT.MouseDown );
+    assertFalse( binding.isDisposed() );
+  }
+
+  public void testBindingDisposedWhenWidgetDisposed() {
+    Label label = new Label( shell, SWT.NONE );
+    listener.bindTo( label, SWT.MouseDown );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    label.dispose();
+    
+    ClientListenerBinding binding = findBinding( listener, label, SWT.MouseDown );
+    assertTrue( binding.isDisposed() );
+  }
+
   public void testGetClientListenerAdapter() {
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
 
@@ -154,7 +183,8 @@ public class ClientListener_Test extends TestCase {
     listener.bindTo( shell, SWT.KeyDown );
 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
-    assertTrue( adapter.getBindings().contains( new ClientListenerBinding( shell, SWT.KeyDown, listener ) ) );
+    ClientListenerBinding wanted = new ClientListenerBinding( shell, SWT.KeyDown, listener );
+    assertTrue( adapter.getBindings().contains( wanted ) );
   }
 
   public void testBindToTwice() {
@@ -172,6 +202,20 @@ public class ClientListener_Test extends TestCase {
 
   private void createListener() {
     listener = new ClientListener( "code" );
+  }
+  
+  private static ClientListenerBinding findBinding( ClientListener listener,
+                                                    Widget widget,
+                                                    int eventType )
+  {
+    ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
+    Collection<ClientListenerBinding> bindings = adapter.getBindings();
+    for( ClientListenerBinding binding : bindings ) {
+      if( binding.getWidget() == widget && binding.getEventType() == eventType  ) {
+        return binding;
+      }
+    }
+    return null;
   }
 
 }

@@ -21,6 +21,8 @@ import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientObjectAdapterImpl;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -62,10 +64,8 @@ public class ClientListener implements Adaptable {
     if( widget.isDisposed() ) {
       throw new IllegalArgumentException( "Widget is disposed" );
     }
-    ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this );
-    if( !bindings.contains( binding ) ) {
-      bindings.add( binding );
-    }
+    final ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this );
+    addBinding( binding );
     ClientListenerManager.getInstance().addListener( this );
   }
 
@@ -99,6 +99,17 @@ public class ClientListener implements Adaptable {
       result = ( T )clientListenerAdapter;
     }
     return result;
+  }
+
+  private void addBinding( final ClientListenerBinding binding ) {
+    if( !bindings.contains( binding ) ) {
+      bindings.add( binding );
+      binding.getWidget().addDisposeListener( new DisposeListener() {
+        public void widgetDisposed( DisposeEvent event ) {
+          binding.markDisposed();
+        }
+      } );
+    }
   }
 
   private ClientListenerAdapter createClientListenerAdapter() {
