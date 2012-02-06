@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.demo;
 
-import java.io.IOException;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -32,7 +30,7 @@ import org.eclipse.swt.widgets.Widget;
 @SuppressWarnings( "serial" )
 public class Demo implements IEntryPoint {
 
-  private static final String DEMO_RESOURCES_PREFIX = "org/eclipse/rap/clientscripting/demo/";
+  private static final String RESOURCES_PREFIX = "org/eclipse/rap/clientscripting/demo/";
 
   public int createUI() {
     Display display = new Display();
@@ -91,7 +89,7 @@ public class Demo implements IEntryPoint {
   }
 
   private void addDateMaskBehavior( Text text ) {
-    String scriptCode = getScriptCode( "DateMask.js" );
+    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DateMask.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.bindTo( text, SWT.KeyDown );
     clientListener.bindTo( text, SWT.MouseDown );
@@ -120,13 +118,13 @@ public class Demo implements IEntryPoint {
   }
 
   private void addCounterBehavior( Label count ) {
-    String scriptCode = getScriptCode( "Counter.js" );
+    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Counter.js" );
     ClientListener listener = new ClientListener( scriptCode );
     listener.bindTo( count, SWT.MouseDown );
   }
 
   private void addLoggerBehavior( Widget widget ) {
-    String scriptCode = getScriptCode( "Logger.js" );
+    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Logger.js" );
     ClientListener listener = new ClientListener( scriptCode );
     listener.bindTo( widget, SWT.KeyDown );
     listener.bindTo( widget, SWT.KeyUp );
@@ -135,14 +133,6 @@ public class Demo implements IEntryPoint {
     listener.bindTo( widget, SWT.MouseDown );
     listener.bindTo( widget, SWT.MouseUp );
     listener.bindTo( widget, SWT.MouseDoubleClick );
-  }
-
-  private String getScriptCode( String resource ) {
-    try {
-      return ResourceLoaderUtil.readContent( DEMO_RESOURCES_PREFIX + resource, "UTF-8" );
-    } catch( IOException e ) {
-      throw new IllegalArgumentException( "Resource not found: " + resource );
-    }
   }
 
 }
