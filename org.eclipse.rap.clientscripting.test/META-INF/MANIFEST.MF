@@ -10,4 +10,6 @@ Require-Bundle: org.junit,
  org.objenesis;bundle-version="[1.0.0,2.0.0)",
  org.eclipse.rap.rwt;bundle-version="1.5.0",
  org.eclipse.rap.clientscripting;bundle-version="[1.0.0,2.0.0)"
-Import-Package: org.eclipse.rap.rwt.testfixture
+Import-Package: javax.servlet;version="2.6.0",
+ org.eclipse.rap.rwt.testfixture,
+ org.json
