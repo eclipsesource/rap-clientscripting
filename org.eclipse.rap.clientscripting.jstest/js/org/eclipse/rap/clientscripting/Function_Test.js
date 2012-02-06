@@ -20,12 +20,22 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
   
   members : {
     
-    testCreateFunction : function() {
-      var code = "function(){}";
-      
+    testCreateFunctionWrongNamed : function() {
+      var code = "function foo(){}";
+      try {
+        new Function( code );
+        fail();
+      } catch( ex ) {
+        // expected
+      }
+    },
+    
+    testCreateFunctionWithHelper : function() {
+      var code = "var foo = function(){  global = 1;  };var handleEvent = function(){ foo(); };";
       var listener = new Function( code );
-      
-      assertTrue( listener instanceof Function );
+      listener.call();
+      assertEquals( 1, global );
+      delete global;
     },
     
     testCreateFunctionSyntaxError : function() {
@@ -49,7 +59,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
     },
 
     testCallWithArgument : function() {
-      var code = "function( e ){ e.x++; }";
+      var code = "function handleEvent( e ){ e.x++; }";
       var listener = new Function( code );
       var event = {
         x : 1
@@ -61,7 +71,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
     },
 
     testNoContext : function() {
-      var code = "function(){ this.x++; }";
+      var code = "var handleEvent = function(){ this.x++; }";
       var listener = new Function( code );
       listener.x = 1;
 
@@ -72,7 +82,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 
     testImportedClasses : function() {
       var obj = {};
-      var code = "function( obj ){ obj.SWT = SWT; }";
+      var code = "function handleEvent( obj ){ obj.SWT = SWT; }";
       var fun = new Function( code );
 
       fun.call( obj );

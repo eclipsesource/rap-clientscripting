@@ -1,4 +1,10 @@
-function( event ) { 
+var isNumber = function( character ) {
+  var charCode = character.charCodeAt( 0 );
+  return charCode >=48 && charCode <= 57;
+};
+    
+
+var handleEvent = function( event ) { 
 
   if( event.type === SWT.KeyDown ) {
     var newCh = event.character;
@@ -19,11 +25,6 @@ function( event ) {
       text = leftPart + value + rightPart;
       sel--;
     };
-    
-    var isNumber = function( character ) {
-      var charCode = character.charCodeAt( 0 );
-      return charCode >=48 && charCode <= 57;
-    }
     
     if( text[ sel ] === "_" && isNumber( newCh ) ) {
       replaceNextChar( newCh );

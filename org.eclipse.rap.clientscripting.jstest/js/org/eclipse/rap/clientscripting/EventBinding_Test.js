@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
   members : {
     
     testCreateBinding : function() {
-      var listener = new Function( "function(){}" );
+      var listener = new Function( "function handleEvent(){}" );
       
       var binding = new EventBinding( text, SWT.KeyDown, listener );
       

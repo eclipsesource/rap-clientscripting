@@ -1,4 +1,4 @@
-function( event ) {
+var handleEvent = function( event ) {
 
   var regexp = /^[0-9]*$/;
   var text = event.widget.getText();
