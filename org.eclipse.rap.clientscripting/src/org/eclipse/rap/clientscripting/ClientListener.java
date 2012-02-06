@@ -54,7 +54,7 @@ public class ClientListener implements Adaptable {
     }
   }
 
-  public void bindTo( Widget widget, int eventType ) {
+  public void addTo( Widget widget, int eventType ) {
     if( disposed ) {
       throw new IllegalStateException( "ClientListener is disposed" );
     }

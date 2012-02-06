@@ -76,54 +76,54 @@ public class ClientListener_Test extends TestCase {
     assertTrue( listener.isDisposed() );
   }
 
-  public void testBindToRegistersListener() {
-    listener.bindTo( shell, ClientListener.MouseDown );
+  public void testAddToRegistersListener() {
+    listener.addTo( shell, ClientListener.MouseDown );
 
     assertTrue( ClientListenerManager.getInstance().getListeners().contains( listener ) );
   }
 
-  public void testBindToFailsAfterDispose() {
+  public void testAddToFailsAfterDispose() {
     listener.dispose();
 
     try {
-      listener.bindTo( shell, SWT.MouseDown );
+      listener.addTo( shell, SWT.MouseDown );
       fail();
     } catch( IllegalStateException exception ) {
       assertTrue( exception.getMessage().contains( "disposed" ) );
     }
   }
 
-  public void testBindToFailsWithNullWidget() {
+  public void testAddToFailsWithNullWidget() {
     try {
-      listener.bindTo( null, SWT.MouseDown );
+      listener.addTo( null, SWT.MouseDown );
       fail();
     } catch( NullPointerException exception ) {
       assertEquals( "widget is null", exception.getMessage() );
     }
   }
 
-  public void testBindToFailsWithDisposedWidget() {
+  public void testAddToFailsWithDisposedWidget() {
     Label label = new Label( shell, SWT.NONE );
     label.dispose();
 
     try {
-      listener.bindTo( label, SWT.MouseDown );
+      listener.addTo( label, SWT.MouseDown );
       fail();
     } catch( IllegalArgumentException exception ) {
       assertEquals( "Widget is disposed", exception.getMessage() );
     }
   }
 
-  public void testBindToAddsBindingToList() {
+  public void testAddToAddsBindingToList() {
     Label label = new Label( shell, SWT.NONE );
-    listener.bindTo( label, SWT.MouseDown );
+    listener.addTo( label, SWT.MouseDown );
 
     assertNotNull( findBinding( listener, label, SWT.MouseDown ) );
   }
 
   public void testBindingNotDisposedByDefault() {
     Label label = new Label( shell, SWT.NONE );
-    listener.bindTo( label, SWT.MouseDown );
+    listener.addTo( label, SWT.MouseDown );
     
     ClientListenerBinding binding = findBinding( listener, label, SWT.MouseDown );
     assertFalse( binding.isDisposed() );
@@ -131,7 +131,7 @@ public class ClientListener_Test extends TestCase {
 
   public void testBindingDisposedWhenWidgetDisposed() {
     Label label = new Label( shell, SWT.NONE );
-    listener.bindTo( label, SWT.MouseDown );
+    listener.addTo( label, SWT.MouseDown );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     label.dispose();
     
@@ -160,7 +160,7 @@ public class ClientListener_Test extends TestCase {
 
   public void testRemoveFromDisposesBinding() {
     Label label = new Label( shell, SWT.NONE );
-    listener.bindTo( label, SWT.MouseDown );
+    listener.addTo( label, SWT.MouseDown );
     listener.removeFrom( label, SWT.MouseDown );
     
     ClientListenerBinding binding = findBinding( listener, label, SWT.MouseDown );
@@ -169,7 +169,7 @@ public class ClientListener_Test extends TestCase {
 
   public void testRemoveFromCalledTwice() {
     Label label = new Label( shell, SWT.NONE );
-    listener.bindTo( label, SWT.MouseDown );
+    listener.addTo( label, SWT.MouseDown );
     listener.removeFrom( label, SWT.MouseDown );
     listener.removeFrom( label, SWT.MouseDown );
     
@@ -224,17 +224,17 @@ public class ClientListener_Test extends TestCase {
     assertNotSame( adapter1, adapter2 );
   }
 
-  public void testBindTo() {
-    listener.bindTo( shell, SWT.KeyDown );
+  public void testAddTo() {
+    listener.addTo( shell, SWT.KeyDown );
 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
     ClientListenerBinding wanted = new ClientListenerBinding( shell, SWT.KeyDown, listener );
     assertTrue( adapter.getBindings().contains( wanted ) );
   }
 
-  public void testBindToTwice() {
-    listener.bindTo( shell, SWT.KeyDown );
-    listener.bindTo( shell, SWT.KeyDown );
+  public void testAddToTwice() {
+    listener.addTo( shell, SWT.KeyDown );
+    listener.addTo( shell, SWT.KeyDown );
 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
     assertEquals( 1, adapter.getBindings().size() );

@@ -49,7 +49,7 @@ public class ClientScriptingRenderer_Test extends TestCase {
 
   public void testRendered() {
     ClientListener listener = new ClientListener( "code" );
-    listener.bindTo( label, ClientListener.MouseDown );
+    listener.addTo( label, ClientListener.MouseDown );
 
     ClientScriptingRenderer.render();
 
@@ -60,7 +60,7 @@ public class ClientScriptingRenderer_Test extends TestCase {
 
   public void testNotRenderedOnlyOnce() {
     ClientListener listener = new ClientListener( "code" );
-    listener.bindTo( label, ClientListener.MouseDown );
+    listener.addTo( label, ClientListener.MouseDown );
 
     ClientScriptingRenderer.render();
     Fixture.fakeNewRequest();
