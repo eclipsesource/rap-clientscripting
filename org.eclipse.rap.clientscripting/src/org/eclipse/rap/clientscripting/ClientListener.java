@@ -69,6 +69,19 @@ public class ClientListener implements Adaptable {
     ClientListenerManager.getInstance().addListener( this );
   }
 
+  public void removeFrom( Widget widget, int eventType ) {
+    if( disposed ) {
+      throw new IllegalStateException( "ClientListener is disposed" );
+    }
+    if( widget == null ) {
+      throw new NullPointerException( "widget is null" );
+    }
+    ClientListenerBinding binding = findBinding( widget, eventType );
+    if( binding != null ) {
+      binding.markDisposed();
+    }
+  }
+
   public void dispose() {
     disposed = true;
   }
@@ -110,6 +123,15 @@ public class ClientListener implements Adaptable {
         }
       } );
     }
+  }
+
+  private ClientListenerBinding findBinding( Widget widget, int eventType ) {
+    for( ClientListenerBinding binding : bindings ) {
+      if( binding.getWidget() == widget && binding.getEventType() == eventType ) {
+        return binding;
+      }
+    }
+    return null;
   }
 
   private ClientListenerAdapter createClientListenerAdapter() {
