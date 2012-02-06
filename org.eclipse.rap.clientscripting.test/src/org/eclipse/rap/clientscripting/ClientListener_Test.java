@@ -17,6 +17,7 @@ import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import junit.framework.TestCase;
@@ -26,12 +27,13 @@ public class ClientListener_Test extends TestCase {
 
   private Shell shell;
   private Display display;
+  private ClientListener listener;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display );
+    createWidgets();
+    createListener();
   }
 
   @Override
@@ -53,38 +55,30 @@ public class ClientListener_Test extends TestCase {
     assertTrue( ClientListenerManager.getInstance().getListeners().isEmpty() );
   }
 
-  public void testBindToRegistersListener() {
-    ClientListener listener = new ClientListener( "code" );
-    listener.bindTo( shell, ClientListener.MouseDown );
-
-    assertTrue( ClientListenerManager.getInstance().getListeners().contains( listener ) );
-  }
-
   public void testIsDisposed() {
-    ClientListener listener = new ClientListener( "code" );
-
     assertFalse( listener.isDisposed() );
   }
 
   public void testDispose() {
-    ClientListener listener = new ClientListener( "code" );
-
     listener.dispose();
 
     assertTrue( listener.isDisposed() );
   }
 
   public void testDisposeTwice() {
-    ClientListener listener = new ClientListener( "code" );
-
     listener.dispose();
     listener.dispose();
 
     assertTrue( listener.isDisposed() );
   }
 
+  public void testBindToRegistersListener() {
+    listener.bindTo( shell, ClientListener.MouseDown );
+
+    assertTrue( ClientListenerManager.getInstance().getListeners().contains( listener ) );
+  }
+
   public void testBindToFailsAfterDispose() {
-    ClientListener listener = new ClientListener( "code" );
     listener.dispose();
 
     try {
@@ -95,41 +89,52 @@ public class ClientListener_Test extends TestCase {
     }
   }
 
-  public void testGetClientListenerAdapter() {
-    ClientListener listener = new ClientListener( "code" );
+  public void testBindToFailsWithNullWidget() {
+    try {
+      listener.bindTo( null, SWT.MouseDown );
+      fail();
+    } catch( NullPointerException exception ) {
+      assertEquals( "widget is null", exception.getMessage() );
+    }
+  }
 
+  public void testBindToFailsWithDisposedWidget() {
+    Label label = new Label( shell, SWT.NONE );
+    label.dispose();
+
+    try {
+      listener.bindTo( label, SWT.MouseDown );
+      fail();
+    } catch( IllegalArgumentException exception ) {
+      assertEquals( "Widget is disposed", exception.getMessage() );
+    }
+  }
+
+  public void testGetClientListenerAdapter() {
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
 
     assertNotNull( adapter );
   }
 
   public void testGetClientListenerAdapter_sameInstance() {
-    ClientListener listener = new ClientListener( "code" );
-
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
 
     assertSame( adapter, listener.getAdapter( ClientListenerAdapter.class ) );
   }
 
   public void testGetClientListenerAdapter_scriptCode() {
-    ClientListener listener = new ClientListener( "code" );
-
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
 
     assertEquals( "code", adapter.getScriptCode() );
   }
 
   public void testGetClientObjectAdapter() {
-    ClientListener listener = new ClientListener( "code" );
-
     ClientObjectAdapter adapter = listener.getAdapter( ClientObjectAdapter.class );
 
     assertNotNull( adapter );
   }
 
   public void testGetClientObjectAdapter_sameInstance() {
-    ClientListener listener = new ClientListener( "code" );
-
     ClientObjectAdapter adapter = listener.getAdapter( ClientObjectAdapter.class );
 
     assertSame( adapter, listener.getAdapter( ClientObjectAdapter.class ) );
@@ -146,8 +151,6 @@ public class ClientListener_Test extends TestCase {
   }
 
   public void testBindTo() {
-    ClientListener listener = new ClientListener( "code" );
-
     listener.bindTo( shell, SWT.KeyDown );
 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
@@ -155,13 +158,20 @@ public class ClientListener_Test extends TestCase {
   }
 
   public void testBindToTwice() {
-    ClientListener listener = new ClientListener( "code" );
-
     listener.bindTo( shell, SWT.KeyDown );
     listener.bindTo( shell, SWT.KeyDown );
 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
     assertEquals( 1, adapter.getBindings().size() );
+  }
+
+  private void createWidgets() {
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  private void createListener() {
+    listener = new ClientListener( "code" );
   }
 
 }

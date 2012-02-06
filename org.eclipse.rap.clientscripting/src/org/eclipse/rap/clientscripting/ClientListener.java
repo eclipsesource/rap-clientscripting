@@ -47,6 +47,12 @@ public class ClientListener implements Adaptable {
     if( disposed ) {
       throw new IllegalStateException( "ClientListener is disposed" );
     }
+    if( widget == null ) {
+      throw new NullPointerException( "widget is null" );
+    }
+    if( widget.isDisposed() ) {
+      throw new IllegalArgumentException( "Widget is disposed" );
+    }
     ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this );
     if( !bindings.contains( binding ) ) {
       bindings.add( binding );
