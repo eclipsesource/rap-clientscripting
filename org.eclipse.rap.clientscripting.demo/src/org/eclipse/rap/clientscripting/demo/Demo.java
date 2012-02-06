@@ -10,12 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.demo;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -24,19 +22,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Widget;
 
 
 @SuppressWarnings( "serial" )
 public class Demo implements IEntryPoint {
 
-  private static final String RESOURCES_PREFIX = "org/eclipse/rap/clientscripting/demo/";
-
   public int createUI() {
     Display display = new Display();
     Shell shell = new Shell( display );
+    shell.setText( "RAP Client Scripting Examples" );
     createShellContents( shell );
-    shell.setBounds( 20, 20, 400, 200 );
+    shell.setBounds( 20, 20, 400, 400 );
     shell.open();
     while( !shell.isDisposed() ) {
       if( !display.readAndDispatch() ) {
@@ -48,91 +44,80 @@ public class Demo implements IEntryPoint {
   }
 
   private void createShellContents( Composite parent ) {
-    parent.setLayout( new GridLayout( 2, false ) );
-    Text dateField = createDateField( parent );
-    dateField.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
-    createVerifyButton( parent, dateField );
-    Label counterLabel = createCounterLabel( parent );
-    counterLabel.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
-    createLoggerButton( parent );
+    parent.setLayout( new GridLayout( 1, false ) );
+    addUpperCaseExample( parent );
+    addDigitsOnlyExample( parent );
+    addDateMaskExample( parent );
+    addCounterExample( parent );
   }
 
-  private Text createDateField( Composite parent ) {
-    Text date = new Text( parent, SWT.SINGLE | SWT.BORDER );
-    date.setText( "__.__.____" );
-    addDateMaskBehavior( date );
-    return date;
+  private void addUpperCaseExample( Composite parent ) {
+    addHeaderLabel( parent, "Auto upper case text field:" );
+    Text text = new Text( parent, SWT.BORDER );
+    CustomBehaviors.addUpperCaseBehavior( text );
+    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
   }
 
-  private void createVerifyButton( Composite parent, final Text dateField ) {
-    Button verify = new Button( parent, SWT.PUSH );
-    verify.setText( "Verify" );
-    verify.addSelectionListener( new SelectionAdapter() {
+  private void addDigitsOnlyExample( Composite parent ) {
+    addHeaderLabel( parent, "Digits only, validation on client:" );
+    Text text = new Text( parent, SWT.BORDER );
+    CustomBehaviors.addDigitsOnlyBehavior( text );
+    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+  }
+
+  private void addDateMaskExample( Composite parent ) {
+    addHeaderLabel( parent, "A simple date mask, validation on server:" );
+    final Text text = new Text( parent, SWT.BORDER );
+    text.setText( "__.__.____" );
+    CustomBehaviors.addDateMaskBehavior( text );
+    addDateValidator( text );
+    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+  }
+
+  private void addCounterExample( Composite parent ) {
+    addHeaderLabel( parent, "A button that counts:" );
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Click me!" );
+    button.setLayoutData( new GridData( 120, SWT.DEFAULT ) );
+    CustomBehaviors.addCounterBehavior( button );
+  }
+
+  private static void addHeaderLabel( Composite parent, String text ) {
+    Label label = new Label( parent, SWT.NONE );
+    label.setText( text );
+    GridData layoutData = new GridData();
+    layoutData.verticalIndent = 10;
+    label.setLayoutData( layoutData );
+  }
+
+  private void addDateValidator( final Text text ) {
+    text.addFocusListener( new FocusAdapter() {
       @Override
-      public void widgetSelected( SelectionEvent e ) {
-        verifyDate( dateField );
+      public void focusLost( FocusEvent event ) {
+        if( !verifyDate( text.getText() ) ) {
+          text.setBackground( text.getDisplay().getSystemColor( SWT.COLOR_RED ) );
+        } else {
+          text.setBackground( null );
+        }
       }
     } );
   }
 
-  private Label createCounterLabel( final Composite parent ) {
-    Label label = new Label( parent, SWT.PUSH );
-    label.setText( "Click!" );
-    addCounterBehavior( label );
-    return label;
-  }
-
-  private void createLoggerButton( final Composite parent ) {
-    Button logger = new Button( parent, SWT.PUSH );
-    logger.setText( "This logs all events" );
-    addLoggerBehavior( logger );
-  }
-
-  private void addDateMaskBehavior( Text text ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DateMask.js" );
-    ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.bindTo( text, SWT.KeyDown );
-    clientListener.bindTo( text, SWT.MouseDown );
-  }
-
-  private void verifyDate( Text dateField ) {
-    String text = dateField.getText();
-    String[] values = text.split( "\\.", 3 );
-    String message = "Date OK";
-    int kind = MessageDialog.CONFIRM;
+  private boolean verifyDate( String date ) {
+    String[] values = date.split( "\\.", 3 );
+    boolean valid = true;
     try {
       if( Integer.parseInt( values[ 0 ] ) > 31 ) {
-        kind = MessageDialog.ERROR;
-        message = "Incorrect day " + values[ 0 ];
+        valid = false;
       }
       if( Integer.parseInt( values[ 1 ] ) > 12 ) {
-        kind = MessageDialog.ERROR;
-        message = "Incorrect month " + values[ 1 ];
+        valid = false;
       }
       Integer.parseInt( values[ 2 ].trim() ); // remove trailing " "
     } catch( NumberFormatException ex ) {
-      kind = MessageDialog.ERROR;
-      message = "Incomplete";
+      valid = false;
     }
-    MessageDialog.open( kind, dateField.getShell(), "Verify", message, SWT.NONE );
-  }
-
-  private void addCounterBehavior( Label count ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Counter.js" );
-    ClientListener listener = new ClientListener( scriptCode );
-    listener.bindTo( count, SWT.MouseDown );
-  }
-
-  private void addLoggerBehavior( Widget widget ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Logger.js" );
-    ClientListener listener = new ClientListener( scriptCode );
-    listener.bindTo( widget, SWT.KeyDown );
-    listener.bindTo( widget, SWT.KeyUp );
-    listener.bindTo( widget, SWT.FocusIn );
-    listener.bindTo( widget, SWT.FocusOut );
-    listener.bindTo( widget, SWT.MouseDown );
-    listener.bindTo( widget, SWT.MouseUp );
-    listener.bindTo( widget, SWT.MouseDoubleClick );
+    return valid;
   }
 
 }
