@@ -26,8 +26,17 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ClientListener implements Adaptable {
 
+  public static final int KeyDown = SWT.KeyDown;
+  public static final int KeyUp = SWT.KeyUp;
   public static final int MouseDown = SWT.MouseDown;
   public static final int MouseUp = SWT.MouseUp;
+  public static final int MouseMove = 5;
+  public static final int MouseEnter = 6;   
+  public static final int MouseExit = 7;
+  public static final int MouseDoubleClick = SWT.MouseDoubleClick;
+  public static final int FocusIn = SWT.FocusIn;
+  public static final int FocusOut = SWT.FocusOut;
+
   private final String scriptCode;
   private boolean disposed;
   private ClientObjectAdapter clientObjectAdapter;
