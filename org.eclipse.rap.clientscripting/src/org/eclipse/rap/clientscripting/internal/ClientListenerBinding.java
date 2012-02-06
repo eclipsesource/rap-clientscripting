@@ -17,6 +17,7 @@ public class ClientListenerBinding implements Adaptable {
     this.widget = widget;
     this.eventType = eventType;
     this.listener = listener;
+    disposed = false;
   }
 
   public ClientListener getListener() {
