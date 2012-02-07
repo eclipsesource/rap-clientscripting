@@ -1,9 +1,3 @@
-var isNumber = function( character ) {
-  var charCode = character.charCodeAt( 0 );
-  return charCode >=48 && charCode <= 57;
-};
-    
-
 var handleEvent = function( event ) { 
 
   if( event.type === SWT.KeyDown ) {
@@ -48,4 +42,9 @@ var handleEvent = function( event ) {
     event.widget.setSelection( [ sel, sel ] );
   } 
   event.doit = false; // prevent key input and mousedown for selection change
+};
+
+var isNumber = function( character ) {
+  var charCode = character.charCodeAt( 0 );
+  return charCode >=48 && charCode <= 57;
 };
