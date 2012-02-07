@@ -301,6 +301,23 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( 5, eventProxy.end );
     },
 
+    testVerifyEventDeleteMultiple : function() {
+      var eventProxy;
+      text.setValue( "fooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "fba", 1 );
+      
+      assertEquals( 0, eventProxy.keyCode );
+      assertEquals( '\u0000', eventProxy.character );
+      assertEquals( "", eventProxy.text );
+      assertEquals( 1, eventProxy.start );
+      assertEquals( 3, eventProxy.end );
+    },
+
     ///////// 
     // Helper
 

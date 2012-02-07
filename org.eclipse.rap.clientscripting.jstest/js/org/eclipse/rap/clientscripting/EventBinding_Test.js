@@ -243,6 +243,21 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( "bar", text.getValue() );
     },
 
+    testVerifyEventTextOverwrite : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var handler = {
+        "call" : function( event ) {
+          event.text = "bar";
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      this._inputText( text, "foob" );
+
+      assertEquals( "foobar", text.getValue() );
+    },
+
     /////////
     // helper
 
@@ -286,9 +301,14 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       text = null
     },
     
-    _inputText : function( textWidget, text ) {
+    _inputText : function( textWidget, text, sel ) {
       textWidget._inputElement.value = text;
-      textWidget._oninputDom();
+      if( typeof sel !== "undefined" ) {
+        textWidget.setSelectionStart( sel );
+      } else {
+        textWidget.setSelectionStart( text.length );
+      }
+      textWidget._oninputDom();      
     }
 
   }

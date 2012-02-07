@@ -115,11 +115,10 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     if( wrappedEvent.doit === false ) {
       originalEvent.preventDefault();
     }
-    if( event.type === SWT.Verify ) { // TODO [tb] : protect against overwrite
-      if( wrappedEvent.doit !== false ) {
-        var text = originalEvent.getTarget();
-        text.setValue( text.getComputedValue().toString() );
-      }
+    switch( event.type ) {
+      case SWT.Verify:
+        this._postProcessVerifyEvent( event, wrappedEvent, originalEvent );
+      break;
     }
   },
 
@@ -292,6 +291,22 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       event.start = diff[ 0 ];
       event.end = diff[ 1 ];
       event.text = diff[ 2 ];
+    }
+  },
+  
+  _postProcessVerifyEvent : function( event, wrappedEvent, originalEvent ) {
+    if( wrappedEvent.doit !== false ) {
+      var widget = originalEvent.getTarget();
+      var newText;
+      if( event.text !== wrappedEvent.text ) {
+        var currentText = widget.getValue();
+        var textLeft = currentText.slice( 0, event.start );
+        var textRight = currentText.slice( event.end, currentText.length );
+        var newText = textLeft + wrappedEvent.text + textRight;
+      } else {
+        newText = widget.getComputedValue().toString();
+      }
+      widget.setValue( newText );
     }
   },
 

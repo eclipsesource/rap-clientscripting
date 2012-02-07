@@ -72,7 +72,6 @@ org.eclipse.rap.clientscripting.SWT = {
    * 
    * Current limitations:
    *  - works for Text only
-   *  - event.text manipulation has no effect
    *  - replacing existing characters (select + insert) not working correctly
    *  - is not fired on programatic changes
    *  - calling setText in verify onsupported
