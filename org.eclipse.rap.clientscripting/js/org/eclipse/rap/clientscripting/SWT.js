@@ -23,6 +23,11 @@ org.eclipse.rap.clientscripting.SWT = {
   KeyDown : 1,
 
   /**
+   * The key up event type 
+   */
+  KeyUp : 2,
+
+  /**
    * The mouse down event type
    */
   MouseDown : 3,
@@ -53,11 +58,6 @@ org.eclipse.rap.clientscripting.SWT = {
   MouseDoubleClick : 8, 
 
   /**
-   * The key up event type 
-   */
-  KeyUp : 2,
-
-  /**
    * The focus in event type 
    */
   FocusIn : 15,
@@ -67,12 +67,19 @@ org.eclipse.rap.clientscripting.SWT = {
    */
   FocusOut : 16,
 
+
+  /**
+   * The modify event type 
+   * 
+   * Currently only supported by Text
+   */
+  Modify : 24,
+
   /**
    * The verify event type
    * 
    * Current limitations:
    *  - works for Text only
-   *  - replacing existing characters (select + insert) not working correctly
    *  - is not fired on programatic changes
    *  - calling setText in verify onsupported
    */

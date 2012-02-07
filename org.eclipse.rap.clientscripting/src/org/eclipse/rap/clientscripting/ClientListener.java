@@ -39,6 +39,7 @@ public class ClientListener implements Adaptable {
   public static final int MouseDoubleClick = SWT.MouseDoubleClick;
   public static final int FocusIn = SWT.FocusIn;
   public static final int FocusOut = SWT.FocusOut;
+  public static final int Modify = SWT.Modify;
   public static final int Verify = SWT.Verify;
 
   private final String scriptCode;

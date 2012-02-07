@@ -90,6 +90,9 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
         case SWT.Verify:
           result = "input"; // TODO [tb] : does currently not react on programatic changes
         break;
+        case SWT.Modify:
+          result = "changeValue";
+        break;
       }
     }
     return result;
@@ -307,7 +310,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
         newText = widget.getComputedValue().toString();
       }
       widget.setValue( newText );
-    }
+    } // TODO [tb] : else
   },
 
   _setStateMask : function( event, originalEvent ) {

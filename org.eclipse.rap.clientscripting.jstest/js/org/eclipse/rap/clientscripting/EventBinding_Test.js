@@ -258,6 +258,30 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( "foobar", text.getValue() );
     },
 
+    testBindModifyEvent : function() {
+      TestUtil.flush();
+      var logger = this._createLogger(); 
+
+      new EventBinding( text, SWT.Modify, logger );
+      text.setValue( "foo" );
+
+      assertEquals( 1, logger.log.length );
+    },
+
+    testBindVerifyAndModifyEvent : function() {
+      TestUtil.flush();
+      var logger = this._createLogger(); 
+
+      new EventBinding( text, SWT.Modify, logger );
+      new EventBinding( text, SWT.Verify, logger );
+      this._inputText( text, "foo" );
+
+      assertEquals( 2, logger.log.length );
+      assertEquals( SWT.Verify, logger.log[ 0 ].type )
+      assertEquals( SWT.Modify, logger.log[ 1 ].type )
+    },
+
+
     /////////
     // helper
 

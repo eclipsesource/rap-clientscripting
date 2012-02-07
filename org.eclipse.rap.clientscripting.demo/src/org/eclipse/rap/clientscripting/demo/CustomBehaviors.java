@@ -23,8 +23,7 @@ public class CustomBehaviors {
   public static void addDigitsOnlyBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DigitsOnly.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.addTo( text, ClientListener.KeyUp );
-    clientListener.addTo( text, ClientListener.MouseUp );
+    clientListener.addTo( text, ClientListener.Modify );
   }
 
   public static void addDateMaskBehavior( Text text ) {
