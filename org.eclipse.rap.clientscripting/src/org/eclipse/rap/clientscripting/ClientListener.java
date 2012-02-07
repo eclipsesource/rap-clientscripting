@@ -26,6 +26,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings( "serial" )
 public class ClientListener implements Adaptable {
 
   public static final int KeyDown = SWT.KeyDown;
@@ -143,6 +144,18 @@ public class ClientListener implements Adaptable {
 
       public String getScriptCode() {
         return scriptCode;
+      }
+
+      public void removeDisposedBindings() {
+        ArrayList<ClientListenerBinding> toRemove = new ArrayList<ClientListenerBinding>();
+        for( ClientListenerBinding binding : bindings ) {
+          if( binding.isDisposed() ) {
+            toRemove.add( binding );
+          }
+        }
+        for( ClientListenerBinding binding : toRemove ) {
+          bindings.remove( binding );
+        }
       }
 
     };

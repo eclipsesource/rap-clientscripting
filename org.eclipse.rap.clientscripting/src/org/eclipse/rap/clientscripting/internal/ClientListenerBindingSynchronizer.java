@@ -27,6 +27,10 @@ public class ClientListenerBindingSynchronizer implements Synchronizer<ClientLis
     clientObject.set( "eventType", binding.getEventType() );
   }
 
+  public void renderDestroy( ClientListenerBinding binding, IClientObject clientObject ) {
+    clientObject.destroy();
+  }
+
   private static String getId( Adaptable object ) {
     ClientObjectAdapter adapter = object.getAdapter( ClientObjectAdapter.class );
     return adapter.getId();

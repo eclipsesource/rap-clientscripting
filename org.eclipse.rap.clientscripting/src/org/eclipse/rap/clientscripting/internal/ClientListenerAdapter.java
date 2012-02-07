@@ -17,6 +17,8 @@ public interface ClientListenerAdapter {
 
   public Collection<ClientListenerBinding> getBindings();
 
+  public void removeDisposedBindings();
+
   public String getScriptCode();
 
 }

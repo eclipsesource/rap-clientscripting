@@ -13,8 +13,10 @@ package org.eclipse.rap.clientscripting.internal;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.clientscripting.ClientListener;
+import org.eclipse.rap.clientscripting.test.TestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -38,7 +40,7 @@ public class ClientScriptingRenderer_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testNotRenderedBeforeBind() {
+  public void testCreateListenerNotRenderedBeforeBind() {
     new ClientListener( "code" );
 
     ClientScriptingRenderer.render();
@@ -47,23 +49,56 @@ public class ClientScriptingRenderer_Test extends TestCase {
     assertEquals( 0, message.getOperationCount() );
   }
 
-  public void testRendered() {
+  public void testCreateListenerAndBindingRendered() {
     ClientListener listener = new ClientListener( "code" );
-    listener.addTo( label, ClientListener.MouseDown );
+    listener.addTo( label, ClientListener.KeyUp );
+    ClientListenerBinding binding = TestUtil.findBinding( listener, label, ClientListener.KeyUp );
 
     ClientScriptingRenderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    String listenerId = listener.getAdapter( ClientObjectAdapter.class ).getId();
-    assertNotNull( message.findCreateOperation( listenerId ) );
+    assertNotNull( message.findCreateOperation( TestUtil.getId( listener ) ) );
+    assertNotNull( message.findCreateOperation( TestUtil.getId( binding ) ) );
   }
 
-  public void testNotRenderedOnlyOnce() {
+  public void testCreateRenderedOnlyOnce() {
     ClientListener listener = new ClientListener( "code" );
-    listener.addTo( label, ClientListener.MouseDown );
+    listener.addTo( label, ClientListener.KeyUp );
 
     ClientScriptingRenderer.render();
     Fixture.fakeNewRequest();
+    ClientScriptingRenderer.render();
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  public void testDestroyBindingRendered() {
+    ClientListener listener = new ClientListener( "code" );
+    listener.addTo( label, ClientListener.KeyUp );
+    ClientListenerBinding binding = TestUtil.findBinding( listener, label, ClientListener.KeyUp );
+    ClientScriptingRenderer.render();
+    Fixture.fakeNewRequest();
+
+    listener.removeFrom( label, ClientListener.KeyUp );
+    ClientScriptingRenderer.render();
+
+    Message message = Fixture.getProtocolMessage();
+    // TODO [rst] Use Message#findDestroyOperation( String ) as soon as it is available
+    DestroyOperation operation = ( DestroyOperation )message.getOperation( 0 );
+    assertEquals( TestUtil.getId( binding ), operation.getTarget() );
+  }
+
+  public void testDestroyBindingRenderedOnlyOnce() {
+    ClientListener listener = new ClientListener( "code" );
+    listener.addTo( label, ClientListener.KeyUp );
+    ClientScriptingRenderer.render();
+    Fixture.fakeNewRequest();
+    listener.removeFrom( label, ClientListener.KeyUp );
+    ClientScriptingRenderer.render();
+    Fixture.fakeNewRequest();
+
+    listener.removeFrom( label, ClientListener.KeyUp );
     ClientScriptingRenderer.render();
 
     Message message = Fixture.getProtocolMessage();
