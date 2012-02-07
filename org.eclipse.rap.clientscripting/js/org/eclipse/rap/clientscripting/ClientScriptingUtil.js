@@ -298,8 +298,8 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   },
   
   _postProcessVerifyEvent : function( event, wrappedEvent, originalEvent ) {
+    var widget = originalEvent.getTarget();
     if( wrappedEvent.doit !== false ) {
-      var widget = originalEvent.getTarget();
       var newText;
       if( event.text !== wrappedEvent.text ) {
         var currentText = widget.getValue();
@@ -310,7 +310,10 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
         newText = widget.getComputedValue().toString();
       }
       widget.setValue( newText );
-    } // TODO [tb] : else
+    } else {
+      widget._applyValue( widget.getValue() );
+      widget.setSelectionStart( event.end );
+    }
   },
 
   _setStateMask : function( event, originalEvent ) {

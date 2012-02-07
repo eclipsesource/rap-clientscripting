@@ -61,7 +61,7 @@ var handleMouseEvent = function( event ) {
 }
 
 var handleVerifyEvent = function( event ) {
-  if( event.text.length > 1 ) {
+  if( event.character === '\u0000' ) {
     event.doit = false; // prevent pasting
   }
 };
