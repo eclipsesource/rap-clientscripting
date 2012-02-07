@@ -21,9 +21,12 @@ import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientObjectAdapterImpl;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings( "serial" )
 public class ClientListener implements Adaptable {
 
   public static final int KeyDown = SWT.KeyDown;
@@ -53,7 +56,7 @@ public class ClientListener implements Adaptable {
     }
   }
 
-  public void bindTo( Widget widget, int eventType ) {
+  public void addTo( Widget widget, int eventType ) {
     if( disposed ) {
       throw new IllegalStateException( "ClientListener is disposed" );
     }
@@ -63,11 +66,22 @@ public class ClientListener implements Adaptable {
     if( widget.isDisposed() ) {
       throw new IllegalArgumentException( "Widget is disposed" );
     }
-    ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this );
-    if( !bindings.contains( binding ) ) {
-      bindings.add( binding );
-    }
+    final ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this );
+    addBinding( binding );
     ClientListenerManager.getInstance().addListener( this );
+  }
+
+  public void removeFrom( Widget widget, int eventType ) {
+    if( disposed ) {
+      throw new IllegalStateException( "ClientListener is disposed" );
+    }
+    if( widget == null ) {
+      throw new NullPointerException( "widget is null" );
+    }
+    ClientListenerBinding binding = findBinding( widget, eventType );
+    if( binding != null ) {
+      binding.markDisposed();
+    }
   }
 
   public void dispose() {
@@ -102,6 +116,26 @@ public class ClientListener implements Adaptable {
     return result;
   }
 
+  private void addBinding( final ClientListenerBinding binding ) {
+    if( !bindings.contains( binding ) ) {
+      bindings.add( binding );
+      binding.getWidget().addDisposeListener( new DisposeListener() {
+        public void widgetDisposed( DisposeEvent event ) {
+          binding.markDisposed();
+        }
+      } );
+    }
+  }
+
+  private ClientListenerBinding findBinding( Widget widget, int eventType ) {
+    for( ClientListenerBinding binding : bindings ) {
+      if( binding.getWidget() == widget && binding.getEventType() == eventType ) {
+        return binding;
+      }
+    }
+    return null;
+  }
+
   private ClientListenerAdapter createClientListenerAdapter() {
     return new ClientListenerAdapter() {
 
@@ -111,6 +145,18 @@ public class ClientListener implements Adaptable {
 
       public String getScriptCode() {
         return scriptCode;
+      }
+
+      public void removeDisposedBindings() {
+        ArrayList<ClientListenerBinding> toRemove = new ArrayList<ClientListenerBinding>();
+        for( ClientListenerBinding binding : bindings ) {
+          if( binding.isDisposed() ) {
+            toRemove.add( binding );
+          }
+        }
+        for( ClientListenerBinding binding : toRemove ) {
+          bindings.remove( binding );
+        }
       }
 
     };

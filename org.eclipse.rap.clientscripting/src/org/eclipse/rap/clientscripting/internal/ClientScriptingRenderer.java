@@ -59,6 +59,7 @@ final class ClientScriptingRenderer {
       for( ClientListenerBinding binding : bindings ) {
         render( binding );
       }
+      listenerAdapter.removeDisposedBindings();
     }
   }
 
@@ -77,6 +78,10 @@ final class ClientScriptingRenderer {
       IClientObject clientObject = new ClientObject( adapter.getId() );
       clientListenerBindingSynchronizer.renderCreate( binding, clientObject );
       adapter.setCreated();
+    }
+    if( binding.isDisposed() ) {
+      IClientObject clientObject = new ClientObject( adapter.getId() );
+      clientListenerBindingSynchronizer.renderDestroy( binding, clientObject );
     }
   }
 

@@ -17,42 +17,42 @@ public class CustomBehaviors {
   public static void addUpperCaseBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "UpperCase.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.bindTo( text, ClientListener.KeyUp );
-    clientListener.bindTo( text, ClientListener.MouseUp );
+    clientListener.addTo( text, ClientListener.KeyUp );
+    clientListener.addTo( text, ClientListener.MouseUp );
   }
   
   public static void addDigitsOnlyBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DigitsOnly.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.bindTo( text, ClientListener.KeyUp );
-    clientListener.bindTo( text, ClientListener.MouseUp );
+    clientListener.addTo( text, ClientListener.KeyUp );
+    clientListener.addTo( text, ClientListener.MouseUp );
   }
 
   public static void addDateMaskBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DateMask.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.bindTo( text, ClientListener.KeyDown );
-    clientListener.bindTo( text, ClientListener.Verify );
-    clientListener.bindTo( text, ClientListener.MouseUp );
-    clientListener.bindTo( text, ClientListener.MouseDown );
+    clientListener.addTo( text, ClientListener.KeyDown );
+    clientListener.addTo( text, ClientListener.Verify );
+    clientListener.addTo( text, ClientListener.MouseUp );
+    clientListener.addTo( text, ClientListener.MouseDown );
   }
 
   public static void addCounterBehavior( Control control ) {
     String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Counter.js" );
     ClientListener listener = new ClientListener( scriptCode );
-    listener.bindTo( control, ClientListener.MouseDown );
+    listener.addTo( control, ClientListener.MouseDown );
   }
 
   public static void addLoggerBehavior( Widget widget ) {
     String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Logger.js" );
     ClientListener listener = new ClientListener( scriptCode );
-    listener.bindTo( widget, ClientListener.KeyDown );
-    listener.bindTo( widget, ClientListener.KeyUp );
-    listener.bindTo( widget, ClientListener.FocusIn );
-    listener.bindTo( widget, ClientListener.FocusOut );
-    listener.bindTo( widget, ClientListener.MouseDown );
-    listener.bindTo( widget, ClientListener.MouseUp );
-    listener.bindTo( widget, ClientListener.MouseDoubleClick );
+    listener.addTo( widget, ClientListener.KeyDown );
+    listener.addTo( widget, ClientListener.KeyUp );
+    listener.addTo( widget, ClientListener.FocusIn );
+    listener.addTo( widget, ClientListener.FocusOut );
+    listener.addTo( widget, ClientListener.MouseDown );
+    listener.addTo( widget, ClientListener.MouseUp );
+    listener.addTo( widget, ClientListener.MouseDoubleClick );
   }
 
 }
