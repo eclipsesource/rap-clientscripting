@@ -48,7 +48,7 @@ public class Demo implements IEntryPoint {
     parent.setLayout( new GridLayout( 1, false ) );
     addUpperCaseExample( parent );
     addDigitsOnlyExample( parent );
-    addDateMaskExample( parent );
+    addDateFieldExample( parent );
     addCounterExample( parent );
   }
 
@@ -66,11 +66,10 @@ public class Demo implements IEntryPoint {
     text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
   }
 
-  private void addDateMaskExample( Composite parent ) {
-    addHeaderLabel( parent, "A simple date mask, validation on server:" );
+  private void addDateFieldExample( Composite parent ) {
+    addHeaderLabel( parent, "A simple date field, validation on server:" );
     final Text text = new Text( parent, SWT.BORDER );
-    text.setText( "__.__.____" );
-    CustomBehaviors.addDateMaskBehavior( text );
+    CustomBehaviors.addDateFieldBehavior( text );
     addDateValidator( text );
     text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
   }
