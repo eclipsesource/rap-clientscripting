@@ -68,7 +68,7 @@ org.eclipse.rap.clientscripting.SWT = {
   FocusOut : 16,
 
   /**
-   * The verify event type (value is 25).
+   * The verify event type
    * 
    * Current limitations:
    *  - works for Text only
