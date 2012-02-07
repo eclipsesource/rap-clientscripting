@@ -1,47 +1,69 @@
 var handleEvent = function( event ) { 
+  switch( event.type ) {
+    case SWT.KeyDown:
+      handleKeyDownEvent( event );
+    break;
+    case SWT.MouseDown:
+    case SWT.MouseUp:
+      handleMouseEvent( event );
+    break;
+    case SWT.Verify:
+      handleVerifyEvent( event );
+    break;
+  }
+};
 
-  if( event.type === SWT.KeyDown ) {
-    var newCh = event.character;
-    var keyCode = event.keyCode;
-    var sel = event.widget.getSelection()[ 0 ];
-    var text = event.widget.getText();
+var handleKeyDownEvent = function( event ) {
+  var newCh = event.character;
+  var keyCode = event.keyCode;
+  var sel = event.widget.getSelection()[ 0 ];
+  var text = event.widget.getText();
+
+  var replaceNextChar = function( value ) {
+    var leftPart = text.slice( 0, sel );
+    var rightPart = text.slice( sel + 1, text.length );
+    text = leftPart + value + rightPart;
+    sel++;
+  };
+
+  var replacePrevChar = function( value ) {
+    var leftPart = text.slice( 0, sel - 1 );
+    var rightPart = text.slice( sel, text.length );
+    text = leftPart + value + rightPart;
+    sel--;
+  };
   
-    var replaceNextChar = function( value ) {
-      var leftPart = text.slice( 0, sel );
-      var rightPart = text.slice( sel + 1, text.length );
-      text = leftPart + value + rightPart;
+  if( text[ sel ] === "_" && isNumber( newCh ) ) {
+    replaceNextChar( newCh );
+    if( text[ sel ] === "." ) {
       sel++;
-    };
-  
-    var replacePrevChar = function( value ) {
-      var leftPart = text.slice( 0, sel - 1 );
-      var rightPart = text.slice( sel, text.length );
-      text = leftPart + value + rightPart;
+    }    
+  } else if( keyCode === SWT.BS && sel > 0 ) {
+    if( text[ sel - 1 ] === "." ) {
       sel--;
-    };
-    
-    if( text[ sel ] === "_" && isNumber( newCh ) ) {
-      replaceNextChar( newCh );
-      if( text[ sel ] === "." ) {
-        sel++;
-      }    
-    } else if( keyCode === SWT.BS && sel > 0 ) {
-      if( text[ sel - 1 ] === "." ) {
-        sel--;
-      }
-      if( isNumber( text[ sel - 1 ] ) ) {
-        replacePrevChar( "_" );
-      } else {
-        sel--;
-      }
-      event.doit = false;
     }
-  
-    // TODO: Setting text also sets selection to last position - compare to SWT
-    event.widget.setText( text );
-    event.widget.setSelection( [ sel, sel ] );
-  } 
-  event.doit = false; // prevent key input and mousedown for selection change
+    if( isNumber( text[ sel - 1 ] ) ) {
+      replacePrevChar( "_" );
+    } else {
+      sel--;
+    }
+    event.doit = false;
+  }
+
+  // TODO: Setting text also sets selection to last position? - compare to SWT
+  event.widget.setText( text );
+  event.widget.setSelection( [ sel, sel ] );
+  event.doit = false; // prevent key input 
+}
+
+var handleMouseEvent = function( event ) {
+  event.doit = false; // prevent mouse selection change
+}
+
+var handleVerifyEvent = function( event ) {
+  if( event.text.length > 1 ) {
+    event.doit = false; // prevent pasting
+  }
 };
 
 var isNumber = function( character ) {

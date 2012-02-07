@@ -49,6 +49,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertTrue( eventProxy.doit );
       assertEquals( "number", typeof eventProxy.type );
       assertEquals( "string", typeof eventProxy.character );
+      assertEquals( "string", typeof eventProxy.text );
       assertEquals( "number", typeof eventProxy.keyCode );
       assertEquals( "number", typeof eventProxy.stateMask );
       assertEquals( "number", typeof eventProxy.button );
@@ -202,6 +203,104 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( 2, eventProxy.y );
     },
 
+    testVerifyEventCharacter : function() {
+      var eventProxy;
+      text.setValue( "fooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textCharInput( text, "A" );
+      
+      assertEquals( 65, eventProxy.keyCode );
+      assertEquals( 'A', eventProxy.character );
+      assertEquals( "A", eventProxy.text );
+      assertEquals( 5, eventProxy.start );
+      assertEquals( 5, eventProxy.end );
+    },
+
+    testVerifyEventCharacterLeftCharacterSame : function() {
+      var eventProxy;
+      text.setValue( "fooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textCharInput( text, "a" );
+      
+      assertEquals( 65, eventProxy.keyCode );
+      assertEquals( 'a', eventProxy.character );
+      assertEquals( "a", eventProxy.text );
+      assertEquals( 5, eventProxy.start );
+      assertEquals( 5, eventProxy.end );
+    },
+
+    testVerifyEventPasteCharacter : function() {
+      var eventProxy;
+      text.setValue( "fooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "fooAba", 4 );
+      
+      assertEquals( 0, eventProxy.keyCode );
+      assertEquals( '\u0000', eventProxy.character );
+      assertEquals( "A", eventProxy.text );
+      assertEquals( 3, eventProxy.start );
+      assertEquals( 3, eventProxy.end );
+    },
+
+    testVerifyEventPasteCharacterBetweenSameCharacters : function() {
+      var eventProxy;
+      text.setValue( "fooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "foooba", 3 );
+      
+      assertEquals( "o", eventProxy.text );
+      assertEquals( 2, eventProxy.start );
+      assertEquals( 2, eventProxy.end );
+    },
+
+    testVerifyEventPasteText : function() {
+      var eventProxy;
+      text.setValue( "fooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "fooLALAba", 7 );
+      
+      assertEquals( "LALA", eventProxy.text );
+      assertEquals( 3, eventProxy.start );
+      assertEquals( 3, eventProxy.end );
+    },
+
+    testVerifyEventDeleteCharacter : function() {
+      var eventProxy;
+      text.setValue( "fooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "foob", 4 );
+      
+      assertEquals( 0, eventProxy.keyCode );
+      assertEquals( '\u0000', eventProxy.character );
+      assertEquals( "", eventProxy.text );
+      assertEquals( 4, eventProxy.start );
+      assertEquals( 5, eventProxy.end );
+    },
+
     ///////// 
     // Helper
 
@@ -235,6 +334,26 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
         "action" : "destroy",
       } );
       text = null
+    },
+    
+    _textCharInput : function( textWidget, character ) {
+      TestUtil.keyDown( text, character );
+      // we will assume that the carret is at the end
+      var newValue = textWidget._inputElement.value + character;
+      textWidget._inputElement.value = newValue;
+      textWidget.setSelectionStart( newValue.length )
+      textWidget._oninputDom();
+      TestUtil.keyUp( text, character );
+    },
+
+    _textPaste : function( textWidget, value, sel ) {
+      textWidget._inputElement.value = value;
+      if( typeof sel !== "undefined" ) {
+        textWidget.setSelectionStart( sel );
+      } else {
+        textWidget.setSelectionStart( value.length );
+      }
+      textWidget._oninputDom();
     }
 
   }

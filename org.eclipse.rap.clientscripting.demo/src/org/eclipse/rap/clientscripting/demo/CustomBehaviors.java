@@ -32,6 +32,7 @@ public class CustomBehaviors {
     String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DateMask.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.bindTo( text, ClientListener.KeyDown );
+    clientListener.bindTo( text, ClientListener.Verify );
     clientListener.bindTo( text, ClientListener.MouseUp );
     clientListener.bindTo( text, ClientListener.MouseDown );
   }

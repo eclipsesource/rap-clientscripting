@@ -12,12 +12,17 @@
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.EventBinding = function( source, eventType, targetFunction ) {
-  var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
-  this._nativeType = ClientScriptingUtil.getNativeEventType( source, eventType );
-  this._eventType = eventType;
-  this._targetFunction = targetFunction;
-  this._source = source;
-  this._bind();
+  try {
+    var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
+    ClientScriptingUtil.prepareSource( source, eventType );
+    this._nativeType = ClientScriptingUtil.getNativeEventType( source, eventType );
+    this._eventType = eventType;
+    this._targetFunction = targetFunction;
+    this._source = source;
+    this._bind();
+  } catch( ex ) {
+    throw new Error( "Could not create EventBinding " + eventType + ":" + ex.message );
+  }
 };
 
 org.eclipse.rap.clientscripting.EventBinding.prototype = {
@@ -31,14 +36,18 @@ org.eclipse.rap.clientscripting.EventBinding.prototype = {
   },
 
   _processEvent : function( event ) {
+    var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
     var EventProxy = org.eclipse.rap.clientscripting.EventProxy;
     var eventProxy = new EventProxy( this._eventType, event );
-    this._targetFunction.call( eventProxy );
-    org.eclipse.rap.clientscripting.ClientScriptingUtil.postProcessEvent( eventProxy, event );
+    var wrappedEventProxy = ClientScriptingUtil.wrapAsProto( eventProxy );
+    this._targetFunction.call( wrappedEventProxy );
+    ClientScriptingUtil.postProcessEvent( eventProxy, wrappedEventProxy, event );
     EventProxy.disposeEventProxy( eventProxy );
   },
 
   dispose : function() {
+    var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
+    ClientScriptingUtil.restoreSource( this._source, this._eventType );
     this._unbind();
     this._source = null;
     this._targetFunction = null;

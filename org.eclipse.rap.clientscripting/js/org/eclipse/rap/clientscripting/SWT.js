@@ -68,6 +68,18 @@ org.eclipse.rap.clientscripting.SWT = {
   FocusOut : 16,
 
   /**
+   * The verify event type (value is 25).
+   * 
+   * Current limitations:
+   *  - works for Text only
+   *  - event.text manipulation has no effect
+   *  - replacing existing characters (select + insert) not working correctly
+   *  - is not fired on programatic changes
+   *  - calling setText in verify onsupported
+   */
+  Verify : 25,
+
+  /**
    * Keyboard event constant representing the UP ARROW key
    */
   ARROW_UP : 38,

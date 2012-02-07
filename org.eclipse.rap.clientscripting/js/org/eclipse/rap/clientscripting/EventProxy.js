@@ -77,7 +77,14 @@ org.eclipse.rap.clientscripting.EventProxy.prototype = {
   /**
    * y coordinate of the pointer at the time of the event
    */
-  y : 0
+  y : 0,
+
+  /**
+   * depending on the event, the new text that will be inserted.
+   * Setting this field will change the text that is about to
+   * be inserted or deleted.
+   */
+  text : ""
 
 };
 

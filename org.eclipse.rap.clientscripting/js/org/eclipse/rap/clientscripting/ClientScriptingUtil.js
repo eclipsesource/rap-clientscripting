@@ -28,6 +28,28 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     }
   },
 
+  prepareSource : function( source, eventType ) {
+    var SWT = org.eclipse.rap.clientscripting.SWT;
+    if( source.classname === "org.eclipse.rwt.widgets.Text" ) {
+      if( eventType === SWT.Verify ) {
+        if( source.getLiveUpdate() ) {
+          source.setLiveUpdate( false );
+        } else {
+          throw new Error( "Can not bind more than one Verify Listener to one widget" );
+        }
+      }
+    }
+  },
+  
+  restoreSource : function( source, eventType ) {
+    var SWT = org.eclipse.rap.clientscripting.SWT;
+    if( source.classname === "org.eclipse.rwt.widgets.Text" ) {
+      if( eventType === SWT.Verify ) {
+        source.setLiveUpdate( true );
+      }
+    }
+  },
+
   getNativeEventType : function( source, eventType ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
     var result;
@@ -63,6 +85,13 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
         result = "blur";
       break;
     }
+    if( source.classname === "org.eclipse.rwt.widgets.Text" ) {
+      switch( eventType ) {
+        case SWT.Verify:
+          result = "input"; // TODO [tb] : does currently not react on programatic changes
+        break;
+      }
+    }
     return result;
   },
 
@@ -80,10 +109,17 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       }
     }
   },
-
-  postProcessEvent : function( event, originalEvent ) {
-    if( event.doit === false ) {
+  
+  postProcessEvent : function( event, wrappedEvent, originalEvent ) {
+    var SWT = org.eclipse.rap.clientscripting.SWT;
+    if( wrappedEvent.doit === false ) {
       originalEvent.preventDefault();
+    }
+    if( event.type === SWT.Verify ) { // TODO [tb] : protect against overwrite
+      if( wrappedEvent.doit !== false ) {
+        var text = originalEvent.getTarget();
+        text.setValue( text.getComputedValue().toString() );
+      }
     }
   },
 
@@ -131,10 +167,19 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     event.type = type;
     switch( type ) {
       case SWT.KeyDown:
+      case SWT.KeyUp:
         this._initKeyEvent( event, originalEvent );
       break;
       case SWT.MouseDown:
+      case SWT.MouseUp:
+      case SWT.MouseMove:
+      case SWT.MouseEnter:
+      case SWT.MouseExit:
+      case SWT.MouseDoubleClick:
         this._initMouseEvent( event, originalEvent );
+      break;
+      case SWT.Verify:
+        this._initVerifyEvent( event, originalEvent );
       break;
     }
   },
@@ -196,9 +241,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       // TODO [tb] : keyCode will be off when character is not a-z
       event.keyCode = event.character.toLowerCase().charCodeAt( 0 );
     } else {
-      // NOTE : While this is a private field, this mechanism must be integrated with 
-      // KeyEventSupport anyway to support the doit flag better.
-      var keyCode = org.eclipse.rwt.KeyEventSupport.getInstance()._currentKeyCode;
+      var keyCode = this._getLastKeyCode();
       switch( keyCode ) {
         case 16: 
           event.keyCode = SWT.SHIFT;
@@ -234,6 +277,23 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     }
     this._setStateMask( event, originalEvent );
   },
+  
+  _initVerifyEvent : function( event, originalEvent ) {
+    var text = originalEvent.getTarget();
+    if( text.classname === "org.eclipse.rwt.widgets.Text" ) {
+      var newValue = text.getComputedValue();
+      var oldValue = text.getValue();
+      var newSel = text.getSelectionStart();
+      var diff = this._getDiff( newValue, oldValue, newSel );
+      if( this._isKeyPressed() && diff[ 2 ].toUpperCase().charCodeAt( 0 ) === this._getLastKeyCode() ) {
+        event.keyCode = this._getLastKeyCode();
+        event.character = diff[ 2 ];
+      }
+      event.start = diff[ 0 ];
+      event.end = diff[ 1 ];
+      event.text = diff[ 2 ];
+    }
+  },
 
   _setStateMask : function( event, originalEvent ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
@@ -241,6 +301,50 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     event.stateMask |= originalEvent.isCtrlPressed() ? SWT.CTRL : 0;
     event.stateMask |= originalEvent.isAltPressed() ? SWT.ALT : 0;
     event.stateMask |= originalEvent.isMetaPressed() ? SWT.COMMAND : 0;
+  },
+  
+  _isKeyPressed : function() {
+    var keyCode = this._getLastKeyCode();
+    var type = org.eclipse.rwt.EventHandlerUtil._lastUpDownType[ keyCode ];
+    return type === "keydown";
+  },
+  
+  _getLastKeyCode : function() {
+    // NOTE : While this is a private field, this mechanism must be integrated with 
+    // KeyEventSupport anyway to support the doit flag better.
+    return org.eclipse.rwt.KeyEventSupport.getInstance()._currentKeyCode;
+  },
+  
+  _getDiff : function( newValue, oldValue, newSel ) {
+    var diffLength = newValue.length - oldValue.length;
+//    var start = -1;
+//    for( var i = 0; i < oldValue.length && start === -1; i++ ) {
+//      if( newValue[ i ] !== oldValue[ i ] || i === newSel ) {
+//        start = i;
+//      }
+//    }
+//    var end = -1;
+//    var newPos = newValue.length - 1;
+//    for( var i = oldValue.length - 1; i >= 0 && end === -1; i-- ) {
+//      if( ( end === -1 && newValue[ newPos ] !== oldValue[ i ] ) || i < start ) {
+//        end = i + 1;
+//      }
+//      newPos--;
+//    }
+//    newPos += 2;
+    var start;
+    var end;
+    var insert;
+    if( diffLength >= 0 ) {
+      start = newSel - diffLength;
+      end = start;
+      insert = newValue.slice( start, newSel );
+    } else {
+      start = newSel;
+      end = start - diffLength;
+      insert = "";
+    }
+    return [ start, end, insert ];
   }
 
 };

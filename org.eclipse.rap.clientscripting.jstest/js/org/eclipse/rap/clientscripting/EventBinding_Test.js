@@ -174,10 +174,78 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 1, logger.log.length );
     },
 
+    testBindVerifyEvent : function() {
+      TestUtil.flush();
+      var logger = this._createLogger(); 
+
+      var binding = new EventBinding( text, SWT.Verify, logger );
+      this._inputText( text, "goo" );
+
+      assertEquals( 1, logger.log.length );
+    },
+
+    testDisposeVerifyEventBinding : function() {
+      TestUtil.flush();
+      var logger = this._createLogger(); 
+
+      var binding = new EventBinding( text, SWT.Verify, logger );
+      binding.dispose();
+      this._inputText( text, "goo" );
+
+      assertEquals( 0, logger.log.length );
+      assertEquals( "goo", text.getValue() );
+    },
+
+    testVerifyEventFiredBeforeChange : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var textValue;
+      var handler = {
+        "call" : function( event ) {
+          textValue = event.widget.getText();
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      this._inputText( text, "bar" );
+
+      assertEquals( "bar", text.getValue() );
+      assertEquals( "foo", textValue );
+    },
+
+    testVerifyEventDoItFalse : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var handler = {
+        "call" : function( event ) {
+          event.doit = false;
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      this._inputText( text, "bar" );
+
+      assertEquals( "foo", text.getValue() );
+    },
+
+    testVerifyBindingProtectAgainstTypeOverwrite : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var handler = {
+        "call" : function( event ) {
+          event.type = "boom";
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      this._inputText( text, "bar" );
+
+      assertEquals( "bar", text.getValue() );
+    },
 
     /////////
     // helper
-    
+
     _createLogger : function() {
       var log = [];
       var result = {
@@ -216,6 +284,11 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         "action" : "destroy",
       } );
       text = null
+    },
+    
+    _inputText : function( textWidget, text ) {
+      textWidget._inputElement.value = text;
+      textWidget._oninputDom();
     }
 
   }

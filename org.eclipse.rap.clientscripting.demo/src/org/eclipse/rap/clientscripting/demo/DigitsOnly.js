@@ -1,6 +1,5 @@
 var handleEvent = function( event ) {
 
-  // TODO [tb] : does not work with backspace?
   var regexp = /^[0-9]*$/;
   var text = event.widget.getText();
   if( text.match( regexp ) === null ) {
