@@ -14,6 +14,7 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -92,10 +93,11 @@ public class Demo implements IEntryPoint {
 
   private void addDateValidator( final Text text ) {
     text.addFocusListener( new FocusAdapter() {
+      Color color = new Color( text.getDisplay(), 255, 128, 128 );
       @Override
       public void focusLost( FocusEvent event ) {
         if( !verifyDate( text.getText() ) ) {
-          text.setBackground( text.getDisplay().getSystemColor( SWT.COLOR_RED ) );
+          text.setBackground( color );
         } else {
           text.setBackground( null );
         }

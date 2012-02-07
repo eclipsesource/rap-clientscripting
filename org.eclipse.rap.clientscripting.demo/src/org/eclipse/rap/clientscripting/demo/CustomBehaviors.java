@@ -27,7 +27,7 @@ public class CustomBehaviors {
   }
 
   public static void addDateMaskBehavior( Text text ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DateMask.js" );
+    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DateField.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.addTo( text, ClientListener.KeyDown );
     clientListener.addTo( text, ClientListener.Verify );
