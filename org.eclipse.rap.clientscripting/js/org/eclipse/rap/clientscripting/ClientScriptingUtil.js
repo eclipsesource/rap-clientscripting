@@ -329,35 +329,29 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     // KeyEventSupport anyway to support the doit flag better.
     return org.eclipse.rwt.KeyEventSupport.getInstance()._currentKeyCode;
   },
-  
+
   _getDiff : function( newValue, oldValue, newSel ) {
     var diffLength = newValue.length - oldValue.length;
-//    var start = -1;
-//    for( var i = 0; i < oldValue.length && start === -1; i++ ) {
-//      if( newValue[ i ] !== oldValue[ i ] || i === newSel ) {
-//        start = i;
-//      }
-//    }
-//    var end = -1;
-//    var newPos = newValue.length - 1;
-//    for( var i = oldValue.length - 1; i >= 0 && end === -1; i-- ) {
-//      if( ( end === -1 && newValue[ newPos ] !== oldValue[ i ] ) || i < start ) {
-//        end = i + 1;
-//      }
-//      newPos--;
-//    }
-//    newPos += 2;
+    var firstDiff = -1;
+    for( var i = 0; i < oldValue.length && firstDiff === -1; i++ ) {
+      if( newValue[ i ] !== oldValue[ i ] ) {
+        firstDiff = i;
+      }
+    }
     var start;
     var end;
     var insert;
-    if( diffLength >= 0 ) {
-      start = newSel - diffLength;
-      end = start;
-      insert = newValue.slice( start, newSel );
-    } else {
+    if( diffLength < 0 && firstDiff >= newSel ) { // delete only
       start = newSel;
       end = start - diffLength;
       insert = "";
+    } else {
+      start = newSel - diffLength;
+      end = start;
+      if( firstDiff !== -1 && firstDiff < start ) {
+        start = firstDiff;
+      }
+      insert = newValue.slice( start, newSel );
     }
     return [ start, end, insert ];
   }

@@ -318,6 +318,97 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( 3, eventProxy.end );
     },
 
+    testVerifyEventDeleteMultipleAmbigous : function() {
+      var eventProxy;
+      text.setValue( "foooooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "fooba", 1 );
+      
+      assertEquals( "", eventProxy.text );
+      assertEquals( 1, eventProxy.start );
+      assertEquals( 4, eventProxy.end );
+    },
+
+    testVerifyEventReplaceLonger : function() {
+      var eventProxy;
+      text.setValue( "foooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "fooaaba", 5 );
+
+      assertEquals( "aa", eventProxy.text );
+      assertEquals( 3, eventProxy.start );
+      assertEquals( 4, eventProxy.end );
+    },
+
+    testVerifyEventReplaceLongerSameEnd : function() {
+      var eventProxy;
+      text.setValue( "foooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "fooaaba", 6 );
+
+      assertEquals( "aab", eventProxy.text );
+      assertEquals( 3, eventProxy.start );
+      assertEquals( 5, eventProxy.end );
+    },
+
+    testVerifyEventInsertSameStart : function() {
+      var eventProxy;
+      text.setValue( "foooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "foooooba", 5 );
+      
+      // ambigous case, might also be ooo or oooo - impossible to say without previous selection
+      assertEquals( "oo", eventProxy.text );
+      assertEquals( 3, eventProxy.start );
+      assertEquals( 3, eventProxy.end );
+    },
+
+    testVerifyEventReplaceShorter : function() {
+      var eventProxy;
+      text.setValue( "foooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "faba", 2 );
+      
+      assertEquals( "a", eventProxy.text );
+      assertEquals( 1, eventProxy.start );
+      assertEquals( 4, eventProxy.end );
+    },
+
+    testVerifyEventReplaceShorterSameEnd : function() {
+      var eventProxy;
+      text.setValue( "foooba" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textPaste( text, "faoba", 3 );
+      
+      assertEquals( "ao", eventProxy.text );
+      assertEquals( 1, eventProxy.start );
+      assertEquals( 4, eventProxy.end );
+    },
+
     ///////// 
     // Helper
 
