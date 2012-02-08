@@ -220,6 +220,23 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       assertEquals( 5, eventProxy.end );
     },
 
+    testVerifyEventCharacterFirstChar : function() {
+      var eventProxy;
+      text.setValue( "" );
+      text.setLiveUpdate( false );
+      text.addEventListener( "input", function( event ) {
+        eventProxy = new org.eclipse.rap.clientscripting.EventProxy( SWT.Verify, event );
+      } );
+
+      this._textCharInput( text, "A" );
+      
+      assertEquals( 65, eventProxy.keyCode );
+      assertEquals( 'A', eventProxy.character );
+      assertEquals( "A", eventProxy.text );
+      assertEquals( 0, eventProxy.start );
+      assertEquals( 0, eventProxy.end );
+    },
+
     testVerifyEventCharacterLeftCharacterSame : function() {
       var eventProxy;
       text.setValue( "fooba" );

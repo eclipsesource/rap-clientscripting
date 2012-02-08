@@ -274,6 +274,23 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( "foobar", text.getValue() );
     },
 
+    testVerifyEventSelectionAferTextOverwrite : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var handler = {
+        "call" : function( event ) {
+          event.text = "bar";
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      this._inputText( text, "foxo", 3 );
+
+      assertEquals( "fobaro", text.getValue() );
+      assertEquals( 5, text.getSelectionStart() );
+      assertEquals( 0, text.getSelectionLength() );
+    },
+
     testBindModifyEvent : function() {
       TestUtil.flush();
       var logger = this._createLogger(); 

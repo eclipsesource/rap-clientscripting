@@ -300,17 +300,20 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   _postProcessVerifyEvent : function( event, wrappedEvent, originalEvent ) {
     var widget = originalEvent.getTarget();
     if( wrappedEvent.doit !== false ) {
-      var newText;
       if( event.text !== wrappedEvent.text ) {
+        // insert replacement text
         var currentText = widget.getValue();
         var textLeft = currentText.slice( 0, event.start );
         var textRight = currentText.slice( event.end, currentText.length );
-        var newText = textLeft + wrappedEvent.text + textRight;
+        widget.setValue( textLeft + wrappedEvent.text + textRight );
+        widget.setSelectionStart( textLeft.length + wrappedEvent.text.length );
+        widget.setSelectionLength( 0 );
       } else {
-        newText = widget.getComputedValue().toString();
+        // allow change
+        widget.setValue( widget.getComputedValue().toString() );
       }
-      widget.setValue( newText );
     } else {
+      // undo any change
       widget._applyValue( widget.getValue() );
       widget.setSelectionStart( event.end );
     }
