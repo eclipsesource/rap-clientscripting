@@ -292,6 +292,47 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertEquals( 0, text.getSelectionLength() );
     },
 
+    testSelectionDuringVerifyEvent : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var selection;
+      var handler = {
+        "call" : function( event ) {
+          event.text = "bar";
+          selection = event.widget.getSelection();
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      this._inputText( text, "foxo", 3, [ 2, 2 ] );
+
+      assertEquals( 5, text.getSelectionStart() );
+      assertEquals( 0, text.getSelectionLength() );
+      assertEquals( [ 2, 2 ], selection );
+    },
+
+    testSelectionByKeyPressDuringVerifyEvent : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var selection;
+      var handler = {
+        "call" : function( event ) {
+          event.text = "bar";
+          selection = event.widget.getSelection();
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      text.setSelectionStart( 2 );
+      text.setSelectionLength( 0 );
+      TestUtil.press( text, "x" );
+      this._inputText( text, "foxo", 3 );
+
+      assertEquals( 5, text.getSelectionStart() );
+      assertEquals( 0, text.getSelectionLength() );
+      assertEquals( [ 2, 2 ], selection );
+    },
+
     testBindModifyEvent : function() {
       TestUtil.flush();
       var logger = this._createLogger(); 
@@ -359,7 +400,12 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       text = null
     },
     
-    _inputText : function( textWidget, text, sel ) {
+    _inputText : function( textWidget, text, sel, oldSel ) {
+      if( typeof oldSel !== "undefined" ) {
+        textWidget.setSelectionStart( oldSel[ 0 ] );
+        textWidget.setSelectionLength( oldSel[ 1 ] - oldSel[ 0 ] );
+        TestUtil.click( textWidget ); // pasting
+      }
       textWidget._inputElement.value = text;
       if( typeof sel !== "undefined" ) {
         textWidget.setSelectionStart( sel );

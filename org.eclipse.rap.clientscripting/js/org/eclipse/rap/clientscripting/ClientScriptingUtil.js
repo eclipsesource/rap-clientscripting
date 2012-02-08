@@ -12,6 +12,8 @@
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.ClientScriptingUtil = {
+  
+  _SELECTION_KEY : "org.eclipse.rap.clientscripting.ClientScriptingUtil.selection",
 
   _wrapperHelper : function(){},
   
@@ -19,10 +21,15 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     "org.eclipse.rwt.widgets.Text" : {
       "getText" : function( widget ) { return function() { return widget.getValue(); } },
       "getSelection" : function( widget ) { 
-        return function() { 
-          var start = widget.getSelectionStart();
-          var length = widget.getSelectionLength();
-          return result = [ start, start + length ]; 
+        return function() {
+          var key = org.eclipse.rap.clientscripting.ClientScriptingUtil._SELECTION_KEY;
+          var result = widget.getUserData( key );
+          if( !result ) {
+            var start = widget.getSelectionStart();
+            var length = widget.getSelectionLength();
+            result = [ start, start + length ]; 
+          }
+          return result;
         }
       }
     }
@@ -33,7 +40,11 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     if( source.classname === "org.eclipse.rwt.widgets.Text" ) {
       if( eventType === SWT.Verify ) {
         if( source.getLiveUpdate() ) {
+          // TODO [tb] : merge these features into Text.js together with TextUtil.js 
           source.setLiveUpdate( false );
+          source.addEventListener( "mouseup", this._selectionSaver, this );
+          source.addEventListener( "mousedown", this._selectionSaver, this );
+          source.addEventListener( "keypress", this._selectionSaver, this );
         } else {
           throw new Error( "Can not bind more than one Verify Listener to one widget" );
         }
@@ -46,6 +57,9 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     if( source.classname === "org.eclipse.rwt.widgets.Text" ) {
       if( eventType === SWT.Verify ) {
         source.setLiveUpdate( true );
+        source.removeEventListener( "mouseup", this._selectionSaver, this );
+        source.removeEventListener( "mousedown", this._selectionSaver, this );
+        source.removeEventListener( "keypress", this._selectionSaver, this );
       }
     }
   },
@@ -278,6 +292,17 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       event.button = 2;
     }
     this._setStateMask( event, originalEvent );
+  },
+  
+  _selectionSaver : function( event ) {
+    var text = event.getTarget();
+    var selection = null;
+    var start = text.getSelectionStart();
+    var length = text.getSelectionLength();
+    if( typeof start === "number" && typeof length === "number" ) {
+      selection = [ start, start + length ];
+    }
+    text.setUserData( this._SELECTION_KEY, selection )
   },
   
   _initVerifyEvent : function( event, originalEvent ) {
