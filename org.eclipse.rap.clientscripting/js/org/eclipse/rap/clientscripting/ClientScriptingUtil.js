@@ -316,6 +316,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       // undo any change
       widget._applyValue( widget.getValue() );
       widget.setSelectionStart( event.end );
+      widget.setSelectionLength( 0 );
     }
   },
 

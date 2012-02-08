@@ -242,6 +242,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       this._inputText( text, "foobarxxx", 6 );
 
       assertEquals( 3, text.getSelectionStart() );
+      assertEquals( 0, text.getSelectionLength() );
     },
 
     testVerifyBindingProtectAgainstTypeOverwrite : function() {
