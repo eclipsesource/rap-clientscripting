@@ -420,7 +420,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       } );
 
       this._textPaste( text, "faoba", 3 );
-      
+
       assertEquals( "ao", eventProxy.text );
       assertEquals( 1, eventProxy.start );
       assertEquals( 4, eventProxy.end );
@@ -452,11 +452,11 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     _tearDown : function() {
       Processor.processOperation( {
         "target" : "w2",
-        "action" : "destroy",
+        "action" : "destroy"
       } );
       Processor.processOperation( {
         "target" : "w3",
-        "action" : "destroy",
+        "action" : "destroy"
       } );
       text = null
     },
@@ -465,20 +465,24 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       TestUtil.keyDown( text, character );
       // we will assume that the carret is at the end
       var newValue = textWidget._inputElement.value + character;
+      textWidget._inValueProperty = true;
       textWidget._inputElement.value = newValue;
+      textWidget._inValueProperty = false;
       textWidget.setSelectionStart( newValue.length )
-      textWidget._oninputDom();
+      textWidget._oninputDom( { "propertyName" : "value" } );
       TestUtil.keyUp( text, character );
     },
 
     _textPaste : function( textWidget, value, sel ) {
+      textWidget._inValueProperty = true;
       textWidget._inputElement.value = value;
+      textWidget._inValueProperty = false;
       if( typeof sel !== "undefined" ) {
         textWidget.setSelectionStart( sel );
       } else {
         textWidget.setSelectionStart( value.length );
       }
-      textWidget._oninputDom();
+      textWidget._oninputDom( { "propertyName" : "value" } );
     }
 
   }

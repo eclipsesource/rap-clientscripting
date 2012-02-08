@@ -178,11 +178,11 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
     _tearDown : function() {
       Processor.processOperation( {
         "target" : "w2",
-        "action" : "destroy",
+        "action" : "destroy"
       } );
       Processor.processOperation( {
         "target" : "w3",
-        "action" : "destroy",
+        "action" : "destroy"
       } );
       text = null
     }

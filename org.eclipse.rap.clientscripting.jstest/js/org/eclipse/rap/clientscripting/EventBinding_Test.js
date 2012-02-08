@@ -204,7 +204,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         "call" : function( event ) {
           textValue = event.widget.getText();
         }
-      } ;
+      };
 
       var binding = new EventBinding( text, SWT.Verify, handler );
       this._inputText( text, "bar" );
@@ -220,7 +220,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         "call" : function( event ) {
           event.doit = false;
         }
-      } ;
+      };
 
       var binding = new EventBinding( text, SWT.Verify, handler );
       this._inputText( text, "bar" );
@@ -236,7 +236,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         "call" : function( event ) {
           event.doit = false;
         }
-      } ;
+      };
 
       var binding = new EventBinding( text, SWT.Verify, handler );
       this._inputText( text, "foobarxxx", 6 );
@@ -267,7 +267,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         "call" : function( event ) {
           event.text = "bar";
         }
-      } ;
+      };
 
       var binding = new EventBinding( text, SWT.Verify, handler );
       this._inputText( text, "foob" );
@@ -391,11 +391,11 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
     _tearDown : function() {
       Processor.processOperation( {
         "target" : "w2",
-        "action" : "destroy",
+        "action" : "destroy"
       } );
       Processor.processOperation( {
         "target" : "w3",
-        "action" : "destroy",
+        "action" : "destroy"
       } );
       text = null
     },
@@ -406,13 +406,15 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         textWidget.setSelectionLength( oldSel[ 1 ] - oldSel[ 0 ] );
         TestUtil.click( textWidget ); // pasting
       }
+      textWidget._inValueProperty = true;
       textWidget._inputElement.value = text;
+      textWidget._inValueProperty = false;
       if( typeof sel !== "undefined" ) {
         textWidget.setSelectionStart( sel );
       } else {
         textWidget.setSelectionStart( text.length );
       }
-      textWidget._oninputDom();      
+      textWidget._oninputDom( { "propertyName" : "value" } );      
     }
 
   }

@@ -312,7 +312,10 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       var oldValue = text.getValue();
       var newSel = text.getSelectionStart();
       var diff = this._getDiff( newValue, oldValue, newSel );
-      if( this._isKeyPressed() && diff[ 2 ].toUpperCase().charCodeAt( 0 ) === this._getLastKeyCode() ) {
+      if(    diff[ 2 ].length === 1 
+          && this._isKeyPressed() 
+          && diff[ 2 ].toUpperCase().charCodeAt( 0 ) === this._getLastKeyCode() ) 
+      {
         event.keyCode = this._getLastKeyCode();
         event.character = diff[ 2 ];
       }
@@ -369,7 +372,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     var diffLength = newValue.length - oldValue.length;
     var firstDiff = -1;
     for( var i = 0; i < oldValue.length && firstDiff === -1; i++ ) {
-      if( newValue[ i ] !== oldValue[ i ] ) {
+      if( newValue.charAt( i ) !== oldValue.charAt( i ) ) {
         firstDiff = i;
       }
     }
