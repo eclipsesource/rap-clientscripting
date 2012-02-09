@@ -129,12 +129,13 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
   
   postProcessEvent : function( event, wrappedEvent, originalEvent ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
-    if( wrappedEvent.doit === false ) {
-      originalEvent.preventDefault();
-    }
     switch( event.type ) {
       case SWT.Verify:
         this._postProcessVerifyEvent( event, wrappedEvent, originalEvent );
+      break;
+      case SWT.KeyDown:
+      case SWT.KeyUp:
+        this._postProcessKeyEvent( event, wrappedEvent, originalEvent );
       break;
     }
   },
@@ -345,6 +346,12 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       widget._applyValue( widget.getValue() );
       widget.setSelectionStart( event.end );
       widget.setSelectionLength( 0 );
+    }
+  },
+
+  _postProcessKeyEvent : function( event, wrappedEvent, originalEvent ) {
+    if( wrappedEvent.doit === false ) {
+      originalEvent.preventDefault();
     }
   },
 

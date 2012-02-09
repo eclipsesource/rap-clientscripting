@@ -79,7 +79,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertTrue( TestUtil.hasNoObjects( event ) );
     },
 
-    testDoItFalse : function() {
+    testDoItFalseKeyDown : function() {
       var listener = {
         "call" : function( event ) {
           event.doit = false;
@@ -91,6 +91,21 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       TestUtil.fireFakeDomEvent( domEvent );
       
       assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
+    },
+
+    testDoItFalseMouseDown : function() {
+      var listener = {
+        "call" : function( event ) {
+          event.doit = false;
+        }
+      };
+
+      var binding = new EventBinding( text, SWT.MouseDown, listener );
+      var domEvent = TestUtil.createFakeDomKeyEvent( text.getElement(), "keypress", "a" );
+      TestUtil.fireFakeDomEvent( domEvent );
+      
+      // SWT doesnt support preventing native selection behavior (e.g. Text widget)
+      assertFalse( EventHandlerUtil.wasStopped( domEvent ) );
     },
 
     testBindKeyUp : function() {

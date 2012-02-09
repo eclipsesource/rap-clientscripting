@@ -30,7 +30,7 @@ org.eclipse.rap.clientscripting.EventProxy.prototype = {
   /**
    * depending on the event, a flag indicating whether the operation should be
    * allowed. Setting this field to false will cancel the operation.
-   * Currently only key and mouse events for Text or Text-like widgets.
+   * Currently only effective on key events for Text or Text-like widgets.
    */
   doit : true,
   

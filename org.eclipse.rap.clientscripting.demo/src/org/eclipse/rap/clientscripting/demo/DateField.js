@@ -57,7 +57,8 @@ var handleKeyDownEvent = function( event ) {
 }
 
 var handleMouseEvent = function( event ) {
-  event.doit = false; // prevent mouse selection change
+  // not supported: 
+  //event.doit = false; // prevent mouse selection change
 }
 
 var handleVerifyEvent = function( event ) {
