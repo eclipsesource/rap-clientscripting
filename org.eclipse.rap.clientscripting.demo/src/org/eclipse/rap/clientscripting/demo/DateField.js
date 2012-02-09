@@ -33,16 +33,16 @@ var handleKeyDownEvent = function( event ) {
     sel--;
   };
   
-  if( text[ sel ] === "_" && isNumber( newCh ) ) {
+  if( text.charAt( sel ) === "_" && isNumber( newCh ) ) {
     replaceNextChar( newCh );
-    if( text[ sel ] === "." ) {
+    if( text.charAt( sel ) === "." ) {
       sel++;
     }    
   } else if( keyCode === SWT.BS && sel > 0 ) {
-    if( text[ sel - 1 ] === "." ) {
+    if( text.charAt( sel - 1 ) === "." ) {
       sel--;
     }
-    if( isNumber( text[ sel - 1 ] ) ) {
+    if( isNumber( text.charAt( sel - 1 ) ) ) {
       replacePrevChar( "_" );
     } else {
       sel--;
