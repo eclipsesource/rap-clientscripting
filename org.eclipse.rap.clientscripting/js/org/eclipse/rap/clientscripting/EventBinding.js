@@ -26,7 +26,7 @@ org.eclipse.rap.clientscripting.EventBinding = function( source, eventType, targ
 };
 
 org.eclipse.rap.clientscripting.EventBinding.prototype = {
-  
+
   _bind : function() {
     this._source.addEventListener( this._nativeType, this._processEvent, this );
   },

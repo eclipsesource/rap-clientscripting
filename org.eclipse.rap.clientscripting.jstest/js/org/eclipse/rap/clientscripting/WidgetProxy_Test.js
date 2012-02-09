@@ -184,11 +184,11 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
         "target" : "w3",
         "action" : "destroy"
       } );
-      text = null
+      text = null;
     }
 
   }
     
 } );
 
-} )();
+}());

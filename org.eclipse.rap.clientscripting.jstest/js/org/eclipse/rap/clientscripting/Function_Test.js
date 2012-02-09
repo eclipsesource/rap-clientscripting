@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
   
   members : {
     
+    
     testCreateFunctionWrongNamed : function() {
       var code = "function foo(){}";
       try {
@@ -29,7 +30,8 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
         // expected
       }
     },
-    
+
+    /*global global:true */ 
     testCreateFunctionWithHelper : function() {
       var code = "var foo = function(){  global = 1;  };var handleEvent = function(){ foo(); };";
       var listener = new Function( code );
@@ -94,4 +96,4 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
   
 } );
 
-} )();
+}());

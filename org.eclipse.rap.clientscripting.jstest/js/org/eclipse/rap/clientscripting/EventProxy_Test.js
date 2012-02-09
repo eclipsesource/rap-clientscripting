@@ -458,7 +458,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
         "target" : "w3",
         "action" : "destroy"
       } );
-      text = null
+      text = null;
     },
     
     _textCharInput : function( textWidget, character ) {
@@ -468,7 +468,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       textWidget._inValueProperty = true;
       textWidget._inputElement.value = newValue;
       textWidget._inValueProperty = false;
-      textWidget.setSelectionStart( newValue.length )
+      textWidget.setSelectionStart( newValue.length );
       textWidget._oninputDom( { "propertyName" : "value" } );
       TestUtil.keyUp( text, character );
     },
@@ -489,4 +489,4 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     
 } );
 
-} )();
+}());

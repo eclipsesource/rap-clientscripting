@@ -10,7 +10,7 @@
  ******************************************************************************/
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
- 
+
 org.eclipse.rap.clientscripting.WidgetProxy = function( originalWidget ) {
   var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
   ClientScriptingUtil.attachSetter( this, originalWidget );
@@ -34,11 +34,11 @@ org.eclipse.rap.clientscripting.WidgetProxy.getInstance = function( widget ) {
     widget.setUserData( this._PROXY_KEY, protoInstance );
   }
   return org.eclipse.rap.clientscripting.ClientScriptingUtil.wrapAsProto( protoInstance );
-}
+};
 
 org.eclipse.rap.clientscripting.WidgetProxy.disposeWidgetProxy = function( widget ) {
   var protoInstance = widget.getUserData( this._PROXY_KEY );
   var userData = widget.getUserData( this._USERDATA_KEY );
   org.eclipse.rap.clientscripting.ClientScriptingUtil.disposeObject( protoInstance );
   org.eclipse.rap.clientscripting.ClientScriptingUtil.disposeObject( userData );
-}
+};

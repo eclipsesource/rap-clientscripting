@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
+ 
 (function() {
 
 var EventBinding = org.eclipse.rap.clientscripting.EventBinding;
@@ -367,8 +367,8 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       this._inputText( text, "foo" );
 
       assertEquals( 2, logger.log.length );
-      assertEquals( SWT.Verify, logger.log[ 0 ].type )
-      assertEquals( SWT.Modify, logger.log[ 1 ].type )
+      assertEquals( SWT.Verify, logger.log[ 0 ].type );
+      assertEquals( SWT.Modify, logger.log[ 1 ].type );
     },
 
 
@@ -412,7 +412,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         "target" : "w3",
         "action" : "destroy"
       } );
-      text = null
+      text = null;
     },
     
     _inputText : function( textWidget, text, sel, oldSel ) {
@@ -436,4 +436,4 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
   
 } );
 
-})();
+}());

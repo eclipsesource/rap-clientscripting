@@ -12,14 +12,14 @@
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.ClientScriptingUtil = {
-  
+
   _SELECTION_KEY : "org.eclipse.rap.clientscripting.ClientScriptingUtil.selection",
 
   _wrapperHelper : function(){},
   
   _getterMapping : {
     "org.eclipse.rwt.widgets.Text" : {
-      "getText" : function( widget ) { return function() { return widget.getValue(); } },
+      "getText" : function( widget ) { return function() { return widget.getValue(); }; },
       "getSelection" : function( widget ) { 
         return function() {
           var key = org.eclipse.rap.clientscripting.ClientScriptingUtil._SELECTION_KEY;
@@ -30,7 +30,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
             result = [ start, start + length ]; 
           }
           return result;
-        }
+        };
       }
     }
   },

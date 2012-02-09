@@ -1,3 +1,4 @@
+/*global console:false */
 (function() {
   
   var nl = "</br>";
@@ -18,8 +19,8 @@
 
   var filterCommon = function( list ) {
     return list.slice( 0, common.length );
-  }
-  
+  };
+
   var filterIgnore = function( list ) {
     var result = list;
     for( var i = 0; i < ignore.length; i++ ) {
@@ -29,11 +30,11 @@
       }
     }
     return result;
-  }
+  };
   
   var filter = function( list ) {
     return filterIgnore( filterCommon( list ) );
-  }
+  };
   
   text += lv1 + "<b>org.eclipse.swt.widgets.Control</b>: " + toSetter( filterIgnore( common ) ) + nl; 
   
@@ -52,10 +53,10 @@
       }
     }
   }
-  
+
   text += nl;
   text += "## Available Getter:" + nl;
-  
+
   var widgets = org.eclipse.rap.clientscripting.ClientScriptingUtil._getterMapping;
   
   for( var key in widgets ) {
@@ -71,4 +72,4 @@
   
   console.log( text );
   
-} )();
+}());

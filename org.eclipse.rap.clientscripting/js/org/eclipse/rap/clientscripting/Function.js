@@ -12,6 +12,7 @@
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 // TODO [tb] : consider a name thats not a native Constructor ( "Function" )
+/*global handleEvent:false */
 org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
   // NOTE: the eval'd code will have the same scope as this function, therefore no local
   // variables except the "imports" are used.
