@@ -17,10 +17,19 @@ org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
   // NOTE: the eval'd code will have the same scope as this function, therefore no local
   // variables except the "imports" are used.
   var SWT = org.eclipse.rap.clientscripting.SWT;
-  eval( arguments[ 0 ] );
-  this._function = handleEvent; // TODO [tb] : allow multiple functions, specified by server 
+  try {
+    eval( arguments[ 0 ] );
+  } catch( ex ) {
+    var msg = "Could not parse ClientFunction: " + ( ex.message ? ex.message : ex );
+    throw new Error( msg );
+  }
+  try {
+    this._function = handleEvent; // TODO [tb] : allow specific function name(s) 
+  } catch( ex ) {
+    // handled in next if
+  }
   if( typeof this._function !== "function" ) {
-    throw new Error( "JavaScript code returns " + typeof result + ", must be function" );
+    throw new Error( "JavaScript code does not define a \"handleEvent\" function" );
   }
 };
 
