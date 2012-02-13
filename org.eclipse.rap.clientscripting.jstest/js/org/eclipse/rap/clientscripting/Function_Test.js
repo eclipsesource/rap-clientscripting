@@ -20,7 +20,6 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
   
   members : {
     
-    
     testCreateFunctionWrongNamed : function() {
       var code = "function foo(){}";
       try {
@@ -37,9 +36,9 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       var listener = new Function( code );
       listener.call();
       assertEquals( 1, global );
-      delete global;
+      delete window.global;
     },
-    
+
     testCreateFunctionSyntaxError : function() {
       var code = "null.no!;";
       try {
