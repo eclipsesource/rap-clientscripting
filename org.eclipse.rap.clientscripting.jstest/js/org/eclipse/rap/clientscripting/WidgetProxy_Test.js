@@ -148,8 +148,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
     testTextGetSelection : function() {
       var widgetProxy = WidgetProxy.getInstance( text );
       text.setValue( "foo" );
-      text.setSelectionStart( 1 );
-      text.setSelectionLength( 1 );
+      text.setSelection( [ 1,2 ] );
 
       var value = widgetProxy.getSelection();
 

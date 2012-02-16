@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       var listener = new Function( code );
       listener.call();
       assertEquals( 1, global );
-      delete window.global;
+      delete global;
     },
 
     testCreateFunctionSyntaxError : function() {
