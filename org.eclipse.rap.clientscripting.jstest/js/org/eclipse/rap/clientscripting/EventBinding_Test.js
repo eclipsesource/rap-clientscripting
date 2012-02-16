@@ -254,10 +254,10 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       };
 
       var binding = new EventBinding( text, SWT.Verify, handler );
-      this._inputText( text, "foobarxxx", 6 );
+      this._inputText( text, "foobarxxx", [ 3, 3 ] );
 
-      assertEquals( 3, text.getSelectionStart() );
-      assertEquals( 0, text.getSelectionLength() );
+      assertEquals( 3, text._getSelectionStart() );
+      assertEquals( 0, text._getSelectionLength() );
     },
 
     testVerifyBindingProtectAgainstTypeOverwrite : function() {
@@ -285,12 +285,12 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       };
 
       var binding = new EventBinding( text, SWT.Verify, handler );
-      this._inputText( text, "foob" );
+      this._inputText( text, "foob", [ 3, 3 ] );
 
       assertEquals( "foobar", text.getValue() );
     },
 
-    testVerifyEventSelectionAferTextOverwrite : function() {
+    testVerifyEventSelectionAfterTextOverwrite : function() {
       TestUtil.flush();
       text.setValue( "foo" );
       var handler = {
@@ -300,11 +300,28 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       } ;
 
       var binding = new EventBinding( text, SWT.Verify, handler );
-      this._inputText( text, "foxo", 3 );
+      this._inputText( text, "foxo", [ 2, 2 ] );
 
       assertEquals( "fobaro", text.getValue() );
-      assertEquals( 5, text.getSelectionStart() );
-      assertEquals( 0, text.getSelectionLength() );
+      assertEquals( 5, text._getSelectionStart() );
+      assertEquals( 0, text._getSelectionLength() );
+    },
+
+    testVerifyEventSelectionAfterReplacementTextOverwrite : function() {
+      TestUtil.flush();
+      text.setValue( "foo" );
+      var handler = {
+        "call" : function( event ) {
+          event.text = "bar";
+        }
+      } ;
+
+      var binding = new EventBinding( text, SWT.Verify, handler );
+      this._inputText( text, "fxo", [ 1, 2 ] );
+
+      assertEquals( "fbaro", text.getValue() );
+      assertEquals( 4, text._getSelectionStart() );
+      assertEquals( 0, text._getSelectionLength() );
     },
 
     testSelectionDuringVerifyEvent : function() {
@@ -319,10 +336,10 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       } ;
 
       var binding = new EventBinding( text, SWT.Verify, handler );
-      this._inputText( text, "foxo", 3, [ 2, 2 ] );
+      this._inputText( text, "foxo", [ 2, 2 ] );
 
-      assertEquals( 5, text.getSelectionStart() );
-      assertEquals( 0, text.getSelectionLength() );
+      assertEquals( 5, text._getSelectionStart() );
+      assertEquals( 0, text._getSelectionLength() );
       assertEquals( [ 2, 2 ], selection );
     },
 
@@ -338,13 +355,13 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       } ;
 
       var binding = new EventBinding( text, SWT.Verify, handler );
-      text.setSelectionStart( 2 );
-      text.setSelectionLength( 0 );
+      text._setSelectionStart( 2 );
+      text._setSelectionLength( 0 );
       TestUtil.press( text, "x" );
-      this._inputText( text, "foxo", 3 );
+      this._inputText( text, "foxo", [ 2, 2 ] );
 
-      assertEquals( 5, text.getSelectionStart() );
-      assertEquals( 0, text.getSelectionLength() );
+      assertEquals( 5, text._getSelectionStart() );
+      assertEquals( 0, text._getSelectionLength() );
       assertEquals( [ 2, 2 ], selection );
     },
 
@@ -415,20 +432,15 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       text = null;
     },
     
-    _inputText : function( textWidget, text, sel, oldSel ) {
+    _inputText : function( textWidget, text, oldSel ) {
       if( typeof oldSel !== "undefined" ) {
-        textWidget.setSelectionStart( oldSel[ 0 ] );
-        textWidget.setSelectionLength( oldSel[ 1 ] - oldSel[ 0 ] );
+        textWidget._setSelectionStart( oldSel[ 0 ] );
+        textWidget._setSelectionLength( oldSel[ 1 ] - oldSel[ 0 ] );
         TestUtil.click( textWidget ); // pasting
       }
       textWidget._inValueProperty = true;
       textWidget._inputElement.value = text;
       textWidget._inValueProperty = false;
-      if( typeof sel !== "undefined" ) {
-        textWidget.setSelectionStart( sel );
-      } else {
-        textWidget.setSelectionStart( text.length );
-      }
       textWidget._oninputDom( { "propertyName" : "value" } );      
     }
 

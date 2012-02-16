@@ -13,53 +13,12 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
 org.eclipse.rap.clientscripting.ClientScriptingUtil = {
 
-  _SELECTION_KEY : "org.eclipse.rap.clientscripting.ClientScriptingUtil.selection",
-
   _wrapperHelper : function(){},
   
   _getterMapping : {
     "org.eclipse.rwt.widgets.Text" : {
       "getText" : function( widget ) { return function() { return widget.getValue(); }; },
-      "getSelection" : function( widget ) { 
-        return function() {
-          var key = org.eclipse.rap.clientscripting.ClientScriptingUtil._SELECTION_KEY;
-          var result = widget.getUserData( key );
-          if( !result ) {
-            var start = widget.getSelectionStart();
-            var length = widget.getSelectionLength();
-            result = [ start, start + length ]; 
-          }
-          return result;
-        };
-      }
-    }
-  },
-
-  prepareSource : function( source, eventType ) {
-    var SWT = org.eclipse.rap.clientscripting.SWT;
-    if( source.classname === "org.eclipse.rwt.widgets.Text" ) {
-      if( eventType === SWT.Verify ) {
-        if( source.getLiveUpdate() ) {
-          // TODO [tb] : merge these features into Text.js together with TextUtil.js 
-          source.setLiveUpdate( false );
-          source.addEventListener( "mouseup", this._selectionSaver, this );
-          source.addEventListener( "mousedown", this._selectionSaver, this );
-          source.addEventListener( "keypress", this._selectionSaver, this );
-        } else {
-          throw new Error( "Can not bind more than one Verify Listener to one widget" );
-        }
-      }
-    }
-  },
-  
-  restoreSource : function( source, eventType ) {
-    var SWT = org.eclipse.rap.clientscripting.SWT;
-    if( source.classname === "org.eclipse.rwt.widgets.Text" ) {
-      if( eventType === SWT.Verify ) {
-        source.setLiveUpdate( true );
-        source.removeEventListener( "mouseup", this._selectionSaver, this );
-        source.removeEventListener( "mousedown", this._selectionSaver, this );
-        source.removeEventListener( "keypress", this._selectionSaver, this );
+      "getSelection" : function( widget ) { return function() { return widget.getSelection(); };
       }
     }
   },
@@ -295,57 +254,45 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     this._setStateMask( event, originalEvent );
   },
   
-  _selectionSaver : function( event ) {
-    var text = event.getTarget();
-    var selection = null;
-    var start = text.getSelectionStart();
-    var length = text.getSelectionLength();
-    if( typeof start === "number" && typeof length === "number" ) {
-      selection = [ start, start + length ];
-    }
-    text.setUserData( this._SELECTION_KEY, selection )
-  },
-  
   _initVerifyEvent : function( event, originalEvent ) {
     var text = originalEvent.getTarget();
     if( text.classname === "org.eclipse.rwt.widgets.Text" ) {
+      var keyCode = this._getLastKeyCode();
       var newValue = text.getComputedValue();
       var oldValue = text.getValue();
-      var newSel = text.getSelectionStart();
-      var diff = this._getDiff( newValue, oldValue, newSel );
-      if(    diff[ 2 ].length === 1 
-          && this._isKeyPressed() 
-          && diff[ 2 ].toUpperCase().charCodeAt( 0 ) === this._getLastKeyCode() ) 
-      {
-        event.keyCode = this._getLastKeyCode();
-        event.character = diff[ 2 ];
+      var oldSelection = text.getSelection();
+      var diff = this._getDiff( newValue, oldValue, oldSelection, keyCode );
+      if(    diff[ 0 ].length === 1 
+          && diff[ 1 ] === diff[ 2 ]
+          && diff[ 0 ] === originalEvent.getData()
+      ) {
+        event.keyCode = keyCode;
+        event.character = diff[ 0 ];
       }
-      event.start = diff[ 0 ];
-      event.end = diff[ 1 ];
-      event.text = diff[ 2 ];
+      event.text = diff[ 0 ];
+      event.start = diff[ 1 ];
+      event.end = diff[ 2 ];
     }
   },
   
   _postProcessVerifyEvent : function( event, wrappedEvent, originalEvent ) {
     var widget = originalEvent.getTarget();
     if( wrappedEvent.doit !== false ) {
-      if( event.text !== wrappedEvent.text ) {
+      if( event.text !== wrappedEvent.text && event.text !== "" ) {
         // insert replacement text
+        originalEvent.preventDefault();
         var currentText = widget.getValue();
         var textLeft = currentText.slice( 0, event.start );
         var textRight = currentText.slice( event.end, currentText.length );
+        var carret = textLeft.length + wrappedEvent.text.length;
         widget.setValue( textLeft + wrappedEvent.text + textRight );
-        widget.setSelectionStart( textLeft.length + wrappedEvent.text.length );
-        widget.setSelectionLength( 0 );
-      } else {
-        // allow change
-        widget.setValue( widget.getComputedValue().toString() );
+        widget.setSelection( [ carret, carret ] );
       }
     } else {
       // undo any change
-      widget._applyValue( widget.getValue() );
-      widget.setSelectionStart( event.end );
-      widget.setSelectionLength( 0 );
+      originalEvent.preventDefault();
+      widget._renderValue();
+      widget._renderSelection();
     }
   },
 
@@ -362,43 +309,35 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     event.stateMask |= originalEvent.isAltPressed() ? SWT.ALT : 0;
     event.stateMask |= originalEvent.isMetaPressed() ? SWT.COMMAND : 0;
   },
-  
-  _isKeyPressed : function() {
-    var keyCode = this._getLastKeyCode();
-    var type = org.eclipse.rwt.EventHandlerUtil._lastUpDownType[ keyCode ];
-    return type === "keydown";
-  },
-  
+
   _getLastKeyCode : function() {
     // NOTE : While this is a private field, this mechanism must be integrated with 
     // KeyEventSupport anyway to support the doit flag better.
     return org.eclipse.rwt.KeyEventSupport.getInstance()._currentKeyCode;
   },
 
-  _getDiff : function( newValue, oldValue, newSel ) {
-    var diffLength = newValue.length - oldValue.length;
-    var firstDiff = -1;
-    for( var i = 0; i < oldValue.length && firstDiff === -1; i++ ) {
-      if( newValue.charAt( i ) !== oldValue.charAt( i ) ) {
-        firstDiff = i;
-      }
-    }
+  _getDiff : function( newValue, oldValue, oldSel, keyCode ) {
     var start;
     var end;
-    var insert;
-    if( diffLength < 0 && firstDiff >= newSel ) { // delete only
-      start = newSel;
-      end = start - diffLength;
-      insert = "";
+    var text;
+    if( newValue.length >= oldValue.length || oldSel[ 0 ] !== oldSel[ 1 ] ) {
+      start = oldSel[ 0 ];
+      end = oldSel[ 1 ];
+      text = newValue.slice( start, newValue.length - ( oldValue.length - oldSel[ 1 ] ) );
     } else {
-      start = newSel - diffLength;
-      end = start;
-      if( firstDiff !== -1 && firstDiff < start ) {
-        start = firstDiff;
+      text = "";
+      if(    oldSel[ 0 ] === oldSel[ 1 ] 
+          && keyCode === 8 // backspace
+          && ( oldValue.length - 1 ) === newValue.length  
+      ) { 
+        start = oldSel[ 0 ] - 1;
+        end = oldSel[ 0 ];
+      } else {
+        start = oldSel[ 0 ];
+        end = start + oldValue.length - newValue.length;
       }
-      insert = newValue.slice( start, newSel );
     }
-    return [ start, end, insert ];
+    return [ text, start, end ];
   }
 
 };
