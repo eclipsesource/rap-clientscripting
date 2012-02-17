@@ -59,6 +59,24 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       }
     },
 
+    testCreateFunctionByProtocol : function() {
+      var code = "var handleEvent = function(){};";
+      var processor = org.eclipse.rwt.protocol.Processor;
+
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code
+        }
+      } );
+
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var result = ObjectManager.getObject( "w3" );
+      assertTrue( result instanceof Function );
+    },
+
     testCallWithArgument : function() {
       var code = "function handleEvent( e ){ e.x++; }";
       var listener = new Function( code );

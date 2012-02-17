@@ -25,7 +25,9 @@ public class ClientScriptingResourcesContribution implements TestContribution {
     "ClientScriptingUtil.js",
     "SWT.js",
     "Function.js",
+    "ListenerAdapter.js",
     "EventBinding.js",
+    "EventBindingAdapter.js",
     "EventProxy.js",
     "WidgetProxy.js"
   };

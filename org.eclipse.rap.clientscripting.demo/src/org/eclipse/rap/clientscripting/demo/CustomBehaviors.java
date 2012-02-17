@@ -51,6 +51,9 @@ public class CustomBehaviors {
     listener.addTo( widget, ClientListener.FocusOut );
     listener.addTo( widget, ClientListener.MouseDown );
     listener.addTo( widget, ClientListener.MouseUp );
+    listener.addTo( widget, ClientListener.MouseEnter );
+    listener.addTo( widget, ClientListener.MouseExit );
+    listener.addTo( widget, ClientListener.MouseMove );
     listener.addTo( widget, ClientListener.MouseDoubleClick );
   }
 

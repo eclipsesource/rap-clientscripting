@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
+import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -24,7 +25,7 @@ public class ClientListenerBindingSynchronizer implements Synchronizer<ClientLis
     clientObject.create( TYPE );
     clientObject.set( "listener", getId( binding.getListener() ) );
     clientObject.set( "targetObject", WidgetUtil.getId( binding.getWidget() ) );
-    clientObject.set( "eventType", binding.getEventType() );
+    clientObject.set( "eventType", getEventType( binding ) );
   }
 
   public void renderDestroy( ClientListenerBinding binding, IClientObject clientObject ) {
@@ -34,6 +35,52 @@ public class ClientListenerBindingSynchronizer implements Synchronizer<ClientLis
   private static String getId( Adaptable object ) {
     ClientObjectAdapter adapter = object.getAdapter( ClientObjectAdapter.class );
     return adapter.getId();
+  }
+  
+  private static String getEventType( ClientListenerBinding binding ) {
+    String result = null;
+    switch( binding.getEventType() ) {
+      case ClientListener.KeyUp:
+        result = "KeyUp";
+      break;
+      case ClientListener.KeyDown:
+        result = "KeyDown";
+      break;
+      case ClientListener.FocusIn:
+        result = "FocusIn";
+      break;
+      case ClientListener.FocusOut:
+        result = "FocusOut";
+      break;
+      case ClientListener.MouseDown:
+        result = "MouseDown";
+        break;
+      case ClientListener.MouseUp:
+        result = "MouseUp";
+        break;
+      case ClientListener.MouseEnter:
+        result = "MouseEnter";
+        break;
+      case ClientListener.MouseExit:
+        result = "MouseExit";
+        break;
+      case ClientListener.MouseMove:
+        result = "MouseMove";
+        break;
+      case ClientListener.MouseDoubleClick:
+        result = "MouseDoubleClick";
+      break;
+      case ClientListener.Modify:
+        result = "Modify";
+        break;
+      case ClientListener.Verify:
+        result = "Verify";
+      break;
+    }
+    if( result == null ) {
+      throw new IllegalArgumentException( "Unknown Event Type " + binding.getEventType() );
+    }
+    return result;
   }
 
 }

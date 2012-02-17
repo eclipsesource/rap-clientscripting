@@ -28,13 +28,36 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
   extend : qx.core.Object,
   
   members : {
-    
-    testCreateBinding : function() {
+        
+    testCreateBindingByProtocol : function() {
       var listener = new Function( "function handleEvent(){}" );
-      
-      var binding = new EventBinding( text, SWT.KeyDown, listener );
-      
-      assertTrue( binding instanceof EventBinding );
+      var code = "var handleEvent = function(){};";
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code
+        }
+      } );
+
+      processor.processOperation( {
+        "target" : "w5",
+        "action" : "create",
+        "type" : "rwt.clientscripting.EventBinding",
+        "properties" : {
+          "eventType" : "KeyDown",
+          "targetObject" : "w3",
+          "listener" : "w4"
+        }
+      } );
+
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var result = ObjectManager.getObject( "w5" );      
+      assertTrue( result instanceof EventBinding );
+      assertIdentical( ObjectManager.getObject( "w4" ), result.getTargetFunction() );
+      assertIdentical( SWT.KeyDown, result.getType() );
     },
 
     testBindKeyEvent : function() {

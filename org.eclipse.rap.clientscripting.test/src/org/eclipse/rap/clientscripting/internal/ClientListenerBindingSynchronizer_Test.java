@@ -62,7 +62,7 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
     assertEquals( "rwt.clientscripting.EventBinding", operation.getType() );
     assertEquals( listenerAdapter.getId(), operation.getProperty( "listener" ) );
     assertEquals( WidgetUtil.getId( label ), operation.getProperty( "targetObject" ) );
-    assertEquals( Integer.valueOf( SWT.KeyUp ), operation.getProperty( "eventType" ) );
+    assertEquals( "KeyUp", operation.getProperty( "eventType" ) );
   }
 
   private void createWidgets() {
