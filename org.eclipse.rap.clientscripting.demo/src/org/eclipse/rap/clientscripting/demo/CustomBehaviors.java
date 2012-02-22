@@ -15,20 +15,20 @@ public class CustomBehaviors {
   }
   
   public static void addUpperCaseBehavior( Text text ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "UpperCase.js" );
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "UpperCase.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.addTo( text, ClientListener.Verify );
   }
   
   public static void addDigitsOnlyBehavior( Text text ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DigitsOnly.js" );
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DigitsOnly.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.addTo( text, ClientListener.Modify );
   }
 
   public static void addDateFieldBehavior( Text text ) {
     text.setText( "__.__.____" );
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "DateField.js" );
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DateField.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.addTo( text, ClientListener.KeyDown );
     clientListener.addTo( text, ClientListener.Verify );
@@ -37,13 +37,13 @@ public class CustomBehaviors {
   }
 
   public static void addCounterBehavior( Control control ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Counter.js" );
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Counter.js" );
     ClientListener listener = new ClientListener( scriptCode );
     listener.addTo( control, ClientListener.MouseDown );
   }
 
   public static void addLoggerBehavior( Widget widget ) {
-    String scriptCode = ResourceLoaderUtil.readContent( RESOURCES_PREFIX + "Logger.js" );
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Logger.js" );
     ClientListener listener = new ClientListener( scriptCode );
     listener.addTo( widget, ClientListener.KeyDown );
     listener.addTo( widget, ClientListener.KeyUp );

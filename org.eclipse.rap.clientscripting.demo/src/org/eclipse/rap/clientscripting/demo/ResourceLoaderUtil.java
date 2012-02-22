@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -31,31 +30,29 @@ public class ResourceLoaderUtil {
 
   /**
    * Reads the content of a given text resource.
-   * 
+   *
    * @param resource the fully qualified name of the resource, without leading slash
    * @return the contents of the resource as string
    * @throws IllegalArgumentException if the resource could not be read
    */
-  public static String readContent( String resource ) {
-    InputStream stream = CLASSLOADER.getResourceAsStream( resource );
-    if( stream == null ) {
-      throw new IllegalArgumentException( "Resource not found: " + resource );
-    }
+  public static String readTextContent( String resource ) {
     try {
-      return readContents( stream );
+      return readTextContentChecked( resource );
     } catch( IOException e ) {
       throw new IllegalArgumentException( "Failed to read resource: " + resource );
     }
   }
 
-  private static String readContents( InputStream stream )
-    throws UnsupportedEncodingException, IOException
-  {
-    BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( stream, CHARSET ) );
+  private static String readTextContentChecked( String resource ) throws IOException {
+    InputStream stream = CLASSLOADER.getResourceAsStream( resource );
+    if( stream == null ) {
+      throw new IllegalArgumentException( "Resource not found: " + resource );
+    }
     try {
-      return readLines( bufferedReader );
+      BufferedReader reader = new BufferedReader( new InputStreamReader( stream, CHARSET ) );
+      return readLines( reader );
     } finally {
-      bufferedReader.close();
+      stream.close();
     }
   }
 
