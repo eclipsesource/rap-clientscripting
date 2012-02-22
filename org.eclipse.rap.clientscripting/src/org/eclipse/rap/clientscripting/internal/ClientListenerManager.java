@@ -29,7 +29,7 @@ public class ClientListenerManager {
   }
 
   public static ClientListenerManager getInstance() {
-    return ( ClientListenerManager )SessionSingletonBase.getInstance( ClientListenerManager.class );
+    return SessionSingletonBase.getInstance( ClientListenerManager.class );
   }
 
   public void addListener( ClientListener listener ) {

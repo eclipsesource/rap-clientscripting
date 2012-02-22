@@ -133,7 +133,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     widget.destroy = function() {
       listener( this );
       orgDestroy.call( widget );
-    }
+    };
   },
 
   initEvent : function( event, type, originalEvent ) {
