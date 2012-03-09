@@ -26,28 +26,14 @@ public class ClientObjectAdapterImpl_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testGetId() {
-    ClientObjectAdapter adapter = new ClientObjectAdapterImpl();
-
-    assertNotNull( adapter.getId() );
-    assertTrue( adapter.getId().length() > 0 );
-  }
-
-  public void testDifferentIds() {
-    ClientObjectAdapter adapter1 = new ClientObjectAdapterImpl();
-    ClientObjectAdapter adapter2 = new ClientObjectAdapterImpl();
-
-    assertFalse( adapter1.getId().equals( adapter2.getId() ) );
-  }
-
   public void testIsCreated() {
-    ClientObjectAdapter adapter = new ClientObjectAdapterImpl();
+    IClientObjectAdapter2 adapter = new ClientObjectAdapterImpl();
 
     assertFalse( adapter.isCreated() );
   }
 
   public void testSetCreated() {
-    ClientObjectAdapter adapter = new ClientObjectAdapterImpl();
+    IClientObjectAdapter2 adapter = new ClientObjectAdapterImpl();
 
     adapter.setCreated();
 

@@ -15,17 +15,11 @@ import java.util.Collection;
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
-import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
-import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.widgets.Widget;
 
 
 public class TestUtil {
-  
-  public static String getId( Adaptable object ) {
-    return object.getAdapter( ClientObjectAdapter.class ).getId();
-  }
-  
+
   public static ClientListenerBinding findBinding( ClientListener listener,
                                                    Widget widget,
                                                    int eventType )

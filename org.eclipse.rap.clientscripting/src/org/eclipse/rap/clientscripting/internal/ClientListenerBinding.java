@@ -2,15 +2,17 @@ package org.eclipse.rap.clientscripting.internal;
 
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings( { "restriction" } )
 public class ClientListenerBinding implements Adaptable {
 
   private final ClientListener listener;
   private final Widget widget;
   private final int eventType;
-  private ClientObjectAdapter clientObjectAdapter;
+  private IClientObjectAdapter2 iClientObjectAdapter2;
   private boolean disposed;
 
   public ClientListenerBinding( Widget widget, int eventType, ClientListener listener ) {
@@ -67,11 +69,11 @@ public class ClientListenerBinding implements Adaptable {
   @SuppressWarnings( "unchecked" )
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
-    if( adapter == ClientObjectAdapter.class ) {
-      if( clientObjectAdapter == null ) {
-        clientObjectAdapter = new ClientObjectAdapterImpl();
+    if( adapter == IClientObjectAdapter2.class || adapter == IClientObjectAdapter.class ) {
+      if( iClientObjectAdapter2 == null ) {
+        iClientObjectAdapter2 = new ClientObjectAdapterImpl();
       }
-      result = ( T )clientObjectAdapter;
+      result = ( T )iClientObjectAdapter2;
     }
     return result;
   }

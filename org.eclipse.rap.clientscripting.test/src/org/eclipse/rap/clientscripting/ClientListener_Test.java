@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
 import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
-import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
+import org.eclipse.rap.clientscripting.internal.IClientObjectAdapter2;
 import org.eclipse.rap.clientscripting.test.TestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -201,23 +201,23 @@ public class ClientListener_Test extends TestCase {
   }
 
   public void testGetClientObjectAdapter() {
-    ClientObjectAdapter adapter = listener.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter = listener.getAdapter( IClientObjectAdapter2.class );
 
     assertNotNull( adapter );
   }
 
   public void testGetClientObjectAdapter_sameInstance() {
-    ClientObjectAdapter adapter = listener.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter = listener.getAdapter( IClientObjectAdapter2.class );
 
-    assertSame( adapter, listener.getAdapter( ClientObjectAdapter.class ) );
+    assertSame( adapter, listener.getAdapter( IClientObjectAdapter2.class ) );
   }
 
   public void testGetClientObjectAdapter_differentInstances() {
     ClientListener listener1 = new ClientListener( "code" );
     ClientListener listener2 = new ClientListener( "code" );
 
-    ClientObjectAdapter adapter1 = listener1.getAdapter( ClientObjectAdapter.class );
-    ClientObjectAdapter adapter2 = listener2.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter1 = listener1.getAdapter( IClientObjectAdapter2.class );
+    IClientObjectAdapter2 adapter2 = listener2.getAdapter( IClientObjectAdapter2.class );
 
     assertNotSame( adapter1, adapter2 );
   }

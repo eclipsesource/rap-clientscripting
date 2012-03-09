@@ -10,14 +10,16 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectAdapter;
 
-public class ClientObjectAdapterImpl implements ClientObjectAdapter {
 
-  private final String id = ObjectIdGenerator.getNextId();
+@SuppressWarnings( "restriction" )
+public class ClientObjectAdapterImpl extends ClientObjectAdapter implements IClientObjectAdapter2 {
+
   private boolean created = false;
 
-  public String getId() {
-    return id;
+  public ClientObjectAdapterImpl() {
+    super( "cs" );
   }
 
   public boolean isCreated() {
@@ -27,4 +29,5 @@ public class ClientObjectAdapterImpl implements ClientObjectAdapter {
   public void setCreated() {
     created = true;
   }
+
 }

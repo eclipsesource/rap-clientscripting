@@ -13,6 +13,7 @@ package org.eclipse.rap.clientscripting.internal;
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 
 
@@ -33,10 +34,10 @@ public class ClientListenerBindingSynchronizer implements Synchronizer<ClientLis
   }
 
   private static String getId( Adaptable object ) {
-    ClientObjectAdapter adapter = object.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter adapter = object.getAdapter( IClientObjectAdapter.class );
     return adapter.getId();
   }
-  
+
   private static String getEventType( ClientListenerBinding binding ) {
     String result = null;
     switch( binding.getEventType() ) {

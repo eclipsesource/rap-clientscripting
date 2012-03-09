@@ -16,7 +16,7 @@ import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rwt.internal.protocol.ClientObject;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 
 
@@ -38,13 +38,12 @@ public class ClientListenerSynchronizer_Test extends TestCase {
 
   public void testRenderCreate() {
     ClientListener listener = new ClientListener( "script code" );
-    ClientObjectAdapter adapter = listener.getAdapter( ClientObjectAdapter.class );
-    IClientObject clientObject = new ClientObject( adapter.getId() );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( listener );
 
     synchronizer.renderCreate( listener, clientObject );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( adapter.getId() );
+    CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( listener ) );
     assertEquals( "rwt.clientscripting.Listener", operation.getType() );
     assertEquals( "script code", operation.getProperty( "code" ) );
   }

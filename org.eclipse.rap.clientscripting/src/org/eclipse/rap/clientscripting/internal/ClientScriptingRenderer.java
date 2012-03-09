@@ -14,7 +14,7 @@ import java.util.Collection;
 
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.protocol.ClientObject;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -64,23 +64,23 @@ final class ClientScriptingRenderer {
   }
 
   private static void render( ClientListener listener ) {
-    ClientObjectAdapter adapter = listener.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter = listener.getAdapter( IClientObjectAdapter2.class );
     if( !adapter.isCreated() ) {
-      IClientObject clientObject = new ClientObject( adapter.getId() );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( listener );
       clientListenerSynchronizer.renderCreate( listener, clientObject );
       adapter.setCreated();
     }
   }
 
   private static void render( ClientListenerBinding binding ) {
-    ClientObjectAdapter adapter = binding.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter = binding.getAdapter( IClientObjectAdapter2.class );
     if( !adapter.isCreated() ) {
-      IClientObject clientObject = new ClientObject( adapter.getId() );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( binding );
       clientListenerBindingSynchronizer.renderCreate( binding, clientObject );
       adapter.setCreated();
     }
     if( binding.isDisposed() ) {
-      IClientObject clientObject = new ClientObject( adapter.getId() );
+      IClientObject clientObject = ClientObjectFactory.getClientObject( binding );
       clientListenerBindingSynchronizer.renderDestroy( binding, clientObject );
     }
   }

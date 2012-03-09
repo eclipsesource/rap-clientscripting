@@ -57,8 +57,8 @@ public class ClientScriptingRenderer_Test extends TestCase {
     ClientScriptingRenderer.render();
 
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCreateOperation( TestUtil.getId( listener ) ) );
-    assertNotNull( message.findCreateOperation( TestUtil.getId( binding ) ) );
+    assertNotNull( message.findCreateOperation( ClientObjectUtil.getId( listener ) ) );
+    assertNotNull( message.findCreateOperation( ClientObjectUtil.getId( binding ) ) );
   }
 
   public void testCreateRenderedOnlyOnce() {
@@ -86,7 +86,7 @@ public class ClientScriptingRenderer_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     // TODO [rst] Use Message#findDestroyOperation( String ) as soon as it is available
     DestroyOperation operation = ( DestroyOperation )message.getOperation( 0 );
-    assertEquals( TestUtil.getId( binding ), operation.getTarget() );
+    assertEquals( ClientObjectUtil.getId( binding ), operation.getTarget() );
   }
 
   public void testDestroyBindingRenderedOnlyOnce() {

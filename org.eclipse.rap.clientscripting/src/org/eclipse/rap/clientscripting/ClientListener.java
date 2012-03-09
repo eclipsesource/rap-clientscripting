@@ -17,16 +17,17 @@ import java.util.Collections;
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
 import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
-import org.eclipse.rap.clientscripting.internal.ClientObjectAdapter;
+import org.eclipse.rap.clientscripting.internal.IClientObjectAdapter2;
 import org.eclipse.rap.clientscripting.internal.ClientObjectAdapterImpl;
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings( "serial" )
+@SuppressWarnings( { "serial" , "restriction" } )
 public class ClientListener implements Adaptable {
 
   public static final int KeyDown = SWT.KeyDown;
@@ -34,7 +35,7 @@ public class ClientListener implements Adaptable {
   public static final int MouseDown = SWT.MouseDown;
   public static final int MouseUp = SWT.MouseUp;
   public static final int MouseMove = 5;
-  public static final int MouseEnter = 6;   
+  public static final int MouseEnter = 6;
   public static final int MouseExit = 7;
   public static final int MouseDoubleClick = SWT.MouseDoubleClick;
   public static final int FocusIn = SWT.FocusIn;
@@ -44,7 +45,7 @@ public class ClientListener implements Adaptable {
 
   private final String scriptCode;
   private boolean disposed;
-  private ClientObjectAdapter clientObjectAdapter;
+  private IClientObjectAdapter2 iClientObjectAdapter2;
   private ClientListenerAdapter clientListenerAdapter;
   protected Collection<ClientListenerBinding> bindings;
 
@@ -103,11 +104,11 @@ public class ClientListener implements Adaptable {
   @SuppressWarnings( "unchecked" )
   public <T> T getAdapter( Class<T> adapter ) {
     T result = null;
-    if( adapter == ClientObjectAdapter.class ) {
-      if( clientObjectAdapter == null ) {
-        clientObjectAdapter = new ClientObjectAdapterImpl();
+    if( adapter == IClientObjectAdapter2.class || adapter == IClientObjectAdapter.class ) {
+      if( iClientObjectAdapter2 == null ) {
+        iClientObjectAdapter2 = new ClientObjectAdapterImpl();
       }
-      result = ( T )clientObjectAdapter;
+      result = ( T )iClientObjectAdapter2;
     } else if( adapter == ClientListenerAdapter.class ) {
       if( clientListenerAdapter == null ) {
         clientListenerAdapter = createClientListenerAdapter();

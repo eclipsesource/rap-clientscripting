@@ -10,22 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
-import org.eclipse.rwt.RWT;
 
+public interface IClientObjectAdapter2 {
 
-public class ObjectIdGenerator {
+  boolean isCreated();
 
-  private static final String ATTR_NEXT_ID = ObjectIdGenerator.class.getName().concat( ".nextId" );
+  void setCreated();
 
-  private ObjectIdGenerator() {
-  }
-
-  public static String getNextId() {
-    Integer nextId = ( Integer )RWT.getSessionStore().getAttribute( ATTR_NEXT_ID );
-    if( nextId == null ) {
-      nextId = Integer.valueOf( 1 );
-    }
-    RWT.getSessionStore().setAttribute( ATTR_NEXT_ID, Integer.valueOf( nextId.intValue() + 1 ) );
-    return "cs" + nextId.toString();
-  }
 }

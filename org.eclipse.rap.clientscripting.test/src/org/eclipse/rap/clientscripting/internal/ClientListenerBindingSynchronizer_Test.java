@@ -16,7 +16,7 @@ import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rwt.internal.protocol.ClientObject;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -51,16 +51,14 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
   }
 
   public void testRenderCreate() {
-    ClientObjectAdapter listenerAdapter = listener.getAdapter( ClientObjectAdapter.class );
-    ClientObjectAdapter bindingAdapter = binding.getAdapter( ClientObjectAdapter.class );
-    IClientObject clientObject = new ClientObject( bindingAdapter.getId() );
+    IClientObject bindingClientObject = ClientObjectFactory.getClientObject( binding );
 
-    synchronizer.renderCreate( binding, clientObject );
+    synchronizer.renderCreate( binding, bindingClientObject );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( bindingAdapter.getId() );
+    CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( binding ) );
     assertEquals( "rwt.clientscripting.EventBinding", operation.getType() );
-    assertEquals( listenerAdapter.getId(), operation.getProperty( "listener" ) );
+    assertEquals( ClientObjectUtil.getId( listener ), operation.getProperty( "listener" ) );
     assertEquals( WidgetUtil.getId( label ), operation.getProperty( "targetObject" ) );
     assertEquals( "KeyUp", operation.getProperty( "eventType" ) );
   }

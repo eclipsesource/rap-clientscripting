@@ -79,20 +79,20 @@ public class ClientListenerBinding_Test extends TestCase {
   }
 
   public void testGetClientObjectAdapter() {
-    ClientObjectAdapter adapter = binding.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter = binding.getAdapter( IClientObjectAdapter2.class );
 
     assertNotNull( adapter );
   }
 
   public void testGetClientObjectAdapter_sameInstance() {
-    ClientObjectAdapter adapter = binding.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter = binding.getAdapter( IClientObjectAdapter2.class );
 
-    assertSame( adapter, binding.getAdapter( ClientObjectAdapter.class ) );
+    assertSame( adapter, binding.getAdapter( IClientObjectAdapter2.class ) );
   }
 
   public void testGetClientObjectAdapter_differentInstances() {
-    ClientObjectAdapter adapter1 = binding.getAdapter( ClientObjectAdapter.class );
-    ClientObjectAdapter adapter2 = bindingWithDifferentEvent.getAdapter( ClientObjectAdapter.class );
+    IClientObjectAdapter2 adapter1 = binding.getAdapter( IClientObjectAdapter2.class );
+    IClientObjectAdapter2 adapter2 = bindingWithDifferentEvent.getAdapter( IClientObjectAdapter2.class );
 
     assertNotSame( adapter1, adapter2 );
   }

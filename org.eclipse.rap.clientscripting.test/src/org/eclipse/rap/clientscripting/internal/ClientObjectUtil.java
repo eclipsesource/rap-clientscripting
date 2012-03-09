@@ -10,13 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 
-public interface ClientObjectAdapter {
 
-  String getId();
+@SuppressWarnings( "restriction" )
+public class ClientObjectUtil {
 
-  boolean isCreated();
-
-  void setCreated();
+  public static String getId( Adaptable object ) {
+    return object.getAdapter( IClientObjectAdapter.class ).getId();
+  }
 
 }
