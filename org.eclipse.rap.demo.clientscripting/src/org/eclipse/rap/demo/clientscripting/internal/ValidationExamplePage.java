@@ -10,19 +10,41 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.clientscripting.internal;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Locale;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.examples.ExampleUtil;
 import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 
 public class ValidationExamplePage implements IExamplePage {
+  
+  private static final String[] VALID_DOMAINS = new String[] {
+    "eclipse.org",
+    "eclipsesource.com",
+    "googlemail.com",
+    "gmail.com",
+    "nasa.gov"
+  };
 
   public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createMainLayout( 2 ) );
@@ -34,73 +56,167 @@ public class ValidationExamplePage implements IExamplePage {
     composite.setLayoutData( ExampleUtil.createFillData() );
     composite.setLayout( ExampleUtil.createGridLayout( 1, false, true, true ) );
     addDigitsOnlyExample( composite );
-    addUpperCaseExample( composite );
-    addDateFieldExample( composite );
+    //addUpperCaseExample( composite );
+    addEMailExample( composite );
+    addDateExample( composite );
   }
 
   private void addDigitsOnlyExample( Composite parent ) {
-    addHeaderLabel( parent, "Only digits allowed, validated directly on the client:" );
-    Text text = new Text( parent, SWT.BORDER );
-    CustomBehaviors.addDigitsOnlyBehavior( text );
-    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
-    text.setText( "23" );
-    text.setSelection( 2 );
-    text.setFocus();
+    ExampleUtil.createHeading( parent, "Allow only digits", 2 );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, false, false ) );
+    composite.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    Label labelServer = new Label( composite, SWT.NONE );
+    labelServer.setText( "Server-Side validation:" );
+    Text serverText = new Text( composite, SWT.BORDER );
+    Label labelClient = new Label( composite, SWT.NONE );
+    labelClient.setText( "Client-Side validation:" );
+    Text clientText = new Text( composite, SWT.BORDER );
+    serverText.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    serverText.setText( "23" );
+    serverText.setSelection( 2 );
+    serverText.setFocus();
+    serverText.addListener( SWT.Modify, new Listener() {
+      public void handleEvent( Event event ) {
+        Text widget = ( Text )event.widget;
+        String text = widget.getText();
+        String regexp = "^[0-9]*$";
+        if( !text.matches( regexp ) ) {
+          widget.setBackground( new Color( widget.getDisplay(), 255, 255, 128 ) );
+          widget.setToolTipText( "Only digits allowed!" );
+        } else {
+          widget.setBackground( null );
+          widget.setToolTipText( null );
+        }
+      }
+    } );
+    clientText.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    clientText.setText( "23" );
+    clientText.setSelection( 2 );
+    CustomBehaviors.addDigitsOnlyBehavior( clientText );
   }
 
   private void addUpperCaseExample( Composite parent ) {
-    addHeaderLabel( parent, "Only upper-case characters, auto-changed on the client:" );
-    Text text = new Text( parent, SWT.BORDER );
-    CustomBehaviors.addUpperCaseBehavior( text );
-    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
-  }
+    ExampleUtil.createHeading( parent, "Only Upper-Case allowed", 2 );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 2, false, false, false ) );
+    composite.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    Label labelServerForced = new Label( composite, SWT.NONE );
+    labelServerForced.setText( "Auto Upper-Case (Server):" );
+    Text serverForcedText = new Text( composite, SWT.BORDER );
+    Label labelClientForced = new Label( composite, SWT.NONE );
+    labelClientForced.setText( "Auto Upper-Case (Client):" );
+    Text clientForcedText = new Text( composite, SWT.BORDER );
+    serverForcedText.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    serverForcedText.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+        // TODO [tb] : Does not work with untyped event?
+        event.text = event.text.toUpperCase();
+      }
+    } );
+    clientForcedText.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    CustomBehaviors.addUpperCaseBehavior( clientForcedText );
 
-  private void addDateFieldExample( Composite parent ) {
-    addHeaderLabel( parent, "Simple date field, syntax validation on client,"
-                            + " thorough validation on server on focus-out:" );
-    Text text = new Text( parent, SWT.BORDER );
-    CustomBehaviors.addDateFieldBehavior( text );
-    addDateValidator( text );
-    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
-  }
-
-  private static void addHeaderLabel( Composite parent, String text ) {
-    Label label = new Label( parent, SWT.WRAP );
-    label.setText( text );
-    GridData layoutData = ExampleUtil.createHorzFillData();
-    layoutData.verticalIndent = 10;
-    label.setLayoutData( layoutData );
-  }
-
-  private static void addDateValidator( final Text text ) {
-    text.addFocusListener( new FocusAdapter() {
-      Color color = new Color( text.getDisplay(), 255, 128, 128 );
-      @Override
-      public void focusLost( FocusEvent event ) {
-        if( !verifyDate( text.getText() ) ) {
-          text.setBackground( color );
-        } else {
-          text.setBackground( null );
+    Label labelServerDeny = new Label( composite, SWT.NONE );
+    labelServerDeny.setText( "Deny Lower-Case (Server):" );
+    Text serverDenyText = new Text( composite, SWT.BORDER );
+    Label labelClientDeny = new Label( composite, SWT.NONE );
+    labelClientDeny.setText( "Deny Lower-Case (Client):" );
+    Text clientDenyText = new Text( composite, SWT.BORDER );
+    serverDenyText.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    serverDenyText.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+        String regexp = ".*[a-z].*";
+        // TODO [tb] : Does not work with untyped event?
+        if( event.text.matches( regexp ) ) {
+          event.doit = false; 
+          Text widget = ( Text )event.widget;
+          // TODO [tb] : selection should be reset automatically. 
+          widget.setSelection( widget.getText().length() );
         }
+      }
+    } );
+    clientDenyText.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    CustomBehaviors.addLowerCaseBehavior( clientDenyText );
+  }
+
+  private void addEMailExample( Composite parent ) {
+    ExampleUtil.createHeading( parent, "E-Mail", 2 );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, false, false ) );
+    composite.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Basic client-side Modify check,\n server-side validation on focus-out:" );
+    final Text text = new Text( composite, SWT.BORDER );
+    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    CustomBehaviors.addEMailBehavior( text );
+    text.addFocusListener( new FocusListener() {
+      public void focusLost( FocusEvent event ) {
+        String mail = text.getText();
+        if( mail.matches( "^\\S+@\\S+\\.[a-zA-Z]{2,5}$" ) ) {
+          boolean valid = false;
+          for( int i = 0; i < VALID_DOMAINS.length; i++ ) {
+            String domain = VALID_DOMAINS[ i ];
+            if( mail.endsWith( domain ) ) {
+              valid = true;
+            }
+          }
+          if( !valid ) {
+            String title = "Invalid input";
+            String mesg = "This is an unkown domain. Following domains are valid:\n";
+            for( int i = 0; i < VALID_DOMAINS.length; i++ ) {
+              mesg += VALID_DOMAINS[ i ];
+              if( i < VALID_DOMAINS.length -1 ) {
+                mesg += ", ";
+              }
+            }
+            MessageDialog.openWarning( text.getShell(), title, mesg );
+            text.setFocus();
+            text.setBackground( new Color( text.getDisplay(), 255, 255, 128 ) );
+          }
+        }
+      }
+      public void focusGained( FocusEvent event ) {
       }
     } );
   }
 
-  private static boolean verifyDate( String date ) {
-    String[] values = date.split( "\\.", 3 );
-    boolean valid = true;
-    try {
-      if( Integer.parseInt( values[ 0 ] ) > 31 ) {
-        valid = false;
+  private void addDateExample( Composite parent ) {
+    ExampleUtil.createHeading( parent, "Date", 2 );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( ExampleUtil.createGridLayout( 1, false, false, false ) );
+    composite.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Basic client-side Verify and Modify check,\n server-side validation on focus-out:" );
+    final Text text = new Text( composite, SWT.BORDER );
+    final String pattern = "DD.MM.YYYY";
+    text.setMessage( pattern );
+    text.setTextLimit( pattern.length() );
+    text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    CustomBehaviors.addDateFieldBehavior( text );
+    text.addFocusListener( new FocusListener() {
+      public void focusLost( FocusEvent event ) {
+        String dateText = text.getText();
+        if( dateText.length() > 0 ) {
+          DateFormat format = DateFormat.getDateInstance( DateFormat.MEDIUM, Locale.GERMANY );
+          format.setLenient( false );
+          try {
+            Date date = format.parse( dateText );
+            text.setBackground( null );
+            text.setText( format.format( date ) );
+          } catch( ParseException e ) {
+            text.setBackground( new Color( text.getDisplay(), 255, 255, 128 ) );
+            String title = "Invalid input";
+            String mesg = "This is an invalid or incomplete date.";
+            MessageDialog.openWarning( text.getShell(), title, mesg );
+            text.setFocus();
+          }
+        }
       }
-      if( Integer.parseInt( values[ 1 ] ) > 12 ) {
-        valid = false;
+      public void focusGained( FocusEvent event ) {
       }
-      Integer.parseInt( values[ 2 ].trim() ); // remove trailing " "
-    } catch( NumberFormatException ex ) {
-      valid = false;
-    }
-    return valid;
+    } );
   }
+
 
 }

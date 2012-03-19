@@ -30,6 +30,12 @@ public class CustomBehaviors {
     clientListener.addTo( text, ClientListener.Verify );
   }
 
+  public static void addLowerCaseBehavior( Text text ) {
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "LowerCase.js" );
+    ClientListener clientListener = new ClientListener( scriptCode );
+    clientListener.addTo( text, ClientListener.Verify );
+  }
+
   public static void addDigitsOnlyBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DigitsOnly.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
@@ -37,19 +43,22 @@ public class CustomBehaviors {
   }
 
   public static void addDateFieldBehavior( Text text ) {
-    text.setText( "__.__.____" );
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DateField.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.addTo( text, ClientListener.KeyDown );
     clientListener.addTo( text, ClientListener.Verify );
-    clientListener.addTo( text, ClientListener.MouseUp );
-    clientListener.addTo( text, ClientListener.MouseDown );
+    clientListener.addTo( text, ClientListener.Modify );
   }
 
   public static void addCounterBehavior( Control control ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Counter.js" );
     ClientListener listener = new ClientListener( scriptCode );
     listener.addTo( control, ClientListener.MouseDown );
+  }
+
+  public static void addEMailBehavior( Text text ) {
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Email.js" );
+    ClientListener listener = new ClientListener( scriptCode );
+    listener.addTo( text, ClientListener.Modify );
   }
 
   public static void addLoggerBehavior( Widget widget ) {
