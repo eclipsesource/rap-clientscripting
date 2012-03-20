@@ -200,6 +200,7 @@ public class ValidationExamplePage implements IExamplePage {
         if( dateText.length() > 0 ) {
           DateFormat format = DateFormat.getDateInstance( DateFormat.MEDIUM, Locale.GERMANY );
           format.setLenient( false );
+          // TODO [tb] : handle dd.MM.yy format to result in 19yy or 20yy
           try {
             Date date = format.parse( dateText );
             text.setBackground( null );
