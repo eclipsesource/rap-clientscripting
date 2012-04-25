@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.clientscripting.internal;
 
+import org.eclipse.rap.clientscripting.internal.resources.ClientScriptingResource;
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.resources.IResource;
 
 
 public class ValidationExampleContribution implements IExampleContribution {
@@ -26,5 +29,11 @@ public class ValidationExampleContribution implements IExampleContribution {
 
   public IExamplePage createPage() {
     return new ValidationExamplePage();
+  }
+
+  public void configure( ApplicationConfiguration configuration ) {
+    for( IResource resource : ClientScriptingResource.ALL_RESOURCES ) {
+      configuration.addResource( resource );
+    }
   }
 }

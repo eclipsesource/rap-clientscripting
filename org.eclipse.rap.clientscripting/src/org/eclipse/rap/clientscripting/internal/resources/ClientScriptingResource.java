@@ -14,9 +14,20 @@ import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
-public class ClientScriptingResource implements IResource {
+public abstract class ClientScriptingResource implements IResource {
 
   private static final String PATH_PREFIX = "/org/eclipse/rap/clientscripting/";
+
+  public static final IResource[] ALL_RESOURCES = new IResource[] {
+    new ClientScriptingUtilResource(),
+    new EventBindingAdapterResource(),
+    new EventBindingResource(),
+    new EventProxyResource(),
+    new FunctionResource(),
+    new ListenerAdapterResource(),
+    new SWTResource(),
+    new WidgetProxyResource()
+  };
 
   private final String location;
 
