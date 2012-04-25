@@ -17,6 +17,7 @@ import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.resources.IResource;
 
 
+@SuppressWarnings( "restriction" )
 public class ValidationExampleContribution implements IExampleContribution {
 
   public String getId() {
