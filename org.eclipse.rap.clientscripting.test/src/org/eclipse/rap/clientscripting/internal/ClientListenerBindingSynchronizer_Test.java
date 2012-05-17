@@ -11,6 +11,7 @@
 package org.eclipse.rap.clientscripting.internal;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -20,11 +21,15 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.internal.theme.JsonObject;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 @SuppressWarnings( "restriction" )
@@ -43,7 +48,6 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
     Fixture.setUp();
     createWidgets();
     createListeners();
-    createBindings();
     synchronizer = new ClientListenerBindingSynchronizer();
   }
 
@@ -53,6 +57,7 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
   }
 
   public void testRenderCreate() {
+    createBindings( null );
     IClientObject bindingClientObject = ClientObjectFactory.getClientObject( binding );
 
     synchronizer.renderCreate( binding, bindingClientObject );
@@ -63,6 +68,29 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
     assertEquals( ClientObjectUtil.getId( listener ), operation.getProperty( "listener" ) );
     assertEquals( WidgetUtil.getId( label ), operation.getProperty( "targetObject" ) );
     assertEquals( "KeyUp", operation.getProperty( "eventType" ) );
+    assertEquals( "{}", operation.getProperty( "context" ).toString() );
+  }
+  
+  public void testRenderContextWidet() {
+    HashMap<String, Object> map = new HashMap<String, Object>();
+    Widget widget = new Label( shell, SWT.NONE );
+    map.put( "widget", widget );
+    createBindings( map );
+    IClientObject bindingClientObject = ClientObjectFactory.getClientObject( binding );
+    
+    synchronizer.renderCreate( binding, bindingClientObject );
+    
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( binding ) );
+    assertEquals( "rwt.clientscripting.EventBinding", operation.getType() );
+    JSONObject contextResult = ( JSONObject )operation.getProperty( "context" );
+    String widgetId = null;
+    try {
+      widgetId = contextResult.getJSONObject( "widget" ).getString( "id" );
+    } catch( JSONException e ) {
+      // should not happen
+    }
+    assertEquals( WidgetUtil.getId( widget ), widgetId );
   }
 
   private void createWidgets() {
@@ -75,8 +103,9 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
     listener = new ClientListener( "code" );
   }
 
-  private void createBindings() {
-    binding = new ClientListenerBinding( label, SWT.KeyUp, listener, new HashMap<String, Object>() );
+  private void createBindings( Map<String, Object> context ) {
+    Map<String, Object> useContext = context != null ? context : new HashMap<String, Object>();
+    binding = new ClientListenerBinding( label, SWT.KeyUp, listener, useContext );
   }
 
 }
