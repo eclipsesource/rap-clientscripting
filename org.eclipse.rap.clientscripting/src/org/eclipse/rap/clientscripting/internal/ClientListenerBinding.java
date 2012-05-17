@@ -1,10 +1,13 @@
 package org.eclipse.rap.clientscripting.internal;
 
+
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.swt.widgets.Widget;
 
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings( { "restriction" } )
 public class ClientListenerBinding implements Adaptable {
@@ -12,13 +15,20 @@ public class ClientListenerBinding implements Adaptable {
   private final ClientListener listener;
   private final Widget widget;
   private final int eventType;
+  private final Map<String, Object> context;
   private IClientObjectAdapter2 iClientObjectAdapter2;
   private boolean disposed;
 
-  public ClientListenerBinding( Widget widget, int eventType, ClientListener listener ) {
+  public ClientListenerBinding( 
+    Widget widget, 
+    int eventType, 
+    ClientListener listener, 
+    Map<String, Object> context ) 
+  {
     this.widget = widget;
     this.eventType = eventType;
     this.listener = listener;
+    this.context = new HashMap<String, Object>( context );
     disposed = false;
   }
 
@@ -32,6 +42,10 @@ public class ClientListenerBinding implements Adaptable {
 
   public int getEventType() {
     return eventType;
+  }
+
+  public Map<String, Object> getContext() {
+    return new HashMap<String, Object>( context );
   }
 
   public boolean isDisposed() {
@@ -49,7 +63,11 @@ public class ClientListenerBinding implements Adaptable {
       result = true;
     } else if( obj != null && getClass() == obj.getClass() ) {
       ClientListenerBinding other = ( ClientListenerBinding )obj;
-      if( eventType == other.eventType && widget == other.widget && listener == other.listener ) {
+      if(    eventType == other.eventType 
+          && widget == other.widget 
+          && listener == other.listener
+          && context.equals(other.context ) )
+      {
         result = true;
       }
     }
@@ -63,6 +81,7 @@ public class ClientListenerBinding implements Adaptable {
     result = prime * result + eventType;
     result = prime * result + widget.hashCode();
     result = prime * result + listener.hashCode();
+    result = prime * result + context.hashCode();
     return result;
   }
 

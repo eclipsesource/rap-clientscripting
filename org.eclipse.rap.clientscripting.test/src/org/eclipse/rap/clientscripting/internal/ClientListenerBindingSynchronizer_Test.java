@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
+import java.util.HashMap;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.clientscripting.ClientListener;
@@ -74,7 +76,7 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
   }
 
   private void createBindings() {
-    binding = new ClientListenerBinding( label, SWT.KeyUp, listener );
+    binding = new ClientListenerBinding( label, SWT.KeyUp, listener, new HashMap<String, Object>() );
   }
 
 }

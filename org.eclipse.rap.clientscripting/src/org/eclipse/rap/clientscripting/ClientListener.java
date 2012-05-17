@@ -13,6 +13,8 @@ package org.eclipse.rap.clientscripting;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
@@ -68,7 +70,8 @@ public class ClientListener implements Adaptable {
     if( widget.isDisposed() ) {
       throw new IllegalArgumentException( "Widget is disposed" );
     }
-    final ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this );
+    Map<String, Object> context = new HashMap<String, Object>();
+    final ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this, context );
     addBinding( binding );
     ClientListenerManager.getInstance().addListener( this );
   }

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
+import java.util.HashMap;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
@@ -226,7 +228,8 @@ public class ClientListener_Test extends TestCase {
     listener.addTo( shell, SWT.KeyDown );
 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
-    ClientListenerBinding wanted = new ClientListenerBinding( shell, SWT.KeyDown, listener );
+    ClientListenerBinding wanted 
+      = new ClientListenerBinding( shell, SWT.KeyDown, listener, new HashMap<String, Object>() );
     assertTrue( adapter.getBindings().contains( wanted ) );
   }
 

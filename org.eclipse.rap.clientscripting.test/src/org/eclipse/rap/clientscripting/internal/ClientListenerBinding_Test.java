@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
@@ -33,11 +36,15 @@ public class ClientListenerBinding_Test extends TestCase {
   private ClientListenerBinding bindingWithDifferentWidget;
   private ClientListenerBinding bindingWithDifferentEvent;
   private ClientListenerBinding bindingWithDifferentListener;
+  private ClientListenerBinding bindingWithDifferentContext;
+  private HashMap<String, Object> context1;
+  private HashMap<String, Object> context2;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     createWidgets();
+    createContexts();
     createListeners();
     createBindingss();
   }
@@ -52,6 +59,7 @@ public class ClientListenerBinding_Test extends TestCase {
     assertFalse( binding.equals( bindingWithDifferentWidget ) );
     assertFalse( binding.equals( bindingWithDifferentEvent ) );
     assertFalse( binding.equals( bindingWithDifferentListener ) );
+    assertFalse( binding.equals( bindingWithDifferentContext ) );
   }
 
   public void testHashCode() {
@@ -60,12 +68,33 @@ public class ClientListenerBinding_Test extends TestCase {
     assertFalse( binding.hashCode() == bindingWithDifferentWidget.hashCode() );
     assertFalse( binding.hashCode() == bindingWithDifferentEvent.hashCode() );
     assertFalse( binding.hashCode() == bindingWithDifferentListener.hashCode() );
+    assertFalse( binding.hashCode() == bindingWithDifferentContext.hashCode() );
   }
 
   public void testCreate() {
     assertSame( listener1, binding.getListener() );
     assertSame( label1, binding.getWidget() );
     assertEquals( SWT.MouseDown, binding.getEventType() );
+    assertEquals( context1, binding.getContext() );
+  }
+
+  public void testContextSaveCopyOnCreate() {
+    Map<String, Object> actualContext = binding.getContext();
+
+    context1.put( "myField", label1 );
+    
+    assertNull( actualContext.get( "myField" ) );
+    assertFalse( context1.equals( actualContext ) );
+  }
+
+  public void testContextSaveCopyOnGet() {
+    Map<String, Object> actualContext = binding.getContext();
+    
+    actualContext.put( "myField", label1 );
+    Map<String, Object> newActualContext = binding.getContext();
+    
+    assertNull( newActualContext.get( "myField" ) );
+    assertFalse( newActualContext.equals( actualContext ) );
   }
 
   public void testIsDisposed() {
@@ -109,12 +138,23 @@ public class ClientListenerBinding_Test extends TestCase {
     listener2 = new ClientListener( "code" );
   }
 
+  private void createContexts() {
+    context1 = new HashMap< String, Object >();
+    context2 = new HashMap< String, Object >();
+    context2.put( "myField", label2 );
+  }
+  
   private void createBindingss() {
-    binding = new ClientListenerBinding( label1, SWT.MouseDown, listener1 );
-    equalBinding = new ClientListenerBinding( label1, SWT.MouseDown, listener1 );
-    bindingWithDifferentWidget = new ClientListenerBinding( label2, SWT.MouseDown, listener1 );
-    bindingWithDifferentEvent = new ClientListenerBinding( label1, SWT.MouseUp, listener1 );
-    bindingWithDifferentListener = new ClientListenerBinding( label1, SWT.MouseDown, listener2 );
+    binding = new ClientListenerBinding( label1, SWT.MouseDown, listener1, context1 );
+    equalBinding = new ClientListenerBinding( label1, SWT.MouseDown, listener1, context1 );
+    bindingWithDifferentWidget 
+      = new ClientListenerBinding( label2, SWT.MouseDown, listener1, context1 );
+    bindingWithDifferentEvent 
+      = new ClientListenerBinding( label1, SWT.MouseUp, listener1, context1 );
+    bindingWithDifferentListener 
+      = new ClientListenerBinding( label1, SWT.MouseDown, listener2, context1 );
+    bindingWithDifferentContext 
+      = new ClientListenerBinding( label1, SWT.MouseDown, listener1, context2 );
   }
 
 }
