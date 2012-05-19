@@ -173,7 +173,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
       text = ObjectManager.getObject( "w3" );
       text.focus();
     },
-    
+
     tearDown : function() {
       Processor.processOperation( {
         "target" : "w2",

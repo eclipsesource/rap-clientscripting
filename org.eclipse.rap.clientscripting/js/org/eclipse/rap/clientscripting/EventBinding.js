@@ -11,13 +11,18 @@
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
  
-org.eclipse.rap.clientscripting.EventBinding = function( source, eventType, targetFunction ) {
+org.eclipse.rap.clientscripting.EventBinding = function( source, 
+                                                         eventType, 
+                                                         targetFunction,
+                                                         context )
+{
   try {
     var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
     this._eventType = eventType;
     this._nativeType = ClientScriptingUtil.getNativeEventType( source, this._eventType );
     this._targetFunction = targetFunction;
     this._source = source;
+    this._context = ClientScriptingUtil.createContext( context ? context : {} );
     this._bind();
   } catch( ex ) {
     throw new Error( "Could not create EventBinding " + eventType + ":" + ex.message );
@@ -46,6 +51,10 @@ org.eclipse.rap.clientscripting.EventBinding.prototype = {
   
   getType : function() {
     return this._eventType;
+  },
+
+  getContext : function() {
+    return this._context;
   },
 
   getTargetFunction : function() {

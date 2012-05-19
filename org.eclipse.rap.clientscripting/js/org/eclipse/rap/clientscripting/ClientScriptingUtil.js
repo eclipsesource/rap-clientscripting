@@ -14,7 +14,7 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
 org.eclipse.rap.clientscripting.ClientScriptingUtil = {
 
   _wrapperHelper : function(){},
-  
+
   _getterMapping : {
     "org.eclipse.rwt.widgets.Text" : {
       "getText" : function( widget ) { return function() { return widget.getValue(); }; },
@@ -75,6 +75,20 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     this._wrapperHelper.prototype = object;
     var result = new this._wrapperHelper();
     this._wrapperHelper.prototype = null;
+    return result;
+  },
+  
+  createContext : function( source ) {
+    var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+    var result = {};
+	  for( var key in source ) {
+	    var value = source[ key ];
+	    if( value && ( typeof value.id === "string" ) ) {
+	      var widget = ObjectManager.getObject( value.id );
+	      value = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( widget );
+	    }
+	    result[ key ] = value;
+	  }
     return result;
   },
   
