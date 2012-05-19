@@ -33,7 +33,7 @@ public class Demo implements IEntryPoint {
     Shell shell = new Shell( display );
     shell.setText( "RAP Client Scripting Examples" );
     createShellContents( shell );
-    shell.setBounds( 20, 20, 400, 400 );
+    shell.setBounds( 20, 20, 400, 500 );
     shell.open();
     while( !shell.isDisposed() ) {
       if( !display.readAndDispatch() ) {
@@ -50,6 +50,7 @@ public class Demo implements IEntryPoint {
     addDigitsOnlyExample( parent );
     addDateFieldExample( parent );
     addCounterExample( parent );
+    addCopyTextExample( parent );
   }
 
   private void addUpperCaseExample( Composite parent ) {
@@ -57,6 +58,15 @@ public class Demo implements IEntryPoint {
     Text text = new Text( parent, SWT.BORDER );
     CustomBehaviors.addUpperCaseBehavior( text );
     text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+  }
+  
+  private void addCopyTextExample( Composite parent ) {
+    addHeaderLabel( parent, "Copy content:" );
+    Text text1 = new Text( parent, SWT.BORDER );
+    Text text2 = new Text( parent, SWT.BORDER );
+    CustomBehaviors.addCopyContentBehavior( text1, text2 );
+    text1.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    text2.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
   }
 
   private void addDigitsOnlyExample( Composite parent ) {

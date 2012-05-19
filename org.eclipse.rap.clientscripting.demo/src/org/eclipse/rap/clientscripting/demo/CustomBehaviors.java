@@ -1,5 +1,8 @@
 package org.eclipse.rap.clientscripting.demo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -56,5 +59,17 @@ public class CustomBehaviors {
     listener.addTo( widget, ClientListener.MouseMove );
     listener.addTo( widget, ClientListener.MouseDoubleClick );
   }
+
+  public static void addCopyContentBehavior( Text text1, Text text2 ) {
+    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "CopyContent.js" );
+    ClientListener clientListener = new ClientListener( scriptCode );
+    Map<String, Object> context1 = new HashMap<String, Object>();
+    context1.put( "target", text2 );
+    Map<String, Object> context2 = new HashMap<String, Object>();
+    context2.put( "target", text1 );
+    clientListener.addTo( text1, ClientListener.Modify, context1 );
+    clientListener.addTo( text2, ClientListener.Modify, context2 );
+  }
+
 
 }
