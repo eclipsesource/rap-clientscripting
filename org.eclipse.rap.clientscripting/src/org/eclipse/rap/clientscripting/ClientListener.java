@@ -26,6 +26,7 @@ import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -61,16 +62,22 @@ public class ClientListener implements Adaptable {
   }
 
   public void addTo( Widget widget, int eventType ) {
+    addTo( widget, eventType, new HashMap<String, Object>() );
+  }
+
+  public void addTo( Widget widget, int eventType, Map<String, Object> context ) {
     if( disposed ) {
       throw new IllegalStateException( "ClientListener is disposed" );
     }
     if( widget == null ) {
       throw new NullPointerException( "widget is null" );
     }
+    if( context == null ) {
+      throw new NullPointerException( "context is null" );
+    }
     if( widget.isDisposed() ) {
       throw new IllegalArgumentException( "Widget is disposed" );
     }
-    Map<String, Object> context = new HashMap<String, Object>();
     final ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this, context );
     addBinding( binding );
     ClientListenerManager.getInstance().addListener( this );
@@ -166,4 +173,5 @@ public class ClientListener implements Adaptable {
 
     };
   }
+
 }
