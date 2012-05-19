@@ -35,8 +35,8 @@ org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
 
 org.eclipse.rap.clientscripting.Function.prototype = {
 
-  call : function() {
-    this._function.apply( window, arguments );
+  call : function( arg, context ) {
+    this._function.call( ( context ? context : window ), arg );
   }
 
 };

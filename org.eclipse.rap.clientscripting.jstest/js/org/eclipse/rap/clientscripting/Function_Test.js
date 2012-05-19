@@ -89,14 +89,14 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       assertEquals( 2, event.x );
     },
 
-    testNoContext : function() {
+    testContext : function() {
       var code = "var handleEvent = function(){ this.x++; }";
       var listener = new Function( code );
-      listener.x = 1;
+      var context = { "x" : 1 };
 
-      listener.call();
+      listener.call( null, context );
 
-      assertEquals( 1, listener.x );
+      assertEquals( 2, context.x );
     },
 
     testImportedClasses : function() {

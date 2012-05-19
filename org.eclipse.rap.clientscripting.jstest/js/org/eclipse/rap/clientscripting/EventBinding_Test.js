@@ -126,6 +126,23 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertTrue( event instanceof EventProxy );
     },
 
+    testExecuteInContext : function() {
+      var log = [];
+      var logger = {
+        "log" : log,
+        "call" : function( arg, context ) {
+          log.push( context );
+        }
+      };
+      var context = { "myWidget" : { "id" : "w3" } };
+
+      var binding = new EventBinding( text, SWT.KeyDown, logger, context );
+      TestUtil.press( text, "A" );
+
+      var actualContext = logger.log[ 0 ];
+      assertTrue( actualContext.myWidget instanceof org.eclipse.rap.clientscripting.WidgetProxy );
+    },
+
     testBindDisposesProxyEvent : function() {
       var logger = this._createLogger(); 
 
