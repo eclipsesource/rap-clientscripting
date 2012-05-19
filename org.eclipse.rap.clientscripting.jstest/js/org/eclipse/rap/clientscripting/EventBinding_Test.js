@@ -426,7 +426,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       return result;
     },
 
-    _setUp : function() {
+    setUp : function() {
       TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
@@ -443,7 +443,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       textEl = text.getElement();
     },
     
-    _tearDown : function() {
+    tearDown : function() {
       Processor.processOperation( {
         "target" : "w2",
         "action" : "destroy"

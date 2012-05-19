@@ -158,7 +158,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
     ////////
     // Helper
 
-    _setUp : function() {
+    setUp : function() {
       TestUtil.createShellByProtocol( "w2" );
       Processor.processOperation( {
         "target" : "w3",
@@ -174,7 +174,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
       text.focus();
     },
     
-    _tearDown : function() {
+    tearDown : function() {
       Processor.processOperation( {
         "target" : "w2",
         "action" : "destroy"

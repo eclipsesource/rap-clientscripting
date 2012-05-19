@@ -458,7 +458,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
     ///////// 
     // Helper
 
-    _setUp : function() {
+    setUp : function() {
       shell = TestUtil.createShellByProtocol( "w2" );
       shell.setBorder( null );
       shell.setLocation( 10, 10 );
@@ -478,7 +478,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventProxy_Test", {
       text.focus();
     },
     
-    _tearDown : function() {
+    tearDown : function() {
       Processor.processOperation( {
         "target" : "w2",
         "action" : "destroy"
