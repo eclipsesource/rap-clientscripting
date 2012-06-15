@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.rap.clientscripting.resources">
-   <implementation class="org.eclipse.rap.clientscripting.internal.ClientScriptingResourcesContribution"/>
-   <service>
-      <provide interface="org.eclipse.rap.rwt.jstest.TestContribution"/>
-   </service>
-</scr:component>
