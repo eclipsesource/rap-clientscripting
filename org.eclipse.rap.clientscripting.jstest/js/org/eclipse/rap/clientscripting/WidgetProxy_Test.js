@@ -126,6 +126,13 @@ qx.Class.define( "org.eclipse.rap.clientscripting.WidgetProxy_Test", {
       }
     },
 
+    testGetDataForId : function() {
+      var widgetProxy = WidgetProxy.getInstance( text );
+
+      var id = widgetProxy.getData( org.eclipse.rap.clientscripting.WidgetProxy._ID )
+      assertEquals( "w3", id );
+    },
+
     testSetTextSync : function() {
       TestUtil.initRequestLog();
       var widgetProxy = WidgetProxy.getInstance( text );

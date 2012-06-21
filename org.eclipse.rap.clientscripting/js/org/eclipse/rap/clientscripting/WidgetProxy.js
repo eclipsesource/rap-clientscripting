@@ -11,13 +11,19 @@
  
 qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
 
+(function(){
+
+var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
+
 org.eclipse.rap.clientscripting.WidgetProxy = function( originalWidget ) {
-  var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
+  var WidgetProxy = org.eclipse.rap.clientscripting.WidgetProxy;
   ClientScriptingUtil.attachSetter( this, originalWidget );
   ClientScriptingUtil.attachGetter( this, originalWidget );
   ClientScriptingUtil.attachUserData( this, originalWidget );
+  this.setData( WidgetProxy._ID, ObjectManager.getId( originalWidget ) );
   ClientScriptingUtil.addDisposeListener( originalWidget, function() {
-    org.eclipse.rap.clientscripting.WidgetProxy.disposeWidgetProxy( originalWidget );
+    WidgetProxy.disposeWidgetProxy( originalWidget );
   } );
 };
 
@@ -27,18 +33,23 @@ org.eclipse.rap.clientscripting.WidgetProxy._PROXY_KEY =
 org.eclipse.rap.clientscripting.WidgetProxy._USERDATA_KEY = 
   "org.eclipse.rap.clientscripting.WidgetProxy.USERDATA";
 
+org.eclipse.rap.clientscripting.WidgetProxy._ID = 
+  "org.eclipse.rap.clientscripting.WidgetProxy.ID";
+
 org.eclipse.rap.clientscripting.WidgetProxy.getInstance = function( widget ) {
   var protoInstance = widget.getUserData( this._PROXY_KEY );
   if( protoInstance == null ) {
     protoInstance = new org.eclipse.rap.clientscripting.WidgetProxy( widget );
     widget.setUserData( this._PROXY_KEY, protoInstance );
   }
-  return org.eclipse.rap.clientscripting.ClientScriptingUtil.wrapAsProto( protoInstance );
+  return ClientScriptingUtil.wrapAsProto( protoInstance );
 };
 
 org.eclipse.rap.clientscripting.WidgetProxy.disposeWidgetProxy = function( widget ) {
   var protoInstance = widget.getUserData( this._PROXY_KEY );
   var userData = widget.getUserData( this._USERDATA_KEY );
-  org.eclipse.rap.clientscripting.ClientScriptingUtil.disposeObject( protoInstance );
-  org.eclipse.rap.clientscripting.ClientScriptingUtil.disposeObject( userData );
+  ClientScriptingUtil.disposeObject( protoInstance );
+  ClientScriptingUtil.disposeObject( userData );
 };
+
+}());
