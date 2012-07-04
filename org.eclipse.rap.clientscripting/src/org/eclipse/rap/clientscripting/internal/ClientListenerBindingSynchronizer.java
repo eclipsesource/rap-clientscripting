@@ -44,9 +44,14 @@ public class ClientListenerBindingSynchronizer implements Synchronizer<ClientLis
         JsonObject value = new JsonObject();
         value.append( "id", WidgetUtil.getId( ( Widget )object ) );
         result.append( key, value );
+      } else if( object instanceof Integer ) {
+        result.append( key, ( ( Integer )object ) );
+      } else if( object instanceof String ) {
+        result.append( key, ( String )object );
+      } else {
+        throw new IllegalArgumentException( "Context does not support " + object.getClass() );
       }
     }
-    
     return result;
   }
 

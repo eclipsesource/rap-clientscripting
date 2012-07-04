@@ -82,17 +82,17 @@ public class ClientListenerBinding_Test extends TestCase {
     Map<String, Object> actualContext = binding.getContext();
 
     context1.put( "myField", label1 );
-    
+
     assertNull( actualContext.get( "myField" ) );
     assertFalse( context1.equals( actualContext ) );
   }
 
   public void testContextSaveCopyOnGet() {
     Map<String, Object> actualContext = binding.getContext();
-    
+
     actualContext.put( "myField", label1 );
     Map<String, Object> newActualContext = binding.getContext();
-    
+
     assertNull( newActualContext.get( "myField" ) );
     assertFalse( newActualContext.equals( actualContext ) );
   }
@@ -143,7 +143,7 @@ public class ClientListenerBinding_Test extends TestCase {
     context2 = new HashMap< String, Object >();
     context2.put( "myField", label2 );
   }
-  
+
   private void createBindingss() {
     binding = new ClientListenerBinding( label1, SWT.MouseDown, listener1, context1 );
     equalBinding = new ClientListenerBinding( label1, SWT.MouseDown, listener1, context1 );

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,16 +71,16 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
     assertEquals( "KeyUp", operation.getProperty( "eventType" ) );
     assertEquals( "{}", operation.getProperty( "context" ).toString() );
   }
-  
+
   public void testRenderContextWidet() {
     HashMap<String, Object> map = new HashMap<String, Object>();
     Widget widget = new Label( shell, SWT.NONE );
     map.put( "widget", widget );
     createBindings( map );
     IClientObject bindingClientObject = ClientObjectFactory.getClientObject( binding );
-    
+
     synchronizer.renderCreate( binding, bindingClientObject );
-    
+
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( binding ) );
     assertEquals( "rwt.clientscripting.EventBinding", operation.getType() );
@@ -91,6 +92,62 @@ public class ClientListenerBindingSynchronizer_Test extends TestCase {
       // should not happen
     }
     assertEquals( WidgetUtil.getId( widget ), widgetId );
+  }
+
+  public void testRenderContextInt() {
+    HashMap<String, Object> map = new HashMap<String, Object>();
+    map.put( "number", new Integer( 3 ) );
+    createBindings( map );
+    IClientObject bindingClientObject = ClientObjectFactory.getClientObject( binding );
+
+    synchronizer.renderCreate( binding, bindingClientObject );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( binding ) );
+    assertEquals( "rwt.clientscripting.EventBinding", operation.getType() );
+    JSONObject contextResult = ( JSONObject )operation.getProperty( "context" );
+    int result = -1;
+    try {
+      result = contextResult.getInt( "number" );
+    } catch( JSONException e ) {
+      // should not happen
+    }
+    assertEquals( 3, result );
+  }
+
+  public void testRenderContextString() {
+    HashMap<String, Object> map = new HashMap<String, Object>();
+    map.put( "sometext", "foo" );
+    createBindings( map );
+    IClientObject bindingClientObject = ClientObjectFactory.getClientObject( binding );
+
+    synchronizer.renderCreate( binding, bindingClientObject );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( binding ) );
+    assertEquals( "rwt.clientscripting.EventBinding", operation.getType() );
+    JSONObject contextResult = ( JSONObject )operation.getProperty( "context" );
+    String result = null;
+    try {
+      result = contextResult.getString( "sometext" );
+    } catch( JSONException e ) {
+      // should not happen
+    }
+    assertEquals( "foo", result );
+  }
+  
+  public void testRenderUnsupportedType() {
+    HashMap<String, Object> map = new HashMap<String, Object>();
+    map.put( "sometext", new Date() );
+    createBindings( map );
+    IClientObject bindingClientObject = ClientObjectFactory.getClientObject( binding );
+
+    try {
+      synchronizer.renderCreate( binding, bindingClientObject );
+      fail();
+    }catch( IllegalArgumentException ex ) {
+      // expected
+    }
   }
 
   private void createWidgets() {

@@ -16,13 +16,13 @@ public class CustomBehaviors {
   private CustomBehaviors() {
     // prevent instantiation
   }
-  
+
   public static void addUpperCaseBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "UpperCase.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.addTo( text, ClientListener.Verify );
   }
-  
+
   public static void addDigitsOnlyBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DigitsOnly.js" );
     ClientListener clientListener = new ClientListener( scriptCode );
@@ -42,7 +42,11 @@ public class CustomBehaviors {
   public static void addCounterBehavior( Control control ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Counter.js" );
     ClientListener listener = new ClientListener( scriptCode );
-    listener.addTo( control, ClientListener.MouseDown );
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put( "preFix", "Click:" );
+    context.put( "initNumber", new Integer( 1 ) );
+    listener.addTo( control, ClientListener.MouseDown, context );
+
   }
 
   public static void addLoggerBehavior( Widget widget ) {
