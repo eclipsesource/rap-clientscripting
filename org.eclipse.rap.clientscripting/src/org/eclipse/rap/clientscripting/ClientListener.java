@@ -19,14 +19,13 @@ import java.util.Map;
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
 import org.eclipse.rap.clientscripting.internal.ClientListenerBinding;
 import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
-import org.eclipse.rap.clientscripting.internal.IClientObjectAdapter2;
 import org.eclipse.rap.clientscripting.internal.ClientObjectAdapterImpl;
+import org.eclipse.rap.clientscripting.internal.IClientObjectAdapter2;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 
