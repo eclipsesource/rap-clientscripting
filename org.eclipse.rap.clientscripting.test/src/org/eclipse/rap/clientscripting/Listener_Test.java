@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
+import java.util.Date;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.clientscripting.internal.ClientListenerAdapter;
@@ -18,8 +21,8 @@ import org.eclipse.rap.clientscripting.test.TestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class Listener_Test extends TestCase {
@@ -40,10 +43,8 @@ public class Listener_Test extends TestCase {
 
   public void testAddListner() {
     Listener listener = new Listener(){
-      public void handleEvent( Event event ) {
-      }
-      public String getJavaScript() {
-        return "function handleEvent(){}";
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
       }
     };
 
@@ -58,10 +59,8 @@ public class Listener_Test extends TestCase {
 
   public void testRemoveListner() {
     Listener listener = new Listener(){
-      public void handleEvent( Event event ) {
-      }
-      public String getJavaScript() {
-        return "function handleEvent(){}";
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
       }
     };
     listener.add( shell, SWT.MouseDown );
@@ -75,10 +74,8 @@ public class Listener_Test extends TestCase {
 
   public void testDisposeListner() {
     Listener listener = new Listener(){
-      public void handleEvent( Event event ) {
-      }
-      public String getJavaScript() {
-        return "function handleEvent(){}";
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
       }
     };
     listener.add( shell, SWT.MouseDown );
@@ -88,7 +85,142 @@ public class Listener_Test extends TestCase {
 
     assertTrue( clientListener.isDisposed() );
   }
+
+  public void testListnerWithIntField() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      private int test = 23;
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+
+    listener.add( shell, SWT.MouseDown );
+
+    Map<String, Object> context = getContext( listener );
+    assertEquals( 23, ( ( Integer )context.get( "test" ) ).intValue() );
+  }
+
+  public void testListnerWithStringField() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      private String test = "foo";
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+
+    listener.add( shell, SWT.MouseDown );
+
+    Map<String, Object> context = getContext( listener );
+    assertEquals( "foo", ( ( String )context.get( "test" ) ) );
+  }
+
+  public void testListnerWithWidgetField() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      private Shell test = shell;
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+
+    listener.add( shell, SWT.MouseDown );
+
+    Map<String, Object> context = getContext( listener );
+    assertEquals( shell, ( ( Widget )context.get( "test" ) ) );
+  }
   
+  public void testListnerUnspupportedPrimitiveField() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      private float test = -234;
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+    try {
+      listener.add( shell, SWT.MouseDown );
+      fail();
+    } catch( RuntimeException ex ) {
+      // expected
+    }
+  }
+  
+  public void testListnerUnspupportedObjectField() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      private Date test = new Date();
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+    try {
+      listener.add( shell, SWT.MouseDown );
+      fail();
+    } catch( RuntimeException ex ) {
+      // expected
+    }
+  }
+
+  public void testListnerFieldMustBePrivate() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      int test = 23;
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+
+    try {
+      listener.add( shell, SWT.MouseDown );
+      fail();
+    } catch( RuntimeException ex ) {
+      //expected
+    }
+  }
+
+  public void testPublicMethodNotAllowed() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      public void test(){}
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+
+    try {
+      listener.add( shell, SWT.MouseDown );
+      fail();
+    } catch( RuntimeException ex ) {
+      //expected
+    }
+  }
+
+  public void testListnerWithFinalField() {
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      final private int test = 23;
+      public ClientListener getClientImpl() {
+        return new ClientListener( "function handleEvent(){}" );
+      }
+    };
+
+    try {
+      listener.add( shell, SWT.MouseDown );
+      fail();
+    } catch( RuntimeException ex ) {
+      //expected
+    }
+  }
+
+  private Map<String, Object> getContext( Listener listener ) {
+    ClientListenerAdapter adapter = listener.clientListener.getAdapter( ClientListenerAdapter.class );
+    ClientListenerBinding binding = ( ClientListenerBinding )adapter.getBindings().toArray()[ 0 ];
+    Map<String, Object> context = binding.getContext();
+    return context;
+  }
+
   private void createWidgets() {
     display = new Display();
     shell = new Shell( display );
