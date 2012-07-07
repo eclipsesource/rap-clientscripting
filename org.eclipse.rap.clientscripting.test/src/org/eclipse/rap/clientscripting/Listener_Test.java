@@ -48,13 +48,13 @@ public class Listener_Test extends TestCase {
       }
     };
 
-    listener.add( shell, SWT.MouseDown );
+    listener.addTo( shell, SWT.MouseDown );
 
     ClientListener result = listener.clientListener;
     ClientListenerAdapter adapter = result.getAdapter( ClientListenerAdapter.class );
     assertEquals( 1, adapter.getBindings().size() );
     assertEquals( "function handleEvent(){}", adapter.getScriptCode() );
-    listener.remove( shell, SWT.MouseDown );
+    listener.removeTo( shell, SWT.MouseDown );
   }
 
   public void testRemoveListner() {
@@ -63,9 +63,9 @@ public class Listener_Test extends TestCase {
         return new ClientListener( "function handleEvent(){}" );
       }
     };
-    listener.add( shell, SWT.MouseDown );
+    listener.addTo( shell, SWT.MouseDown );
 
-    listener.remove( shell, SWT.MouseDown );
+    listener.removeTo( shell, SWT.MouseDown );
 
     ClientListener clientListener = listener.clientListener;
     ClientListenerBinding binding = TestUtil.findBinding( clientListener, shell, SWT.MouseDown );
@@ -78,7 +78,7 @@ public class Listener_Test extends TestCase {
         return new ClientListener( "function handleEvent(){}" );
       }
     };
-    listener.add( shell, SWT.MouseDown );
+    listener.addTo( shell, SWT.MouseDown );
     ClientListener clientListener = listener.clientListener;
 
     listener.dispose();
@@ -95,7 +95,7 @@ public class Listener_Test extends TestCase {
       }
     };
 
-    listener.add( shell, SWT.MouseDown );
+    listener.addTo( shell, SWT.MouseDown );
 
     Map<String, Object> context = getContext( listener );
     assertEquals( 23, ( ( Integer )context.get( "test" ) ).intValue() );
@@ -110,7 +110,7 @@ public class Listener_Test extends TestCase {
       }
     };
 
-    listener.add( shell, SWT.MouseDown );
+    listener.addTo( shell, SWT.MouseDown );
 
     Map<String, Object> context = getContext( listener );
     assertEquals( "foo", ( ( String )context.get( "test" ) ) );
@@ -125,7 +125,7 @@ public class Listener_Test extends TestCase {
       }
     };
 
-    listener.add( shell, SWT.MouseDown );
+    listener.addTo( shell, SWT.MouseDown );
 
     Map<String, Object> context = getContext( listener );
     assertEquals( shell, ( ( Widget )context.get( "test" ) ) );
@@ -140,7 +140,7 @@ public class Listener_Test extends TestCase {
       }
     };
     try {
-      listener.add( shell, SWT.MouseDown );
+      listener.addTo( shell, SWT.MouseDown );
       fail();
     } catch( RuntimeException ex ) {
       // expected
@@ -156,7 +156,7 @@ public class Listener_Test extends TestCase {
       }
     };
     try {
-      listener.add( shell, SWT.MouseDown );
+      listener.addTo( shell, SWT.MouseDown );
       fail();
     } catch( RuntimeException ex ) {
       // expected
@@ -173,7 +173,7 @@ public class Listener_Test extends TestCase {
     };
 
     try {
-      listener.add( shell, SWT.MouseDown );
+      listener.addTo( shell, SWT.MouseDown );
       fail();
     } catch( RuntimeException ex ) {
       //expected
@@ -190,7 +190,7 @@ public class Listener_Test extends TestCase {
     };
 
     try {
-      listener.add( shell, SWT.MouseDown );
+      listener.addTo( shell, SWT.MouseDown );
       fail();
     } catch( RuntimeException ex ) {
       //expected
@@ -207,7 +207,7 @@ public class Listener_Test extends TestCase {
     };
 
     try {
-      listener.add( shell, SWT.MouseDown );
+      listener.addTo( shell, SWT.MouseDown );
       fail();
     } catch( RuntimeException ex ) {
       //expected

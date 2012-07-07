@@ -1,9 +1,7 @@
 package org.eclipse.rap.clientscripting.demo;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.clientscripting.ClientListener;
+import org.eclipse.rap.clientscripting.Listener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
@@ -19,39 +17,61 @@ public class CustomBehaviors {
 
   public static void addUpperCaseBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "UpperCase.js" );
-    ClientListener clientListener = new ClientListener( scriptCode );
+    final ClientListener clientListener = new ClientListener( scriptCode );
     clientListener.addTo( text, ClientListener.Verify );
+    ( new Listener() {
+      public ClientListener getClientImpl() {
+        return clientListener;
+      }
+    } ).addTo( text, ClientListener.Verify );
   }
 
   public static void addDigitsOnlyBehavior( Text text ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DigitsOnly.js" );
-    ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.addTo( text, ClientListener.Modify );
-  }
+    final ClientListener clientListener = new ClientListener( scriptCode );
+    ( new Listener() {
+      public ClientListener getClientImpl() {
+        return clientListener;
+      }
+    } ).addTo( text, ClientListener.Modify );  }
 
   public static void addDateFieldBehavior( Text text ) {
     text.setText( "__.__.____" );
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DateField.js" );
-    ClientListener clientListener = new ClientListener( scriptCode );
-    clientListener.addTo( text, ClientListener.KeyDown );
-    clientListener.addTo( text, ClientListener.Verify );
-    clientListener.addTo( text, ClientListener.MouseUp );
-    clientListener.addTo( text, ClientListener.MouseDown );
+    final ClientListener clientListener = new ClientListener( scriptCode );
+    Listener listener = new Listener() {
+      public ClientListener getClientImpl() {
+        return clientListener;
+      }
+    };
+    listener.addTo( text, ClientListener.KeyDown );
+    listener.addTo( text, ClientListener.Verify );
+    listener.addTo( text, ClientListener.MouseUp );
+    listener.addTo( text, ClientListener.MouseDown );
   }
 
   public static void addCounterBehavior( Control control ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Counter.js" );
-    ClientListener listener = new ClientListener( scriptCode );
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put( "preFix", "Click:" );
-    context.put( "initNumber", new Integer( 1 ) );
-    listener.addTo( control, ClientListener.MouseDown, context );
-
+    final ClientListener clientListener = new ClientListener( scriptCode );
+    ( new Listener() {
+      @SuppressWarnings("unused")
+      private String preFix = "Click:";
+      @SuppressWarnings("unused")
+      private int initNumber = 1;
+      public ClientListener getClientImpl() {
+        return clientListener;
+      }
+    } ).addTo( control, ClientListener.MouseDown );
   }
 
   public static void addLoggerBehavior( Widget widget ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Logger.js" );
-    ClientListener listener = new ClientListener( scriptCode );
+    final ClientListener clientListener = new ClientListener( scriptCode );
+    Listener listener = new Listener() {
+      public ClientListener getClientImpl() {
+        return clientListener;
+      }
+    };
     listener.addTo( widget, ClientListener.KeyDown );
     listener.addTo( widget, ClientListener.KeyUp );
     listener.addTo( widget, ClientListener.FocusIn );
@@ -64,15 +84,23 @@ public class CustomBehaviors {
     listener.addTo( widget, ClientListener.MouseDoubleClick );
   }
 
-  public static void addCopyContentBehavior( Text text1, Text text2 ) {
+  public static void addCopyContentBehavior( final Text text1, final Text text2 ) {
     String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "CopyContent.js" );
-    ClientListener clientListener = new ClientListener( scriptCode );
-    Map<String, Object> context1 = new HashMap<String, Object>();
-    context1.put( "target", text2 );
-    Map<String, Object> context2 = new HashMap<String, Object>();
-    context2.put( "target", text1 );
-    clientListener.addTo( text1, ClientListener.Modify, context1 );
-    clientListener.addTo( text2, ClientListener.Modify, context2 );
+    final ClientListener clientListener = new ClientListener( scriptCode );
+    ( new Listener() {
+      @SuppressWarnings("unused")
+      private Text target = text2;
+      public ClientListener getClientImpl() {
+        return clientListener;
+      }
+    } ).addTo( text1, ClientListener.Modify );
+    ( new Listener() {
+      @SuppressWarnings("unused")
+      private Text target = text1;
+      public ClientListener getClientImpl() {
+        return clientListener;
+      }
+    } ).addTo( text2, ClientListener.Modify );
   }
 
 

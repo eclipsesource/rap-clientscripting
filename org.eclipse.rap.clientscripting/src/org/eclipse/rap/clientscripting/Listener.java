@@ -28,11 +28,11 @@ public abstract class Listener implements org.eclipse.swt.widgets.Listener {
   }
 
 
-  public void add( Widget widget, int type ) {
+  public void addTo( Widget widget, int type ) {
     clientListener.addTo( widget, type, getContext( this ) );
   }
 
-  public void remove( Widget widget, int type ) {
+  public void removeTo( Widget widget, int type ) {
     clientListener.removeFrom( widget, type );
   }
 
