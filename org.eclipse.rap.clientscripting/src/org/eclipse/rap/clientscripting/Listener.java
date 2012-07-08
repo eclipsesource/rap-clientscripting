@@ -46,7 +46,7 @@ public abstract class Listener implements org.eclipse.swt.widgets.Listener {
     clientListener.dispose();
   }
 
-  private Map<String,Object> getContext( Listener listener ) {
+  private Map< String,Object > getContext( Listener listener ) {
     Map<String,Object> result = new HashMap<String, Object>();
     Field[] fields = listener.getClass().getDeclaredFields();
     for( int i = 0; i < fields.length; i++ ) {

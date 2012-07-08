@@ -27,6 +27,10 @@ import org.eclipse.swt.widgets.Text;
 
 @SuppressWarnings( "serial" )
 public class Demo implements IEntryPoint {
+  
+  public static void main( String[] args ) {
+    new Demo().createUI();
+  }
 
   public int createUI() {
     Display display = new Display();
