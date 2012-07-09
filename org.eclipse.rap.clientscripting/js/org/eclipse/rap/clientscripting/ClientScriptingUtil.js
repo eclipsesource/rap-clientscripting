@@ -77,21 +77,21 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     this._wrapperHelper.prototype = null;
     return result;
   },
-  
+
   createContext : function( source ) {
     var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
     var result = {};
-	  for( var key in source ) {
-	    var value = source[ key ];
-	    if( value && ( typeof value.id === "string" ) ) {
-	      var widget = ObjectManager.getObject( value.id );
-	      value = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( widget );
-	    }
-	    result[ key ] = value;
-	  }
+    for( var key in source ) {
+      var value = source[ key ];
+      if( value && ( typeof value.id === "string" ) ) {
+        var widget = ObjectManager.getObject( value.id );
+        value = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( widget );
+      }
+      result[ key ] = value;
+    }
     return result;
   },
-  
+
   disposeObject : function( object ) {
     for( var key in object ) {
       if( object.hasOwnProperty( key ) ) {

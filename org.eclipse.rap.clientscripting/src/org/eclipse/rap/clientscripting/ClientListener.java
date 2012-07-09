@@ -49,22 +49,24 @@ public class ClientListener implements Adaptable {
   private boolean disposed;
   private IClientObjectAdapter2 iClientObjectAdapter2;
   private ClientListenerAdapter clientListenerAdapter;
+  private Map<String, Object> context;
   protected Collection<ClientListenerBinding> bindings;
 
   public ClientListener( String scriptCode ) {
+    this( scriptCode, new HashMap<String, Object>() );
+  }
+
+  public ClientListener( String scriptCode, Map<String, Object> context ) {
     this.scriptCode = scriptCode;
     disposed = false;
     bindings = new ArrayList<ClientListenerBinding>();
     if( scriptCode == null ) {
       throw new NullPointerException( "Parameter is null: scriptCode" );
     }
+    this.context = new HashMap<String, Object>( context );
   }
 
   public void addTo( Widget widget, int eventType ) {
-    addTo( widget, eventType, new HashMap<String, Object>() );
-  }
-
-  public void addTo( Widget widget, int eventType, Map<String, Object> context ) {
     if( disposed ) {
       throw new IllegalStateException( "ClientListener is disposed" );
     }
@@ -77,7 +79,7 @@ public class ClientListener implements Adaptable {
     if( widget.isDisposed() ) {
       throw new IllegalArgumentException( "Widget is disposed" );
     }
-    final ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this, context );
+    final ClientListenerBinding binding = new ClientListenerBinding( widget, eventType, this );
     addBinding( binding );
     ClientListenerManager.getInstance().addListener( this );
   }
@@ -93,6 +95,10 @@ public class ClientListener implements Adaptable {
     if( binding != null ) {
       binding.markDisposed();
     }
+  }
+
+  public Map<String, Object> getContext() {
+    return new HashMap<String, Object>( context );
   }
 
   public void dispose() {

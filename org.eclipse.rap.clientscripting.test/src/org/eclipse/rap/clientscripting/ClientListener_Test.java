@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -230,7 +229,7 @@ public class ClientListener_Test extends TestCase {
 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
     ClientListenerBinding wanted 
-      = new ClientListenerBinding( shell, SWT.KeyDown, listener, new HashMap<String, Object>() );
+      = new ClientListenerBinding( shell, SWT.KeyDown, listener );
     assertTrue( adapter.getBindings().contains( wanted ) );
   }
 
@@ -242,26 +241,16 @@ public class ClientListener_Test extends TestCase {
     assertEquals( 1, adapter.getBindings().size() );
   }
 
-  public void testAddWithContext() {
-    Map<String, Object> map = new HashMap<String, Object>();
-    map.put( "foo", shell );
-    listener.addTo( shell, SWT.KeyDown, map );
-    
-    ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
-    ClientListenerBinding wanted
-      = new ClientListenerBinding( shell, SWT.KeyDown, listener, map );
-    assertTrue( adapter.getBindings().contains( wanted ) );
+  public void testContextSaveCopyOnGet() {
+    Map<String, Object> actualContext = listener.getContext();
+
+    actualContext.put( "myField", shell );
+    Map<String, Object> newActualContext = listener.getContext();
+
+    assertNull( newActualContext.get( "myField" ) );
+    assertFalse( newActualContext.equals( actualContext ) );
   }
-  
-  public void testAddWithContextNull() {
-    try {
-      listener.addTo( shell, SWT.KeyDown, null );
-      fail();
-    } catch( NullPointerException ex ) {
-      // expected
-    }
-  }
-  
+
   private void createWidgets() {
     display = new Display();
     shell = new Shell( display );

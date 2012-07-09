@@ -21,42 +21,44 @@ import org.eclipse.swt.widgets.Widget;
 
 public abstract class Listener implements org.eclipse.swt.widgets.Listener {
 
-  ClientListener clientListener;
-
-  public Listener() {
-    clientListener = this.getClientImpl();
-  }
-
+  private ClientListener clientListener;
 
   public void addTo( Widget widget, int type ) {
-    clientListener.addTo( widget, type, getContext( this ) );
+    getClientListener().addTo( widget, type );
   }
 
   public void removeTo( Widget widget, int type ) {
-    clientListener.removeFrom( widget, type );
+    getClientListener().removeFrom( widget, type );
   }
 
   public void handleEvent( Event event ){
-    // allow use as clientlistener only
+    // allow use as client-listener only
   }
 
-  public abstract ClientListener getClientImpl();
+  public abstract String getClientImpl();
+
+  ClientListener getClientListener() {
+    if( clientListener  == null ) {
+      clientListener = new ClientListener( this.getClientImpl(), getContext() );
+    }
+    return clientListener;
+  }
 
   public void dispose() {
     clientListener.dispose();
   }
 
-  private Map< String,Object > getContext( Listener listener ) {
+  private Map< String,Object > getContext() {
     Map<String,Object> result = new HashMap<String, Object>();
-    Field[] fields = listener.getClass().getDeclaredFields();
+    Field[] fields = this.getClass().getDeclaredFields();
     for( int i = 0; i < fields.length; i++ ) {
       Field field = fields[ i ];
       if( !field.isSynthetic() ) {
-        Object value = getValueFromField( listener, field );
+        Object value = getValueFromField( field );
         result.put( field.getName(), value );
       }
     }
-    Method[] methods = listener.getClass().getDeclaredMethods();
+    Method[] methods = this.getClass().getDeclaredMethods();
     for( int i = 0; i < methods.length; i++ ) {
       Method method = methods[ i ];
       if(    !method.isSynthetic() 
@@ -71,7 +73,7 @@ public abstract class Listener implements org.eclipse.swt.widgets.Listener {
     return result;
   }
 
-  private static Object getValueFromField( Listener listener, Field field ) {
+  private Object getValueFromField( Field field ) {
     field.setAccessible( true );
     if( ( field.getModifiers() & Modifier.PRIVATE ) == 0 ) {
       throw new RuntimeException( "Field " + field.getName() + " must be private" );
@@ -82,9 +84,9 @@ public abstract class Listener implements org.eclipse.swt.widgets.Listener {
     Object result = null;
     try {
       if( field.getType() == Integer.TYPE ) {
-        result = new Integer( field.getInt( listener ) );
+        result = new Integer( field.getInt( this ) );
       } else if( !field.getType().isPrimitive() ) {
-        Object value = field.get( listener );
+        Object value = field.get( this );
         if(    value instanceof Widget 
             || value instanceof String ) 
         {

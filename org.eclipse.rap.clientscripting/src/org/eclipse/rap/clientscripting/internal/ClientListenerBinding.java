@@ -15,20 +15,17 @@ public class ClientListenerBinding implements Adaptable {
   private final ClientListener listener;
   private final Widget widget;
   private final int eventType;
-  private final Map<String, Object> context;
   private IClientObjectAdapter2 iClientObjectAdapter2;
   private boolean disposed;
 
   public ClientListenerBinding( 
     Widget widget, 
     int eventType, 
-    ClientListener listener, 
-    Map<String, Object> context ) 
+    ClientListener listener ) 
   {
     this.widget = widget;
     this.eventType = eventType;
     this.listener = listener;
-    this.context = new HashMap<String, Object>( context );
     disposed = false;
   }
 
@@ -42,10 +39,6 @@ public class ClientListenerBinding implements Adaptable {
 
   public int getEventType() {
     return eventType;
-  }
-
-  public Map<String, Object> getContext() {
-    return new HashMap<String, Object>( context );
   }
 
   public boolean isDisposed() {
@@ -65,8 +58,7 @@ public class ClientListenerBinding implements Adaptable {
       ClientListenerBinding other = ( ClientListenerBinding )obj;
       if(    eventType == other.eventType 
           && widget == other.widget 
-          && listener == other.listener
-          && context.equals(other.context ) )
+          && listener == other.listener )
       {
         result = true;
       }
@@ -81,7 +73,6 @@ public class ClientListenerBinding implements Adaptable {
     result = prime * result + eventType;
     result = prime * result + widget.hashCode();
     result = prime * result + listener.hashCode();
-    result = prime * result + context.hashCode();
     return result;
   }
 

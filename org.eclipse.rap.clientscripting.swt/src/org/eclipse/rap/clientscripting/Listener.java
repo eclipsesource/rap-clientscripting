@@ -14,13 +14,6 @@ import org.eclipse.swt.widgets.Widget;
 
 public abstract class Listener implements org.eclipse.swt.widgets.Listener {
 
-  ClientListener clientListener;
-
-  public Listener() {
-    clientListener = this.getClientImpl();
-  }
-
-
   public void addTo( Widget widget, int type ) {
     widget.addListener( type, this );
   }
@@ -29,10 +22,8 @@ public abstract class Listener implements org.eclipse.swt.widgets.Listener {
     widget.removeListener( type, this );
   }
 
-  public abstract ClientListener getClientImpl();
+  public abstract String getClientImpl();
 
-  public void dispose() {
-  }
-
+  public void dispose() {}
 
 }

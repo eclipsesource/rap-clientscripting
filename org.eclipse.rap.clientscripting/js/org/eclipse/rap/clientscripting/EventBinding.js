@@ -22,7 +22,6 @@ org.eclipse.rap.clientscripting.EventBinding = function( source,
     this._nativeType = ClientScriptingUtil.getNativeEventType( source, this._eventType );
     this._targetFunction = targetFunction;
     this._source = source;
-    this._context = ClientScriptingUtil.createContext( context ? context : {} );
     this._bind();
   } catch( ex ) {
     throw new Error( "Could not create EventBinding " + eventType + ":" + ex.message );
@@ -34,7 +33,7 @@ org.eclipse.rap.clientscripting.EventBinding.prototype = {
   _bind : function() {
     this._source.addEventListener( this._nativeType, this._processEvent, this );
   },
-  
+
   _unbind : function() {
     this._source.removeEventListener( this._nativeType, this._processEvent, this );
   },
@@ -44,17 +43,13 @@ org.eclipse.rap.clientscripting.EventBinding.prototype = {
     var EventProxy = org.eclipse.rap.clientscripting.EventProxy;
     var eventProxy = new EventProxy( this._eventType, event );
     var wrappedEventProxy = ClientScriptingUtil.wrapAsProto( eventProxy );
-    this._targetFunction.call( wrappedEventProxy, this._context );
+    this._targetFunction.call( wrappedEventProxy, null );
     ClientScriptingUtil.postProcessEvent( eventProxy, wrappedEventProxy, event );
     EventProxy.disposeEventProxy( eventProxy );
   },
-  
+
   getType : function() {
     return this._eventType;
-  },
-
-  getContext : function() {
-    return this._context;
   },
 
   getTargetFunction : function() {

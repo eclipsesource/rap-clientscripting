@@ -22,9 +22,8 @@ public class CustomBehaviors {
 
   public static void addUpperCaseBehavior( Text text ) {
     ( new Listener() {
-      public ClientListener getClientImpl() {
-        String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "UpperCase.js" );
-        return new ClientListener( scriptCode );
+      public String getClientImpl() {
+        return ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "UpperCase.js" );
       }
       public void handleEvent( Event event ) {
         if( event.keyCode == 0 && event.text.length() > 1 ) {
@@ -38,9 +37,8 @@ public class CustomBehaviors {
 
   public static void addDigitsOnlyBehavior( Text text ) {
     ( new Listener() {
-      public ClientListener getClientImpl() {
-        String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DigitsOnly.js" );
-        return new ClientListener( scriptCode );
+      public String getClientImpl() {
+        return ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DigitsOnly.js" );
       }
       public void handleEvent( Event event ) {
         String regexp = "^[0-9]*$";
@@ -57,14 +55,12 @@ public class CustomBehaviors {
 
   public static void addDateFieldBehavior( Text text ) {
     text.setText( "__.__.____" );
-    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DateField.js" );
-    final ClientListener clientListener = new ClientListener( scriptCode );
     Listener listener = new Listener() {
 
-      private boolean changeflag = false; // not required in clientscripting, SWT only
+      private int changeflag = 0; // not required in clientscripting, SWT only
 
-      public ClientListener getClientImpl() {
-        return clientListener;
+      public String getClientImpl() {
+        return ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "DateField.js" );
       }
 
       public void handleEvent( Event event ) {
@@ -107,9 +103,9 @@ public class CustomBehaviors {
           }
           event.doit = false;
         }
-        changeflag = true;
+        changeflag = 1;
         widget.setText( text );
-        changeflag = false;
+        changeflag = 0;
         widget.setSelection( sel );
         event.doit = false; // prevent key input 
       }
@@ -120,7 +116,7 @@ public class CustomBehaviors {
       }
 
       private void handleVerifyEvent( Event event ) {
-        if( !changeflag && event.character == '\u0000' ) {
+        if( changeflag == 0 && event.character == '\u0000' ) {
           event.doit = false; // prevent pasting
         }
       };
@@ -155,9 +151,8 @@ public class CustomBehaviors {
     ( new Listener() {
       private String preFix = "Click: ";
       private int count = 0;
-      public ClientListener getClientImpl() {
-        String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Counter.js" );
-        return new ClientListener( scriptCode );
+      public String getClientImpl() {
+        return ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Counter.js" );
       }
       public void handleEvent( Event event ) {
         Button widget = ( Button ) event.widget;
@@ -168,11 +163,9 @@ public class CustomBehaviors {
   }
 
   public static void addLoggerBehavior( Widget widget ) {
-    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Logger.js" );
-    final ClientListener clientListener = new ClientListener( scriptCode );
     Listener listener = new Listener() {
-      public ClientListener getClientImpl() {
-        return clientListener;
+      public String getClientImpl() {
+        return ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Logger.js" );
       }
       public void handleEvent(Event event) {
         System.out.println( event );
@@ -191,16 +184,13 @@ public class CustomBehaviors {
   }
 
   public static void addCopyContentBehavior( final Text arg1, final Text arg2 ) {
-    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "CopyContent.js" );
-    final ClientListener clientListener = new ClientListener( scriptCode );
     // NOTE : SWT fires a change event even if setText is used, unlike clientscripting, therefore the flag
-
     Listener listener = new Listener() {
       private Text text1 = arg1; // TODO [tb] : this naming restrictions are a problem?
       private Text text2 = arg2;
       private int changeFlag = 0; // boolean not yet supported by clientscripting sync
-      public ClientListener getClientImpl() {
-        return clientListener;
+      public String getClientImpl() {
+        return ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "CopyContent.js" );
       }
       public void handleEvent( Event event ) {
         if( changeFlag == 0 ) {

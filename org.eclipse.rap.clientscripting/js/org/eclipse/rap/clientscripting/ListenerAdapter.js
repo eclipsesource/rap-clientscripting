@@ -13,7 +13,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.clientscripting.Listener", {
 
   factory : function( properties ) {
     var code = properties.code;
-    return new org.eclipse.rap.clientscripting.Function( code );
+    var context = properties.context;
+    return new org.eclipse.rap.clientscripting.Function( code, context );
   }
 
 } );

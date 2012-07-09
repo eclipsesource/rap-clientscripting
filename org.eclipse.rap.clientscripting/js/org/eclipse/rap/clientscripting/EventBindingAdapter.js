@@ -16,8 +16,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.clientscripting.EventBinding"
     var source = org.eclipse.rwt.protocol.ObjectManager.getObject( properties.targetObject );
     var eventType = org.eclipse.rap.clientscripting.SWT[ properties.eventType ];
     var targetFunction = org.eclipse.rwt.protocol.ObjectManager.getObject( properties.listener );
-    var context = properties.context;
-    return new EventBinding( source, eventType, targetFunction, context );
+    return new EventBinding( source, eventType, targetFunction );
   }
 
 } );

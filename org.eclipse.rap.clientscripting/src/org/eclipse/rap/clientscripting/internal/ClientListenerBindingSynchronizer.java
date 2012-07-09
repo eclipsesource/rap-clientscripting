@@ -30,29 +30,6 @@ public class ClientListenerBindingSynchronizer implements Synchronizer<ClientLis
     clientObject.set( "listener", getId( binding.getListener() ) );
     clientObject.set( "targetObject", WidgetUtil.getId( binding.getWidget() ) );
     clientObject.set( "eventType", getEventType( binding ) );
-    clientObject.set( "context", getContext( binding ) );
-  }
-
-  private JsonObject getContext( ClientListenerBinding binding ) {
-    JsonObject result = new JsonObject();
-    Map<String, Object> context = binding.getContext();
-    Object[] keys = context.keySet().toArray();
-    for( int i = 0; i < keys.length; i++ ) {
-      String key = ( String )keys[ i ];
-      Object object = context.get( key );
-      if( object instanceof Widget ) {
-        JsonObject value = new JsonObject();
-        value.append( "id", WidgetUtil.getId( ( Widget )object ) );
-        result.append( key, value );
-      } else if( object instanceof Integer ) {
-        result.append( key, ( ( Integer )object ) );
-      } else if( object instanceof String ) {
-        result.append( key, ( String )object );
-      } else {
-        throw new IllegalArgumentException( "Context does not support " + object.getClass() );
-      }
-    }
-    return result;
   }
 
   public void renderDestroy( ClientListenerBinding binding, IClientObject clientObject ) {

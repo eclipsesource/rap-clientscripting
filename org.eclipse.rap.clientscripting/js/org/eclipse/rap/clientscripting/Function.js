@@ -31,12 +31,18 @@ org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
   if( typeof this._function !== "function" ) {
     throw new Error( "JavaScript code does not define a \"handleEvent\" function" );
   }
+  this._setContext( arguments[ 1 ] );
 };
 
 org.eclipse.rap.clientscripting.Function.prototype = {
 
-  call : function( arg, context ) {
-    this._function.call( ( context ? context : window ), arg );
+  call : function( arg ) {
+    this._function.call( ( this._context ? this._context : window ), arg );
+  },
+
+  _setContext : function( context ) {
+    ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
+    this._context = ClientScriptingUtil.createContext( context ? context : {} );
   }
 
 };

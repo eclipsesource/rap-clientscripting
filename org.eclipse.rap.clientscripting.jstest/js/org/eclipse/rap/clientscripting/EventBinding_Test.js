@@ -26,9 +26,9 @@ var textEl;
 qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
 
   extend : qx.core.Object,
-  
+
   members : {
-        
+
     testCreateBindingByProtocol : function() {
       var listener = new Function( "function handleEvent(){}" );
       var code = "var handleEvent = function(){};";
@@ -50,8 +50,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
         "properties" : {
           "eventType" : "KeyDown",
           "targetObject" : "w3",
-          "listener" : "w4",
-          "context" : context
+          "listener" : "w4"
         }
       } );
 
@@ -60,38 +59,6 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertTrue( result instanceof EventBinding );
       assertIdentical( ObjectManager.getObject( "w4" ), result.getTargetFunction() );
       assertIdentical( SWT.KeyDown, result.getType() );
-      assertEquals( {}, result.getContext() );
-    },
-
-    testCreateBindingWithWidgetsInContext : function() {
-      var listener = new Function( "function handleEvent(){}" );
-      var code = "var handleEvent = function(){};";
-      var context = { "myWidget" : { "id" : "w3" } };
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
-        "target" : "w4",
-        "action" : "create",
-        "type" : "rwt.clientscripting.Listener",
-        "properties" : {
-          "code" : code
-        }
-      } );
-
-      processor.processOperation( {
-        "target" : "w5",
-        "action" : "create",
-        "type" : "rwt.clientscripting.EventBinding",
-        "properties" : {
-          "eventType" : "KeyDown",
-          "targetObject" : "w3",
-          "listener" : "w4",
-          "context" : context
-        }
-      } );
-
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var result = ObjectManager.getObject( "w5" ).getContext();
-      assertTrue( result.myWidget instanceof org.eclipse.rap.clientscripting.WidgetProxy );
     },
 
     testBindKeyEvent : function() {
@@ -126,22 +93,22 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       assertTrue( event instanceof EventProxy );
     },
 
-    testExecuteInContext : function() {
-      var log = [];
-      var logger = {
-        "log" : log,
-        "call" : function( arg, context ) {
-          log.push( context );
-        }
-      };
-      var context = { "myWidget" : { "id" : "w3" } };
-
-      var binding = new EventBinding( text, SWT.KeyDown, logger, context );
-      TestUtil.press( text, "A" );
-
-      var actualContext = logger.log[ 0 ];
-      assertTrue( actualContext.myWidget instanceof org.eclipse.rap.clientscripting.WidgetProxy );
-    },
+//    testExecuteInContext : function() {
+//      var log = [];
+//      var logger = {
+//        "log" : log,
+//        "call" : function( arg, context ) {
+//          log.push( context );
+//        }
+//      };
+//      var context = { "myWidget" : { "id" : "w3" } };
+//
+//      var binding = new EventBinding( text, SWT.KeyDown, logger,  );
+//      TestUtil.press( text, "A" );
+//
+//      var actualContext = logger.log[ 0 ];
+//      assertTrue( actualContext.myWidget instanceof org.eclipse.rap.clientscripting.WidgetProxy );
+//    },
 
     testBindDisposesProxyEvent : function() {
       var logger = this._createLogger(); 
@@ -163,7 +130,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       var binding = new EventBinding( text, SWT.KeyDown, listener );
       var domEvent = TestUtil.createFakeDomKeyEvent( text.getElement(), "keypress", "a" );
       TestUtil.fireFakeDomEvent( domEvent );
-      
+
       assertTrue( EventHandlerUtil.wasStopped( domEvent ) );
     },
 
@@ -177,7 +144,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.EventBinding_Test", {
       var binding = new EventBinding( text, SWT.MouseDown, listener );
       var domEvent = TestUtil.createFakeDomKeyEvent( text.getElement(), "keypress", "a" );
       TestUtil.fireFakeDomEvent( domEvent );
-      
+
       // SWT doesnt support preventing native selection behavior (e.g. Text widget)
       assertFalse( EventHandlerUtil.wasStopped( domEvent ) );
     },

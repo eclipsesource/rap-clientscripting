@@ -43,14 +43,14 @@ public class Listener_Test extends TestCase {
 
   public void testAddListner() {
     Listener listener = new Listener(){
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
 
     listener.addTo( shell, SWT.MouseDown );
 
-    ClientListener result = listener.clientListener;
+    ClientListener result = listener.getClientListener();
     ClientListenerAdapter adapter = result.getAdapter( ClientListenerAdapter.class );
     assertEquals( 1, adapter.getBindings().size() );
     assertEquals( "function handleEvent(){}", adapter.getScriptCode() );
@@ -59,27 +59,27 @@ public class Listener_Test extends TestCase {
 
   public void testRemoveListner() {
     Listener listener = new Listener(){
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
     listener.addTo( shell, SWT.MouseDown );
 
     listener.removeTo( shell, SWT.MouseDown );
 
-    ClientListener clientListener = listener.clientListener;
+    ClientListener clientListener = listener.getClientListener();
     ClientListenerBinding binding = TestUtil.findBinding( clientListener, shell, SWT.MouseDown );
     assertTrue( binding.isDisposed() );
   }
 
   public void testDisposeListner() {
     Listener listener = new Listener(){
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
     listener.addTo( shell, SWT.MouseDown );
-    ClientListener clientListener = listener.clientListener;
+    ClientListener clientListener = listener.getClientListener();
 
     listener.dispose();
 
@@ -90,8 +90,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       private int test = 23;
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
 
@@ -105,8 +105,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       private String test = "foo";
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
 
@@ -120,8 +120,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       private Shell test = shell;
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
 
@@ -135,8 +135,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       private float test = -234;
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
     try {
@@ -151,8 +151,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       private Date test = new Date();
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
     try {
@@ -167,8 +167,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       int test = 23;
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
 
@@ -184,8 +184,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       public void test(){}
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
 
@@ -201,8 +201,8 @@ public class Listener_Test extends TestCase {
     Listener listener = new Listener(){
       @SuppressWarnings("unused")
       final private int test = 23;
-      public ClientListener getClientImpl() {
-        return new ClientListener( "function handleEvent(){}" );
+      public String getClientImpl() {
+        return "function handleEvent(){}";
       }
     };
 
@@ -215,9 +215,7 @@ public class Listener_Test extends TestCase {
   }
 
   private Map<String, Object> getContext( Listener listener ) {
-    ClientListenerAdapter adapter = listener.clientListener.getAdapter( ClientListenerAdapter.class );
-    ClientListenerBinding binding = ( ClientListenerBinding )adapter.getBindings().toArray()[ 0 ];
-    Map<String, Object> context = binding.getContext();
+    Map<String, Object> context = listener.getClientListener().getContext();
     return context;
   }
 

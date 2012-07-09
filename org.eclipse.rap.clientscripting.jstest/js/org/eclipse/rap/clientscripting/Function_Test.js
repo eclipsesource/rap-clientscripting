@@ -17,9 +17,9 @@ var SWT = org.eclipse.rap.clientscripting.SWT;
 qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 
   extend : qx.core.Object,
-  
+
   members : {
-    
+
     testCreateFunctionWrongNamed : function() {
       var code = "function foo(){}";
       try {
@@ -48,7 +48,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
         // expected
       }
     },
-    
+
     testCreateFunctionNoFunction : function() {
       var code = "1";
       try {
@@ -89,16 +89,6 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       assertEquals( 2, event.x );
     },
 
-    testContext : function() {
-      var code = "var handleEvent = function(){ this.x++; }";
-      var listener = new Function( code );
-      var context = { "x" : 1 };
-
-      listener.call( null, context );
-
-      assertEquals( 2, context.x );
-    },
-
     testImportedClasses : function() {
       var obj = {};
       var code = "function handleEvent( obj ){ obj.SWT = SWT; }";
@@ -107,7 +97,32 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       fun.call( obj );
 
       assertIdentical( SWT, obj.SWT );
+    },
+
+    testCreateFunctionWithWidgetsInContext : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var code = "function handleEvent(){ global = this.myWidget; }";
+      var context = { "myWidget" : { "id" : "w2" } };
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code,
+          "context" : context
+        }
+      } );
+
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var result = ObjectManager.getObject( "w4" );
+      result.call();
+      assertTrue( global instanceof org.eclipse.rap.clientscripting.WidgetProxy );
+      assertEquals( "w2", global.getData( org.eclipse.rap.clientscripting.WidgetProxy._ID ) );
+      delete global;
+      shell.destroy();
     }
+
 
   }
   
