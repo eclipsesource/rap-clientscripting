@@ -57,7 +57,7 @@ public class ClientListenerSynchronizer_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( listener ) );
     assertEquals( "rwt.clientscripting.Listener", operation.getType() );
     assertEquals( "script code", operation.getProperty( "code" ) );
-    assertEquals( "{}", operation.getProperty( "context" ).toString() );
+    assertEquals( "{}", operation.getProperty( "scope" ).toString() );
   }
 
   public void testRenderContextInt() {
@@ -81,7 +81,7 @@ public class ClientListenerSynchronizer_Test extends TestCase {
   private JSONObject getContext( ClientListener listener ) {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( listener ) );
-    JSONObject contextResult = ( JSONObject )operation.getProperty( "context" );
+    JSONObject contextResult = ( JSONObject )operation.getProperty( "scope" );
     return contextResult;
   }
 

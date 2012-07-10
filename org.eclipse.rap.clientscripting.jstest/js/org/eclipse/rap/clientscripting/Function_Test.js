@@ -99,10 +99,10 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       assertIdentical( SWT, obj.SWT );
     },
 
-    testCreateFunctionWithWidgetsInContext : function() {
+    testCreateFunctionWithWidgetsInScope : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
-      var code = "function handleEvent(){ global = this.myWidget; }";
-      var context = { "myWidget" : { "id" : "w2" } };
+      var code = "function handleEvent(){ global = myWidget; }";
+      var scope = { "myWidget" : { "id" : "w2" } };
       var Processor = org.eclipse.rwt.protocol.Processor;
       Processor.processOperation( {
         "target" : "w4",
@@ -110,7 +110,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
         "type" : "rwt.clientscripting.Listener",
         "properties" : {
           "code" : code,
-          "context" : context
+          "scope" : scope
         }
       } );
 
@@ -121,8 +121,51 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       assertEquals( "w2", global.getData( org.eclipse.rap.clientscripting.WidgetProxy._ID ) );
       delete global;
       shell.destroy();
-    }
+    },
 
+    testCreateFunctionWithStringInScope : function() {
+      var code = "function handleEvent(){ global = myString; }";
+      var scope = { "myString" : "foo" };
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code,
+          "scope" : scope
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var result = ObjectManager.getObject( "w4" );
+
+      result.call();
+
+      assertEquals( "foo", global );
+      delete global;
+    },
+
+    testCreateFunctionWithIntInScope : function() {
+      var code = "function handleEvent(){ global = myInt; }";
+      var scope = { "myInt" : 44 };
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code,
+          "scope" : scope
+        }
+      } );
+      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var result = ObjectManager.getObject( "w4" );
+
+      result.call();
+
+      assertEquals( 44, global );
+      delete global;
+    }
 
   }
   

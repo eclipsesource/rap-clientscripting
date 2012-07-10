@@ -157,7 +157,7 @@ public class CustomBehaviors {
       public void handleEvent( Event event ) {
         Button widget = ( Button ) event.widget;
         count++;
-        widget.setText( this.preFix + count );
+        widget.setText( preFix + count );
       }
     } ).addTo( control, ClientListener.MouseDown );
   }

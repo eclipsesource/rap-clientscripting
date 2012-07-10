@@ -28,7 +28,7 @@ public class ClientListenerSynchronizer implements Synchronizer<ClientListener> 
     clientObject.create( TYPE );
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
     clientObject.set( "code", adapter.getScriptCode() );
-    clientObject.set( "context", getContext( listener ) );
+    clientObject.set( "scope", getContext( listener ) );
   }
 
   private JsonObject getContext( ClientListener listener ) {

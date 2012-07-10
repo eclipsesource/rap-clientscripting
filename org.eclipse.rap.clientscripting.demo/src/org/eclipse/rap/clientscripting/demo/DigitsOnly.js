@@ -1,5 +1,4 @@
 var handleEvent = function( event ) {
-
   var regexp = /^[0-9]*$/;
   var text = event.widget.getText();
   if( text.match( regexp ) === null ) {
@@ -9,5 +8,4 @@ var handleEvent = function( event ) {
   	event.widget.setBackground( null );
   	event.widget.setToolTip( null );
   }
-
 };

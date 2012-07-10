@@ -78,18 +78,23 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     return result;
   },
 
-  createContext : function( source ) {
-    var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
-    var result = {};
+  createScopeScript : function( source ) {
+    var result = [];
     for( var key in source ) {
       var value = source[ key ];
+      result.push( "var " + key + " = " );
       if( value && ( typeof value.id === "string" ) ) {
-        var widget = ObjectManager.getObject( value.id );
-        value = org.eclipse.rap.clientscripting.WidgetProxy.getInstance( widget );
+        result.push( "org.eclipse.rap.clientscripting.WidgetProxy.getInstance( " );
+        result.push( "org.eclipse.rwt.protocol.ObjectManager.getObject( \"" );
+        result.push( value.id );
+        result.push( "\" ) );" );
+      } else if( typeof value === "string" ) {
+        result.push( "\"" + value + "\";" );
+      } else {
+        result.push( value + ";" );
       }
-      result[ key ] = value;
     }
-    return result;
+    return result.join( "" );
   },
 
   disposeObject : function( object ) {
