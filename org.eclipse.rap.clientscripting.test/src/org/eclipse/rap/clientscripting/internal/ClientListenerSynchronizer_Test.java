@@ -10,12 +10,14 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.clientscripting.ClientListener;
+import org.eclipse.rap.clientscripting.JavaFunction;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
@@ -23,6 +25,7 @@ import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.browser.browserkit.BrowserLCA;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -60,7 +63,7 @@ public class ClientListenerSynchronizer_Test extends TestCase {
     assertEquals( "{}", operation.getProperty( "scope" ).toString() );
   }
 
-  public void testRenderContextInt() {
+  public void testRenderScopeInt() {
     HashMap<String, Object> map = new HashMap<String, Object>();
     map.put( "number", new Integer( 3 ) );
     ClientListener listener = new ClientListener( "script code", map );
@@ -68,24 +71,24 @@ public class ClientListenerSynchronizer_Test extends TestCase {
 
     synchronizer.renderCreate( listener, clientObject );
 
-    JSONObject contextResult = getContext( listener );
+    JSONObject scopeResult = getScope( listener );
     int result = -1;
     try {
-      result = contextResult.getInt( "number" );
+      result = scopeResult.getInt( "number" );
     } catch( JSONException e ) {
       // should not happen
     }
     assertEquals( 3, result );
   }
 
-  private JSONObject getContext( ClientListener listener ) {
+  private JSONObject getScope( ClientListener listener ) {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( ClientObjectUtil.getId( listener ) );
-    JSONObject contextResult = ( JSONObject )operation.getProperty( "scope" );
-    return contextResult;
+    JSONObject scopeResult = ( JSONObject )operation.getProperty( "scope" );
+    return scopeResult;
   }
 
-  public void testRenderContextString() {
+  public void testRenderScopeString() {
     HashMap<String, Object> map = new HashMap<String, Object>();
     map.put( "sometext", "foo" );
     ClientListener listener = new ClientListener( "script code", map );
@@ -93,17 +96,17 @@ public class ClientListenerSynchronizer_Test extends TestCase {
 
     synchronizer.renderCreate( listener, clientObject );
 
-    JSONObject contextResult = getContext( listener );
+    JSONObject scopeResult = getScope( listener );
     String result = null;
     try {
-      result = contextResult.getString( "sometext" );
+      result = scopeResult.getString( "sometext" );
     } catch( JSONException e ) {
       // should not happen
     }
     assertEquals( "foo", result );
   }
 
-  public void testRenderContextWidet() {
+  public void testRenderScopeWidget() {
     Shell shell = new Shell( new Display() );
     HashMap<String, Object> map = new HashMap<String, Object>();
     Widget widget = new Label( shell, SWT.NONE );
@@ -113,13 +116,16 @@ public class ClientListenerSynchronizer_Test extends TestCase {
 
     synchronizer.renderCreate( listener, clientObject );
 
-    JSONObject contextResult = getContext( listener );
+    JSONObject scopeResult = getScope( listener );
     String widgetId = null;
+    String type = null;
     try {
-      widgetId = contextResult.getJSONObject( "widget" ).getString( "id" );
+      type = scopeResult.getJSONObject( "widget" ).getString( "type" );
+      widgetId = scopeResult.getJSONObject( "widget" ).getString( "id" );
     } catch( JSONException e ) {
       // should not happen
     }
+    assertEquals( "widget", type );
     assertEquals( WidgetUtil.getId( widget ), widgetId );
   }
 
@@ -135,6 +141,49 @@ public class ClientListenerSynchronizer_Test extends TestCase {
     }catch( IllegalArgumentException ex ) {
       // expected
     }
+  }
+
+  public void testRenderScopeFunction() {
+    HashMap<String, Object> map = new HashMap<String, Object>();
+    map.put( "func", new JavaFunction(){
+      public Object function( Object[] args ) {
+        return null;
+      }
+    } );
+    ClientListener listener = new ClientListener( "script code", map );
+    IClientObject clientObject = ClientObjectFactory.getClientObject( listener );
+
+    synchronizer.renderCreate( listener, clientObject );
+
+    JSONObject scopeResult = getScope( listener );
+    String type = null;
+    try {
+      type = scopeResult.getJSONObject( "func" ).getString( "type" );
+    } catch( JSONException e ) {
+      // should not happen
+    }
+    assertEquals( "function", type );
+  }
+
+  public void testJavaFunctionCall() {
+    Fixture.fakeNewRequest( new Display() );
+    HashMap<String, Object> map = new HashMap<String, Object>();
+    final ArrayList<Object[]> log = new ArrayList<Object[]>();
+    map.put( "func", new JavaFunction(){
+      public Object function( Object[] args ) {
+        log.add( args );
+        return null;
+      }
+    } );
+    ClientListener listener = new ClientListener( "script code", map );
+    String listenerId = ClientObjectUtil.getId( listener );
+
+    String param 
+      = listenerId + "." + ClientListenerSynchronizer.PARAM_EXECUTE_FUNCTION;
+    Fixture.fakeRequestParam( param, "func" );
+    Fixture.executeLifeCycleFromServerThread();
+
+    assertEquals( 1, log.size() );
   }
 
 

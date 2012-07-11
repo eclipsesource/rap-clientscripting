@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
-import java.util.HashMap;
-import java.util.Map;
+import junit.framework.TestCase;
 
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -19,8 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import junit.framework.TestCase;
 
 
 public class ClientListenerBinding_Test extends TestCase {
@@ -36,7 +33,6 @@ public class ClientListenerBinding_Test extends TestCase {
   private ClientListenerBinding bindingWithDifferentWidget;
   private ClientListenerBinding bindingWithDifferentEvent;
   private ClientListenerBinding bindingWithDifferentListener;
-  private ClientListenerBinding bindingWithDifferentContext;
 
   @Override
   protected void setUp() throws Exception {
@@ -122,8 +118,6 @@ public class ClientListenerBinding_Test extends TestCase {
       = new ClientListenerBinding( label1, SWT.MouseUp, listener1 );
     bindingWithDifferentListener 
       = new ClientListenerBinding( label1, SWT.MouseDown, listener2 );
-    bindingWithDifferentContext 
-      = new ClientListenerBinding( label1, SWT.MouseDown, listener1 );
   }
 
 }
