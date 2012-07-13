@@ -12,10 +12,15 @@ package org.eclipse.rap.clientscripting.internal;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.clientscripting.JavaFunction;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.JsonObject;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
@@ -31,6 +36,10 @@ public class ClientListenerSynchronizer implements Synchronizer<ClientListener> 
     ClientListenerAdapter adapter = listener.getAdapter( ClientListenerAdapter.class );
     clientObject.set( "code", adapter.getScriptCode() );
     clientObject.set( "scope", getContext( listener ) );
+  }
+
+  public void readData( ClientListener listener ) {
+    executeFunction( listener );
   }
 
   private JsonObject getContext( ClientListener listener ) {
@@ -59,33 +68,27 @@ public class ClientListenerSynchronizer implements Synchronizer<ClientListener> 
     }
     return result;
   }
-//  private static void executeFunction( final Browser browser ) {
-//    String function = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_FUNCTION );
-//    String arguments = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_ARGUMENTS );
-//    if( function != null ) {
-//      IBrowserAdapter adapter = browser.getAdapter( IBrowserAdapter.class );
-//      BrowserFunction[] functions = adapter.getBrowserFunctions();
-//      boolean found = false;
-//      for( int i = 0; i < functions.length && !found; i++ ) {
-//        final BrowserFunction current = functions[ i ];
-//        if( current.getName().equals( function ) ) {
-//          final Object[] args = parseArguments( arguments );
-//          ProcessActionRunner.add( new Runnable() {
-//            public void run() {
-//              try {
-//                Object executedFunctionResult = current.function( args );
-//                setExecutedFunctionResult( browser, executedFunctionResult );
-//              } catch( Exception e ) {
-//                setExecutedFunctionError( browser, e.getMessage() );
-//              }
-//              setExecutedFunctionName( browser, current.getName() );
-//            }
-//          } );
-//          found = true;
-//        }
-//      }
-//    }
-//  }
-//
+  private static void executeFunction( final ClientListener listener ) {
+    String functionName = readPropertyValue( listener, PARAM_EXECUTE_FUNCTION );
+    if( functionName != null ) {
+      final JavaFunction function = ( JavaFunction )listener.getContext().get( functionName );
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          function.execute( null );
+        }
+      } );
+    }
+  }
+
+  private static String readPropertyValue( ClientListener listener, String propertyName ) {
+    String id = listener.getAdapter( IClientObjectAdapter.class ).getId();
+    HttpServletRequest request = ContextProvider.getRequest();
+    StringBuilder key = new StringBuilder();
+    key.append( id );
+    key.append( "." );
+    key.append( propertyName );
+    return request.getParameter( key.toString() );
+  }
+
 
 }

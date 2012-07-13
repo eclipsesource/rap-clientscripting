@@ -17,4 +17,5 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 public interface Synchronizer<T> {
 
   void renderCreate( T object, IClientObject clientObject );
+  void readData( T object );
 }

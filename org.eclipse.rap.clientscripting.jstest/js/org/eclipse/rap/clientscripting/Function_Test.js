@@ -13,6 +13,8 @@
 
 var Function = org.eclipse.rap.clientscripting.Function;
 var SWT = org.eclipse.rap.clientscripting.SWT;
+var TestUtil = org.eclipse.rwt.test.fixture.TestUtil;
+var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
 
 qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
 
@@ -102,7 +104,7 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
     testCreateFunctionWithWidgetsInScope : function() {
       var shell = TestUtil.createShellByProtocol( "w2" );
       var code = "function handleEvent(){ global = myWidget; }";
-      var scope = { "myWidget" : { "id" : "w2" } };
+      var scope = { "myWidget" : { "type" : "widget", "id" : "w2" } };
       var Processor = org.eclipse.rwt.protocol.Processor;
       Processor.processOperation( {
         "target" : "w4",
@@ -113,10 +115,10 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
           "scope" : scope
         }
       } );
-
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var result = ObjectManager.getObject( "w4" );
+
       result.call();
+
       assertTrue( global instanceof org.eclipse.rap.clientscripting.WidgetProxy );
       assertEquals( "w2", global.getData( org.eclipse.rap.clientscripting.WidgetProxy._ID ) );
       delete global;
@@ -136,7 +138,6 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
           "scope" : scope
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var result = ObjectManager.getObject( "w4" );
 
       result.call();
@@ -158,17 +159,64 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
           "scope" : scope
         }
       } );
-      var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
       var result = ObjectManager.getObject( "w4" );
 
       result.call();
 
       assertEquals( 44, global );
       delete global;
+    },
+
+    testCreateFunctionWithFunctionInScope : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var code = "function handleEvent(){ global = func; }";
+      var scope = { "func" : { "type" : "function" } };
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code,
+          "scope" : scope
+        }
+      } );
+      var result = ObjectManager.getObject( "w4" );
+
+      result.call();
+
+      assertTrue( typeof global === "function" );
+      delete global;
+      shell.destroy();
+    },
+
+    testCallJavaFunction : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var code = "function handleEvent(){ func(); }";
+      var scope = { "func" : { "type" : "function" } };
+      TestUtil.initRequestLog();
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code,
+          "scope" : scope
+        }
+      } );
+      var result = ObjectManager.getObject( "w4" );
+
+      result.call();
+
+      var log = TestUtil.getRequestLog();
+      assertEquals( 1, log.length );
+      assertTrue( log[ 0 ].indexOf( "w4.executeFunction=func" ) !== -1 );
+      shell.destroy();
     }
 
   }
-  
+
 } );
 
 }());

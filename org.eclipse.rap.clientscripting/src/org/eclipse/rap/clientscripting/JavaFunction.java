@@ -12,5 +12,5 @@
 package org.eclipse.rap.clientscripting;
 
 public interface JavaFunction {
-  public Object function( Object[] args );
+  public Object execute( Object[] args );
 }

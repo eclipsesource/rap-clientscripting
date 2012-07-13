@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 
 @SuppressWarnings( "serial" )
 public class Demo implements IEntryPoint {
-  
+
   public static void main( String[] args ) {
     new Demo().createUI();
   }
@@ -55,6 +55,7 @@ public class Demo implements IEntryPoint {
     addDateFieldExample( parent );
     addCounterExample( parent );
     addCopyTextExample( parent );
+    addHoverDialogeExample( parent );
   }
 
   private void addUpperCaseExample( Composite parent ) {
@@ -63,7 +64,7 @@ public class Demo implements IEntryPoint {
     CustomBehaviors.addUpperCaseBehavior( text );
     text.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
   }
-  
+
   private void addCopyTextExample( Composite parent ) {
     addHeaderLabel( parent, "Copy content:" );
     Text text1 = new Text( parent, SWT.BORDER );
@@ -116,6 +117,12 @@ public class Demo implements IEntryPoint {
         }
       }
     } );
+  }
+
+  private void addHoverDialogeExample( Composite parent ) {
+    Label label = new Label( parent, SWT.BORDER );
+    label.setText( "Dont't go here!" );
+    CustomBehaviors.addHoverBehavior( label );
   }
 
   private boolean verifyDate( String date ) {

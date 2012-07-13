@@ -78,16 +78,28 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     return result;
   },
 
-  createScopeScript : function( source ) {
+  createScopeScript : function( source, clientFunction ) {
+    var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+    var id = ObjectManager.getId( clientFunction );
     var result = [];
     for( var key in source ) {
       var value = source[ key ];
       result.push( "var " + key + " = " );
-      if( value && ( typeof value.id === "string" ) ) {
-        result.push( "org.eclipse.rap.clientscripting.WidgetProxy.getInstance( " );
-        result.push( "org.eclipse.rwt.protocol.ObjectManager.getObject( \"" );
-        result.push( value.id );
-        result.push( "\" ) );" );
+      if( value instanceof Object ) {
+        if( value.type === "widget" ) {
+          result.push( "org.eclipse.rap.clientscripting.WidgetProxy.getInstance( " );
+          result.push( "org.eclipse.rwt.protocol.ObjectManager.getObject( \"" );
+          result.push( value.id );
+          result.push( "\" ) );" );
+        } else if( value.type === "function" ) {
+          var hashCode = qx.core.Object.toHashCode( clientFunction );
+          result.push( "function(){ org.eclipse.rap.clientscripting.ClientScriptingUtil." );
+          result.push( "executeJavaFunction( \"" );
+          result.push( hashCode );
+          result.push( "\",\"" );
+          result.push( key );
+          result.push( "\" ); }" );
+        }
       } else if( typeof value === "string" ) {
         result.push( "\"" + value + "\";" );
       } else {
@@ -97,6 +109,15 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     return result.join( "" );
   },
 
+  executeJavaFunction : function( hash, name ) {
+    var ObjectManager = org.eclipse.rwt.protocol.ObjectManager;
+    var func = org.eclipse.rap.clientscripting.Function.getFunction( hash );
+    var id = ObjectManager.getId( func );
+    var req = org.eclipse.swt.Request.getInstance();
+    req.addParameter( id + ".executeFunction", name );
+    req.sendSyncronous();
+  },
+
   disposeObject : function( object ) {
     for( var key in object ) {
       if( object.hasOwnProperty( key ) ) {
@@ -104,7 +125,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       }
     }
   },
-  
+
   postProcessEvent : function( event, wrappedEvent, originalEvent ) {
     var SWT = org.eclipse.rap.clientscripting.SWT;
     switch( event.type ) {
@@ -196,7 +217,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       "properties" : props
     } );
   },
-  
+
   _setUserData : function( source, args) {
     if( args.length !== 2 ) {
       var msg =  "Wrong number of arguments in SetData: Expected 2, found " + args.length;
@@ -212,7 +233,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     }
     data[ property ] = value;
   },
-  
+
   _getUserData : function( source, args ) {
     if( args.length !== 1 ) {
       var msg =  "Wrong number of arguments in SetData: Expected 1, found " + args.length;
@@ -272,7 +293,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
     }
     this._setStateMask( event, originalEvent );
   },
-  
+
   _initVerifyEvent : function( event, originalEvent ) {
     var text = originalEvent.getTarget();
     if( text.classname === "org.eclipse.rwt.widgets.Text" ) {
@@ -293,7 +314,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
       event.end = diff[ 2 ];
     }
   },
-  
+
   _postProcessVerifyEvent : function( event, wrappedEvent, originalEvent ) {
     var widget = originalEvent.getTarget();
     if( wrappedEvent.doit !== false ) {

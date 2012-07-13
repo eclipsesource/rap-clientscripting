@@ -87,4 +87,7 @@ public class ClientListenerBindingSynchronizer implements Synchronizer<ClientLis
     return result;
   }
 
+  public void readData( ClientListenerBinding object ) {
+  }
+
 }

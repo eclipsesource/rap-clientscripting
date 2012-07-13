@@ -16,6 +16,7 @@ qx.Class.createNamespace( "org.eclipse.rap.clientscripting", {} );
 org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
   // NOTE: the eval'd code will have the same scope as this function, therefore no local
   // variables except the "imports" are used.
+  org.eclipse.rap.clientscripting.Function.addFunction( this );
   var SWT = org.eclipse.rap.clientscripting.SWT;
   try {
     eval( arguments[ 0 ] );
@@ -42,8 +43,19 @@ org.eclipse.rap.clientscripting.Function.prototype = {
 
   _getScopeScript : function( scope ) {
     var ClientScriptingUtil = org.eclipse.rap.clientscripting.ClientScriptingUtil;
-    var result =  ClientScriptingUtil.createScopeScript( scope ? scope : {} );
+    var result =  ClientScriptingUtil.createScopeScript( scope ? scope : {}, this );
     return result;
   }
 
 };
+
+org.eclipse.rap.clientscripting.Function._db = {};
+
+org.eclipse.rap.clientscripting.Function.addFunction = function( func ) {
+  var hashCode = qx.core.Object.toHashCode( func );
+  this._db[ hashCode ] = func;
+},
+
+org.eclipse.rap.clientscripting.Function.getFunction = function( hashCode ) {
+  return this._db[ hashCode ];
+}

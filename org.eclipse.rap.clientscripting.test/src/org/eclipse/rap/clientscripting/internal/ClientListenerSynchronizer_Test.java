@@ -23,9 +23,9 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.browser.browserkit.BrowserLCA;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -146,7 +146,7 @@ public class ClientListenerSynchronizer_Test extends TestCase {
   public void testRenderScopeFunction() {
     HashMap<String, Object> map = new HashMap<String, Object>();
     map.put( "func", new JavaFunction(){
-      public Object function( Object[] args ) {
+      public Object execute( Object[] args ) {
         return null;
       }
     } );
@@ -166,22 +166,27 @@ public class ClientListenerSynchronizer_Test extends TestCase {
   }
 
   public void testJavaFunctionCall() {
-    Fixture.fakeNewRequest( new Display() );
+    Display display = new Display();
+    Fixture.fakeNewRequest( display );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     HashMap<String, Object> map = new HashMap<String, Object>();
     final ArrayList<Object[]> log = new ArrayList<Object[]>();
     map.put( "func", new JavaFunction(){
-      public Object function( Object[] args ) {
+      public Object execute( Object[] args ) {
         log.add( args );
         return null;
       }
     } );
     ClientListener listener = new ClientListener( "script code", map );
     String listenerId = ClientObjectUtil.getId( listener );
-
-    String param 
-      = listenerId + "." + ClientListenerSynchronizer.PARAM_EXECUTE_FUNCTION;
+    String param = listenerId + "." + ClientListenerSynchronizer.PARAM_EXECUTE_FUNCTION;
+    Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( param, "func" );
-    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakePhase( PhaseId.READ_DATA );
+
+    synchronizer.readData( listener );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    while( display.readAndDispatch() ) {}
 
     assertEquals( 1, log.size() );
   }

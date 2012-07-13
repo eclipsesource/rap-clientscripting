@@ -27,6 +27,8 @@ final class ClientScriptingRenderer {
 
   private static final String ATTR_RENDERING_PHASE_LISTENER
     = ClientScriptingRenderer.class.getName().concat( "#renderingPhaseListener" );
+  private static final String ATTR_READ_PHASE_LISTENER
+  = ClientScriptingRenderer.class.getName().concat( "#readDataPhaseListener" );
   private final static ClientListenerSynchronizer clientListenerSynchronizer;
   private final static ClientListenerBindingSynchronizer clientListenerBindingSynchronizer;
   private final static Object lock = new Object();
@@ -37,14 +39,21 @@ final class ClientScriptingRenderer {
   }
 
   static void registerPhaseListener() {
-    PhaseListener phaseListener;
+    PhaseListener renderPhaseListener;
+    PhaseListener readDataPhaseListener;
     IApplicationStore store = RWT.getApplicationStore();
     synchronized( lock ) {
-      phaseListener = ( PhaseListener )store.getAttribute( ATTR_RENDERING_PHASE_LISTENER );
-      if( phaseListener == null ) {
-        phaseListener = new RenderPhaseListener();
-        RWT.getLifeCycle().addPhaseListener( phaseListener );
-        store.setAttribute( ATTR_RENDERING_PHASE_LISTENER, phaseListener );
+      renderPhaseListener = ( PhaseListener )store.getAttribute( ATTR_RENDERING_PHASE_LISTENER );
+      if( renderPhaseListener == null ) {
+        renderPhaseListener = new RenderPhaseListener();
+        RWT.getLifeCycle().addPhaseListener( renderPhaseListener );
+        store.setAttribute( ATTR_RENDERING_PHASE_LISTENER, renderPhaseListener );
+      }
+      readDataPhaseListener = ( PhaseListener )store.getAttribute( ATTR_READ_PHASE_LISTENER );
+      if( readDataPhaseListener == null ) {
+        readDataPhaseListener = new ReadDataPhaseListener();
+        RWT.getLifeCycle().addPhaseListener( readDataPhaseListener );
+        store.setAttribute( ATTR_READ_PHASE_LISTENER, readDataPhaseListener );
       }
     }
   }
@@ -69,6 +78,14 @@ final class ClientScriptingRenderer {
       IClientObject clientObject = ClientObjectFactory.getClientObject( listener );
       clientListenerSynchronizer.renderCreate( listener, clientObject );
       adapter.setCreated();
+    }
+  }
+
+  static void readData() {
+    ClientListenerManager manager = ClientListenerManager.getInstance();
+    Collection<ClientListener> listeners = manager.getListeners();
+    for( ClientListener listener : listeners ) {
+      clientListenerSynchronizer.readData( listener );
     }
   }
 
@@ -98,4 +115,19 @@ final class ClientScriptingRenderer {
       render();
     }
   }
+
+  private static class ReadDataPhaseListener implements PhaseListener {
+
+    public PhaseId getPhaseId() {
+      return PhaseId.READ_DATA;
+    }
+
+    public void beforePhase( PhaseEvent event ) {
+    }
+
+    public void afterPhase( PhaseEvent event ) {
+      readData();
+    }
+  }
+
 }

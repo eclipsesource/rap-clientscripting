@@ -9,3 +9,4 @@ Export-Package: org.eclipse.rap.clientscripting,
  org.eclipse.rap.clientscripting.internal;x-friends:="org.eclipse.rap.clientscripting.test",
  org.eclipse.rap.clientscripting.internal.resources;x-friends:="org.eclipse.rap.clientscripting.jstest"
 Bundle-Vendor: EclipseSource
+Import-Package: javax.servlet.http
