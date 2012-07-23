@@ -20,7 +20,7 @@ import org.eclipse.rap.clientscripting.internal.ClientListenerManager;
 import org.eclipse.rap.clientscripting.internal.IClientObjectAdapter2;
 import org.eclipse.rap.clientscripting.test.TestUtil;
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rap.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;

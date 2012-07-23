@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.clientscripting.ClientListener;
 import org.eclipse.rap.clientscripting.JavaFunction;
-import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.theme.JsonObject;
-import org.eclipse.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.service.ContextProvider;
+import org.eclipse.rap.rwt.internal.theme.JsonObject;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
 

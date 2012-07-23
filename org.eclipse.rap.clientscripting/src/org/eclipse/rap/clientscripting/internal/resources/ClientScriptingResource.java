@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal.resources;
 
-import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rap.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public abstract class ClientScriptingResource implements IResource {

@@ -13,11 +13,11 @@ package org.eclipse.rap.clientscripting.internal;
 import java.util.Map;
 
 import org.eclipse.rap.clientscripting.ClientListener;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
-import org.eclipse.rwt.internal.theme.JsonObject;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.internal.protocol.IClientObject;
+import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.theme.JsonObject;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
 @SuppressWarnings( "restriction" )

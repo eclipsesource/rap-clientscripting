@@ -2,8 +2,8 @@ package org.eclipse.rap.clientscripting.internal;
 
 
 import org.eclipse.rap.clientscripting.ClientListener;
-import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.protocol.IClientObjectAdapter;
+import org.eclipse.rap.rwt.Adaptable;
+import org.eclipse.rap.rwt.internal.protocol.IClientObjectAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 import java.util.HashMap;

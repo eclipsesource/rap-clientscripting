@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.eclipse.rap.clientscripting.ClientListener;
-import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rap.rwt.SessionSingletonBase;
 
 
 public class ClientListenerManager {

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting.internal;
 
-import org.eclipse.rwt.internal.protocol.ClientObjectAdapter;
+import org.eclipse.rap.rwt.internal.protocol.ClientObjectAdapter;
 
 
 @SuppressWarnings( "restriction" )
