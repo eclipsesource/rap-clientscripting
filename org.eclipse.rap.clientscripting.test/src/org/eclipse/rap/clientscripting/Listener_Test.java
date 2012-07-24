@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.clientscripting;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
@@ -212,6 +213,26 @@ public class Listener_Test extends TestCase {
     } catch( RuntimeException ex ) {
       //expected
     }
+  }
+
+  public void testListnerWithPrivateMethod() {
+    final ArrayList<Boolean> log = new ArrayList<Boolean>();
+    Listener listener = new Listener(){
+      @SuppressWarnings("unused")
+      private void someMethod(){
+        log.add( Boolean.TRUE );
+      }
+      public String getClientImpl() {
+        return "function handleEvent(){}";
+      }
+    };
+
+    listener.addTo( shell, SWT.MouseDown );
+
+    Map<String, Object> context = getContext( listener );
+    JavaFunction func = ( JavaFunction )context.get( "someMethod" );
+    func.execute( null );
+    assertEquals( 1, log.size() );
   }
 
   private Map<String, Object> getContext( Listener listener ) {

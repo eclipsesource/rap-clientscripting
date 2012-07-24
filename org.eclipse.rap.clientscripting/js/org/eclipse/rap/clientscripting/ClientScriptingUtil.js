@@ -98,7 +98,7 @@ org.eclipse.rap.clientscripting.ClientScriptingUtil = {
           result.push( hashCode );
           result.push( "\",\"" );
           result.push( key );
-          result.push( "\" ); }" );
+          result.push( "\" ); };" );
         }
       } else if( typeof value === "string" ) {
         result.push( "\"" + value + "\";" );

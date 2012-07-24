@@ -19,6 +19,12 @@ org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
   org.eclipse.rap.clientscripting.Function.addFunction( this );
   var SWT = org.eclipse.rap.clientscripting.SWT;
   try {
+    eval( this._getScopeScript( arguments[ 1 ] ) );
+  } catch( ex ) {
+    var msg = "Could not create ClientFunction scope: " + ( ex.message ? ex.message : ex );
+    throw new Error( msg );
+  }
+  try {
     eval( arguments[ 0 ] );
   } catch( ex ) {
     var msg = "Could not parse ClientFunction: " + ( ex.message ? ex.message : ex );
@@ -32,7 +38,6 @@ org.eclipse.rap.clientscripting.Function = function( /* code */ ) {
   if( typeof this._function !== "function" ) {
     throw new Error( "JavaScript code does not define a \"handleEvent\" function" );
   }
-  eval( this._getScopeScript( arguments[ 1 ] ) );
 };
 
 org.eclipse.rap.clientscripting.Function.prototype = {

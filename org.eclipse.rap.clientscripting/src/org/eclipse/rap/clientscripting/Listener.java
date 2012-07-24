@@ -11,6 +11,7 @@
 package org.eclipse.rap.clientscripting;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -50,14 +51,12 @@ public abstract class Listener implements org.eclipse.swt.widgets.Listener {
 
   private Map< String,Object > getContext() {
     Map<String,Object> result = new HashMap<String, Object>();
-    Field[] fields = this.getClass().getDeclaredFields();
-    for( int i = 0; i < fields.length; i++ ) {
-      Field field = fields[ i ];
-      if( !field.isSynthetic() ) {
-        Object value = getValueFromField( field );
-        result.put( field.getName(), value );
-      }
-    }
+    addFields( result );
+    addMethods( result );
+    return result;
+  }
+
+  private void addMethods(  Map<String, Object> context ) {
     Method[] methods = this.getClass().getDeclaredMethods();
     for( int i = 0; i < methods.length; i++ ) {
       Method method = methods[ i ];
@@ -67,10 +66,44 @@ public abstract class Listener implements org.eclipse.swt.widgets.Listener {
       {
         if( ( method.getModifiers() & Modifier.PRIVATE ) == 0 ) {
           throw new RuntimeException( "Method " + method.getName() + " must be private" );
+        } else {
+          method.setAccessible( true );
+          context.put( method.getName(), getJavaFunction( method ) );
         }
       }
     }
+  }
+
+  private JavaFunction getJavaFunction( final Method method ) {
+    JavaFunction result = new JavaFunction() {
+      public Object execute( Object[] args ) {
+        try {
+          method.invoke( Listener.this, new Object[]{} );
+        } catch( IllegalArgumentException e ) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch( IllegalAccessException e ) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch( InvocationTargetException e ) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        return null;
+      }
+    };
     return result;
+  }
+
+  private void addFields( Map<String, Object> context ) {
+    Field[] fields = this.getClass().getDeclaredFields();
+    for( int i = 0; i < fields.length; i++ ) {
+      Field field = fields[ i ];
+      if( !field.isSynthetic() ) {
+        Object value = getValueFromField( field );
+        context.put( field.getName(), value );
+      }
+    }
   }
 
   private Object getValueFromField( Field field ) {

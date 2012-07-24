@@ -213,6 +213,54 @@ qx.Class.define( "org.eclipse.rap.clientscripting.Function_Test", {
       assertEquals( 1, log.length );
       assertTrue( log[ 0 ].indexOf( "w4.executeFunction=func" ) !== -1 );
       shell.destroy();
+    },
+
+    testJavaScriptOverwritesJavaFunction : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var code = "var func = function(){};function handleEvent(){ func(); }";
+      var scope = { "func" : { "type" : "function" } };
+      TestUtil.initRequestLog();
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code,
+          "scope" : scope
+        }
+      } );
+      var result = ObjectManager.getObject( "w4" );
+
+      result.call();
+
+      var log = TestUtil.getRequestLog();
+      assertEquals( 0, log.length );
+      shell.destroy();
+    },
+
+    testCreateTwoJavaFunctions : function() {
+      var shell = TestUtil.createShellByProtocol( "w2" );
+      var code = "function handleEvent(){ funcA();funcB(); }";
+      var scope = { "funcA" : { "type" : "function" }, "funcB" : { "type" : "function" } };
+      TestUtil.initRequestLog();
+      var Processor = org.eclipse.rwt.protocol.Processor;
+      Processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.clientscripting.Listener",
+        "properties" : {
+          "code" : code,
+          "scope" : scope
+        }
+      } );
+      var result = ObjectManager.getObject( "w4" );
+
+      result.call();
+
+      var log = TestUtil.getRequestLog();
+      assertEquals( 2, log.length );
+      shell.destroy();
     }
 
   }

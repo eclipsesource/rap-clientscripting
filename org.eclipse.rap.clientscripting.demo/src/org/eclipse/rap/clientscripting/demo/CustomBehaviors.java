@@ -1,10 +1,6 @@
 package org.eclipse.rap.clientscripting.demo;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rap.clientscripting.ClientListener;
-import org.eclipse.rap.clientscripting.JavaFunction;
 import org.eclipse.rap.clientscripting.Listener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -218,20 +214,23 @@ public class CustomBehaviors {
   }
 
   public static void addHoverBehavior( final Label label ) {
-    String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Hover.js" );
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put( "showDialog", new JavaFunction() {
-      public Object execute( Object[] args ) {
-        MessageBox mb = new MessageBox( label.getShell(), SWT.OK | SWT.ICON_ERROR );
-        mb.setText( "Illiterate?" );
-        mb.setMessage( "I told you not to go there!" );
-        mb.open();
-        return null;
-      }
-    } );
-    ClientListener listener = new ClientListener( scriptCode, context );
-    listener.addTo( label, ClientListener.MouseEnter );
-  }
+    final String scriptCode = ResourceLoaderUtil.readTextContent( RESOURCES_PREFIX + "Hover.js" );
+      Listener listener = new Listener() {
+        public String getClientImpl() {
+          return scriptCode;
+        }
+        private void showDialog() {
+          MessageBox mb = new MessageBox( label.getShell(), SWT.OK | SWT.ICON_ERROR );
+          mb.setText( "Illiterate?" );
+          mb.setMessage( "I told you not to go there!" );
+          mb.open();
+        }
+        public void handleEvent( Event event ) {
+          showDialog();
+        }
+      };
+      listener.addTo( label, ClientListener.MouseEnter );
+    }
 
 
 }
